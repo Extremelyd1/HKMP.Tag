@@ -16,7 +16,8 @@ join the opposing team, change skin and get the corresponding equipment.
 The game ends whenever there is only one player left uninfected, which is deemed the winner.
 
 ## Install
-The addon can be installed by dropping the `HKMPTag.dll` in the `HKMP` folder in your mods folder.
+The addon can be installed by dropping the `HKMPTag.dll` (which can be found on the
+[releases page](https://github.com/Extremelyd1/HKMP-Tag/releases)) in the `HKMP` folder in your mods folder.
 The mods folder can be found in your steam installation (Beware that these are the default locations.
 Your install may be in a different location):
 - **Windows**: `C:\Program Files (x86)\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\HKMP`
