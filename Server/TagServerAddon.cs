@@ -10,14 +10,10 @@ namespace HkmpTag.Server {
         /// Re-assign the logger to make it accessible.
         /// </summary>
         public new ILogger Logger => base.Logger;
-        
-        /// <inheritdoc />
-        public TagServerAddon(IServerApi serverApi) : base(serverApi) {
-        }
 
         /// <inheritdoc />
-        public override void Initialize() {
-            new ServerTagManager(this, ServerApi).Initialize();
+        public override void Initialize(IServerApi serverApi) {
+            new ServerTagManager(this, serverApi).Initialize();
         }
 
         /// <inheritdoc />

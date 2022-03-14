@@ -10,14 +10,10 @@ namespace HkmpTag.Client {
         /// Re-assign the logger to make it accessible.
         /// </summary>
         public new ILogger Logger => base.Logger;
-        
-        /// <inheritdoc />
-        public TagClientAddon(IClientApi clientApi) : base(clientApi) {
-        }
 
         /// <inheritdoc />
-        public override void Initialize() {
-            new ClientTagManager(this, ClientApi).Initialize();
+        public override void Initialize(IClientApi clientApi) {
+            new ClientTagManager(this, clientApi).Initialize();
         }
 
         /// <inheritdoc />
