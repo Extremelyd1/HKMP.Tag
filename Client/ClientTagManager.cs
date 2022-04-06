@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Hkmp.Api.Client;
 using Hkmp.Game;
+using Hkmp.Util;
+using HutongGames.PlayMaker;
 using Modding;
+using UnityEngine.SceneManagement;
 using ILogger = Hkmp.ILogger;
+using Object = UnityEngine.Object;
 
 namespace HkmpTag.Client {
     /// <summary>
@@ -56,6 +61,7 @@ namespace HkmpTag.Client {
             _netManager = new ClientNetManager(addon, clientApi.NetClient);
 
             _iconManager = new IconManager();
+            new SaveManager(_logger).Initialize();
         }
 
         /// <summary>
@@ -64,6 +70,9 @@ namespace HkmpTag.Client {
         public void Initialize() {
             Title.Initialize();
             _iconManager.Initialize();
+
+            // Write the embedded save file to disk
+            // FileUtil.WriteResourceToFile("HkmpTag.Client.Resource.completed_save.dat", "completed_save.dat");
 
             // Disable team and skin selection, which is handled by this addon automatically
             _clientApi.UiManager.DisableTeamSelection();
@@ -83,19 +92,81 @@ namespace HkmpTag.Client {
             _netManager.GameInProgressEvent += OnGameInProgress;
             _netManager.PlayerTaggedEvent += OnPlayerTagged;
 
-            On.HeroController.TakeDamage += (orig, self, go, side, amount, type) => {
-                orig(self, go, side, amount, type);
-                if (!_clientApi.NetClient.IsConnected || !_gameStarted || _isTagged || amount == 0) {
-                    return;
+            ModHooks.TakeDamageHook += OnTakeDamage;
+            ModHooks.AfterTakeDamageHook += OnAfterTakeDamage;
+            ModHooks.TakeHealthHook += damage => 0;
+            ModHooks.OnEnableEnemyHook += (enemy, dead) => true;
+
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        }
+
+        /// <summary>
+        /// Method on the TakeDamageHook to prevent all (non-hazard) damage when the game is not started.
+        /// </summary>
+        /// <param name="type">The damage type as an int.</param>
+        /// <param name="damage">The original damage that would be taken.</param>
+        /// <returns>The new damage that should be taken.</returns>
+        private int OnTakeDamage(ref int type, int damage) {
+            if (type == 1 && (!_clientApi.NetClient.IsConnected || !_gameStarted)) {
+                return 0;
+            }
+
+            return damage;
+        }
+
+        /// <summary>
+        /// Method on the AfterTakeDamageHook to check when the player is tagged.
+        /// </summary>
+        /// <param name="type">The damage type as an int.</param>
+        /// <param name="amount">The original damage that would be taken.</param>
+        /// <returns>The new damage that should be taken.</returns>
+        private int OnAfterTakeDamage(int type, int amount) {
+            if (!_clientApi.NetClient.IsConnected || !_gameStarted || _isTagged) {
+                return amount;
+            }
+
+            _netManager.SendTagged();
+
+            BecomeInfected();
+
+            return amount;
+        }
+
+        /// <summary>
+        /// Callback method for when the active scene changes.
+        /// </summary>
+        /// <param name="oldScene">The old scene.</param>
+        /// <param name="newScene">The new scene.</param>
+        private void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
+            foreach (var fsm in Object.FindObjectsOfType<PlayMakerFSM>()) {
+                // Find FSMs with Bench Control and disable starting and sitting on them
+                if (fsm.Fsm.Name.Equals("Bench Control")) {
+                    _logger.Info(this, "Found FSM with Bench Control, patching...");
+
+                    fsm.InsertMethod("Pause 2", 1, () => {
+                        PlayerData.instance.SetBool("atBench", false);
+                    });
+                    
+                    var checkStartState2 = fsm.GetState("Check Start State 2");
+                    var pause2State = fsm.GetState("Pause 2");
+                    checkStartState2.GetTransition(1).ToFsmState = pause2State;
+
+                    var checkStartState = fsm.GetState("Check Start State");
+                    var idleStartPauseState = fsm.GetState("Idle Start Pause");
+                    checkStartState.GetTransition(1).ToFsmState = idleStartPauseState;
+
+                    var idleState = fsm.GetState("Idle");
+                    idleState.Actions = new[] { idleState.Actions[0] };
                 }
 
-                _netManager.SendTagged();
-
-                BecomeInfected();
-            };
-            ModHooks.TakeHealthHook += damage => 0;
-
-            PlayerData.instance.isInvincible = true;
+                // Find FSMs with Stag Control and prevent stag travelling
+                if (fsm.Fsm.Name.Equals("Stag Control")) {
+                    _logger.Info(this, "Found FSM with Stag Control, patching...");
+                    
+                    var idleState = fsm.GetState("Idle");
+                    idleState.Transitions = Array.Empty<FsmTransition>();
+                }
+            }
         }
 
         /// <summary>
@@ -185,8 +256,6 @@ namespace HkmpTag.Client {
                     SendMessage($"The game has started, the infected are: {usernameString}");
                 }
             }
-
-            PlayerData.instance.isInvincible = false;
         }
 
         /// <summary>
@@ -195,8 +264,6 @@ namespace HkmpTag.Client {
         /// <param name="packet">The GameEndPacket data.</param>
         private void OnGameEnd(GameEndPacket packet) {
             _gameStarted = false;
-
-            PlayerData.instance.isInvincible = true;
 
             if (packet.HasWinner) {
                 _logger.Info(this, $"Game has ended, winner: {packet.WinnerId}");
@@ -234,8 +301,6 @@ namespace HkmpTag.Client {
 
             _logger.Info(this, "Game is in progress");
             SendTitleMessage("The game is in progress!");
-
-            PlayerData.instance.isInvincible = false;
         }
 
         /// <summary>

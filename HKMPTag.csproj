@@ -8,7 +8,7 @@
         <ProjectGuid>{F402255E-D78D-4DDB-8276-4C6A76B19CD0}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>HKMPTag</RootNamespace>
+        <RootNamespace>HkmpTag</RootNamespace>
         <AssemblyName>HKMPTag</AssemblyName>
         <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
@@ -38,12 +38,16 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="HKMP">
-          <HintPath>$(References)\HKMP.dll</HintPath>
-          <Private>False</Private>
+            <HintPath>$(References)\HKMP.dll</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(References)\MMHOOK_Assembly-CSharp.dll</HintPath>
             <Private>False</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+          <Private>False</Private>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>$(References)\PlayMaker.dll</HintPath>
@@ -92,11 +96,12 @@
             <HintPath>$(References)\UnityEngine.UIModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
-    </ItemGroup>    
+    </ItemGroup>
     <ItemGroup>
         <Compile Include="Client\IconManager.cs" />
         <Compile Include="Client\LoadoutUtil.cs" />
         <Compile Include="Client\ClientNetManager.cs" />
+        <Compile Include="Client\SaveManager.cs" />
         <Compile Include="Client\TagClientAddon.cs" />
         <Compile Include="Client\ClientTagManager.cs" />
         <Compile Include="Client\TagMod.cs" />
@@ -113,9 +118,10 @@
         <Compile Include="Server\TagServerAddon.cs" />
     </ItemGroup>
     <ItemGroup>
-      <EmbeddedResource Include="Client\Resource\crown.png" />
-      <Content Include="LocalBuildProperties.props" />
-      <Content Include="LocalBuildProperties_example.props" />
+        <EmbeddedResource Include="Client\Resource\crown.png" />
+        <EmbeddedResource Include="Client\Resource\completed_save.json" />
+        <Content Include="LocalBuildProperties.props" />
+        <Content Include="LocalBuildProperties_example.props" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">

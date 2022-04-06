@@ -71,7 +71,7 @@ namespace HkmpTag.Client {
         private Sprite LoadIconSprite() {
             var executingAssembly = Assembly.GetExecutingAssembly();
             var resourceStream =
-                executingAssembly.GetManifestResourceStream("HKMPTag.Client.Resource.crown.png");
+                executingAssembly.GetManifestResourceStream("HkmpTag.Client.Resource.crown.png");
             if (resourceStream == null) {
                 return null;
             }
