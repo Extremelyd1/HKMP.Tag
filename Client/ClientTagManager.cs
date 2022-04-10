@@ -35,6 +35,16 @@ namespace HkmpTag.Client {
         private readonly IconManager _iconManager;
 
         /// <summary>
+        /// The transition manager instance.
+        /// </summary>
+        private readonly ClientTransitionManager _transitionManager;
+
+        /// <summary>
+        /// The save manager instance.
+        /// </summary>
+        private readonly SaveManager _saveManager;
+
+        /// <summary>
         /// Whether the game is started.
         /// </summary>
         private bool _gameStarted;
@@ -61,7 +71,8 @@ namespace HkmpTag.Client {
             _netManager = new ClientNetManager(addon, clientApi.NetClient);
 
             _iconManager = new IconManager();
-            new SaveManager(_logger).Initialize();
+            _transitionManager = new ClientTransitionManager(_logger);
+            _saveManager = new SaveManager(_logger);
         }
 
         /// <summary>
@@ -70,9 +81,8 @@ namespace HkmpTag.Client {
         public void Initialize() {
             Title.Initialize();
             _iconManager.Initialize();
-
-            // Write the embedded save file to disk
-            // FileUtil.WriteResourceToFile("HkmpTag.Client.Resource.completed_save.dat", "completed_save.dat");
+            _transitionManager.Initialize();
+            _saveManager.Initialize();
 
             // Disable team and skin selection, which is handled by this addon automatically
             _clientApi.UiManager.DisableTeamSelection();
@@ -84,9 +94,7 @@ namespace HkmpTag.Client {
 
             _clientApi.ClientManager.PlayerEnterSceneEvent += OnPlayerEnterScene;
 
-            TagModMenu.StartButtonPressed += SendStartRequest;
-            TagModMenu.EndButtonPressed += SendEndRequest;
-
+            _netManager.GameInfoEvent += OnGameInfo;
             _netManager.GameStartedEvent += OnGameStart;
             _netManager.GameEndedEvent += OnGameEnd;
             _netManager.GameInProgressEvent += OnGameInProgress;
@@ -143,10 +151,8 @@ namespace HkmpTag.Client {
                 if (fsm.Fsm.Name.Equals("Bench Control")) {
                     _logger.Info(this, "Found FSM with Bench Control, patching...");
 
-                    fsm.InsertMethod("Pause 2", 1, () => {
-                        PlayerData.instance.SetBool("atBench", false);
-                    });
-                    
+                    fsm.InsertMethod("Pause 2", 1, () => { PlayerData.instance.SetBool("atBench", false); });
+
                     var checkStartState2 = fsm.GetState("Check Start State 2");
                     var pause2State = fsm.GetState("Pause 2");
                     checkStartState2.GetTransition(1).ToFsmState = pause2State;
@@ -162,34 +168,11 @@ namespace HkmpTag.Client {
                 // Find FSMs with Stag Control and prevent stag travelling
                 if (fsm.Fsm.Name.Equals("Stag Control")) {
                     _logger.Info(this, "Found FSM with Stag Control, patching...");
-                    
+
                     var idleState = fsm.GetState("Idle");
                     idleState.Transitions = Array.Empty<FsmTransition>();
                 }
             }
-        }
-
-        /// <summary>
-        /// Send a request to start the game with the given number of infected.
-        /// </summary>
-        /// <param name="numInfected">The number of initial infected.</param>
-        private void SendStartRequest(ushort numInfected) {
-            if (!_clientApi.NetClient.IsConnected) {
-                return;
-            }
-
-            _netManager.SendStartRequest(numInfected);
-        }
-
-        /// <summary>
-        /// Send a request to end the game.
-        /// </summary>
-        private void SendEndRequest() {
-            if (!_clientApi.NetClient.IsConnected) {
-                return;
-            }
-
-            _netManager.SendEndRequest();
         }
 
         /// <summary>
@@ -214,6 +197,15 @@ namespace HkmpTag.Client {
             _clientApi.ClientManager.ChangeSkin(0);
 
             _isTagged = false;
+        }
+
+        /// <summary>
+        /// Callback method for when game info is received.
+        /// </summary>
+        /// <param name="packet">The GameInfoPacket data.</param>
+        private void OnGameInfo(GameInfoPacket packet) {
+            _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
+            _transitionManager.WarpToScene(packet.WarpIndex);
         }
 
         /// <summary>
@@ -294,10 +286,14 @@ namespace HkmpTag.Client {
         /// <summary>
         /// Callback method for when game in progress data is received.
         /// </summary>
-        private void OnGameInProgress() {
+        /// <param name="packet">The game info packet for the game that is in progress.</param>
+        private void OnGameInProgress(GameInfoPacket packet) {
             _gameStarted = true;
 
             BecomeInfected();
+
+            _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
+            _transitionManager.WarpToScene(packet.WarpIndex);
 
             _logger.Info(this, "Game is in progress");
             SendTitleMessage("The game is in progress!");

@@ -3,8 +3,6 @@
     /// Enumeration for server packet IDs.
     /// </summary>
     public enum ServerPacketId {
-        StartRequest,
-        EndRequest,
         PlayerTag
     }
 
@@ -12,6 +10,7 @@
     /// Enumeration for client packet IDs.
     /// </summary>
     public enum ClientPacketId {
+        GameInfo,
         GameStart,
         GameEnd,
         GameInProgress,

@@ -1,4 +1,5 @@
-﻿using Hkmp.Api.Command.Server;
+﻿using System;
+using Hkmp.Api.Command.Server;
 
 namespace HkmpTag.Server {
     /// <summary>
@@ -7,8 +8,10 @@ namespace HkmpTag.Server {
     public class TagCommand : IServerCommand {
         /// <inheritdoc />
         public string Trigger => "/tag";
+
         /// <inheritdoc />
         public string[] Aliases => new[] { "/hkmptag" };
+
         /// <inheritdoc />
         public bool AuthorizedOnly => true;
 
@@ -17,22 +20,28 @@ namespace HkmpTag.Server {
         /// </summary>
         private readonly ServerTagManager _tagManager;
 
-        public TagCommand(ServerTagManager tagManager) {
+        /// <summary>
+        /// The transition manager instance.
+        /// </summary>
+        private readonly ServerTransitionManager _transitionManager;
+
+        public TagCommand(ServerTagManager tagManager, ServerTransitionManager transitionManager) {
             _tagManager = tagManager;
+            _transitionManager = transitionManager;
         }
 
         /// <inheritdoc />
-        public void Execute(ICommandSender commandSender, string[] arguments) {
-            if (arguments.Length < 2) {
+        public void Execute(ICommandSender commandSender, string[] args) {
+            if (args.Length < 2) {
                 SendUsage(commandSender);
                 return;
             }
 
-            var action = arguments[1];
+            var action = args[1];
             if (action == "start") {
                 ushort numInfected = 1;
-                if (arguments.Length > 2) {
-                    if (!ushort.TryParse(arguments[2], out numInfected)) {
+                if (args.Length > 2) {
+                    if (!ushort.TryParse(args[2], out numInfected)) {
                         commandSender.SendMessage("Please provide an integer as the number of infected");
                         return;
                     }
@@ -41,6 +50,21 @@ namespace HkmpTag.Server {
                 _tagManager.StartGame(commandSender.SendMessage, numInfected);
             } else if (action == "stop") {
                 _tagManager.EndGame(commandSender.SendMessage);
+            } else if (action == "preset") {
+                if (args.Length < 3) {
+                    commandSender.SendMessage($"Invalid usage: {Trigger} preset [name]");
+                    return;
+                }
+
+                var presetName = args[2];
+                var presetNames = _transitionManager.GetPresetNames();
+                if (Array.IndexOf(presetNames, presetName) == -1) {
+                    commandSender.SendMessage(
+                        $"Preset with name '{presetName}' does not exists, options: {string.Join(", ", presetNames)}");
+                    return;
+                }
+
+                _tagManager.WarpToPreset(commandSender.SendMessage, presetName);
             } else {
                 SendUsage(commandSender);
             }
@@ -51,7 +75,7 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="commandSender">The command sender.</param>
         private void SendUsage(ICommandSender commandSender) {
-            commandSender.SendMessage($"Invalid usage: {Trigger} <start|stop> [number of infected]");
+            commandSender.SendMessage($"Invalid usage: {Trigger} <start|stop|preset>");
         }
     }
 }

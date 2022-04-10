@@ -11,14 +11,6 @@ namespace HkmpTag.Server {
     /// </summary>
     public class ServerNetManager {
         /// <summary>
-        /// Event that is called when a start request is received.
-        /// </summary>
-        public event Action<ushort, StartRequestPacket> StartRequestEvent;
-        /// <summary>
-        /// Event that is called when an end request is received.
-        /// </summary>
-        public event Action<ushort> EndRequestEvent;
-        /// <summary>
         /// Event that is called when a player tag is received.
         /// </summary>
         public event Action<ushort> TaggedEvent;
@@ -37,17 +29,27 @@ namespace HkmpTag.Server {
             _netSender = netServer.GetNetworkSender<ClientPacketId>(addon);
 
             var netReceiver = netServer.GetNetworkReceiver<ServerPacketId>(addon, InstantiatePacket);
-            netReceiver.RegisterPacketHandler<StartRequestPacket>(
-                ServerPacketId.StartRequest,
-                (id, packetData) => StartRequestEvent?.Invoke(id, packetData)
-            );
-            netReceiver.RegisterPacketHandler(
-                ServerPacketId.EndRequest,
-                id => EndRequestEvent?.Invoke(id)
-            );
             netReceiver.RegisterPacketHandler(
                 ServerPacketId.PlayerTag,
                 id => TaggedEvent?.Invoke(id)
+            );
+        }
+
+        /// <summary>
+        /// Broadcast a game info packet to all clients.
+        /// </summary>
+        /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
+        public void SendGameInfo(
+            ushort warpIndex,
+            Dictionary<ushort, byte[]> sceneTransitionRestrictions
+        ) {
+            _netSender.BroadcastSingleData(
+                ClientPacketId.GameInfo,
+                new GameInfoPacket {
+                    WarpIndex = warpIndex,
+                    RestrictedTransitions = sceneTransitionRestrictions
+                }
             );
         }
 
@@ -62,7 +64,7 @@ namespace HkmpTag.Server {
                     infectedIds.Add(player.Id);
                 }
             }
-            
+
             foreach (var player in players) {
                 _netSender.SendSingleData(
                     ClientPacketId.GameStart,
@@ -91,8 +93,21 @@ namespace HkmpTag.Server {
         /// Send a game in progress packet to the game player.
         /// </summary>
         /// <param name="playerId">The ID of the player.</param>
-        public void SendGameInProgress(ushort playerId) {
-            _netSender.SendSingleData(ClientPacketId.GameInProgress, new ReliableEmptyData(), playerId);
+        /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
+        public void SendGameInProgress(
+            ushort playerId,
+            ushort warpIndex,
+            Dictionary<ushort, byte[]> sceneTransitionRestrictions
+        ) {
+            _netSender.SendSingleData(
+                ClientPacketId.GameInProgress,
+                new GameInfoPacket {
+                    WarpIndex = warpIndex,
+                    RestrictedTransitions = sceneTransitionRestrictions
+                },
+                playerId
+            );
         }
 
         /// <summary>
@@ -117,9 +132,6 @@ namespace HkmpTag.Server {
         /// <returns>An instance of IPacketData.</returns>
         private static IPacketData InstantiatePacket(ServerPacketId packetId) {
             switch (packetId) {
-                case ServerPacketId.StartRequest:
-                    return new StartRequestPacket();
-                case ServerPacketId.EndRequest:
                 case ServerPacketId.PlayerTag:
                     return new ReliableEmptyData();
             }

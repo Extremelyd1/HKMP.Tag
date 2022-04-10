@@ -11,6 +11,11 @@ namespace HkmpTag.Server {
     /// </summary>
     public class ServerTagManager {
         /// <summary>
+        /// The time the countdown will take before starting the game in seconds.
+        /// </summary>
+        private const int CountdownTime = 30;
+
+        /// <summary>
         /// The logger instance.
         /// </summary>
         private readonly ILogger _logger;
@@ -19,10 +24,16 @@ namespace HkmpTag.Server {
         /// The server API instance.
         /// </summary>
         private readonly IServerApi _serverApi;
+
         /// <summary>
         /// The server network manager instance.
         /// </summary>
         private readonly ServerNetManager _netManager;
+
+        /// <summary>
+        /// The transition manager instance.
+        /// </summary>
+        private readonly ServerTransitionManager _transitionManager;
 
         /// <summary>
         /// The instance of random used to decide the initial infected.
@@ -30,9 +41,15 @@ namespace HkmpTag.Server {
         private readonly Random _random;
 
         /// <summary>
-        /// Whether the game has started.
+        /// The current game state.
         /// </summary>
-        private bool _gameStarted;
+        private GameState GameState { get; set; }
+
+        /// <summary>
+        /// Action to start the game after a countdown.
+        /// </summary>
+        private DelayedAction _startAction;
+
         /// <summary>
         /// Dictionary mapping player IDs to ServerTagPlayer instances.
         /// </summary>
@@ -53,6 +70,7 @@ namespace HkmpTag.Server {
             _serverApi = serverApi;
 
             _netManager = new ServerNetManager(addon, serverApi.NetServer);
+            _transitionManager = new ServerTransitionManager(_logger);
 
             _random = new Random();
 
@@ -63,41 +81,39 @@ namespace HkmpTag.Server {
         /// Initializes the tag manager by setting default values and registering commands and callbacks.
         /// </summary>
         public void Initialize() {
-            _gameStarted = false;
-            
-            _serverApi.CommandManager.RegisterCommand(new TagCommand(this));
+            GameState = GameState.PreGame;
 
-            _netManager.StartRequestEvent += OnStartRequest;
-            _netManager.EndRequestEvent += OnEndRequest;
+            _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _transitionManager));
+
             _netManager.TaggedEvent += playerId => OnTagged(playerId);
 
             _serverApi.ServerManager.PlayerConnectEvent += OnPlayerConnect;
             _serverApi.ServerManager.PlayerDisconnectEvent += OnPlayerDisconnect;
+
+            _transitionManager.Initialize();
         }
 
         /// <summary>
-        /// Callback method for when a start request is received.
+        /// Instruct all players to warp to the given preset and use the transition restrictions. Will provide
+        /// feedback by sending a message using the given action.
         /// </summary>
-        /// <param name="id">The ID of the player that sent the request.</param>
-        /// <param name="packet">The packet data.</param>
-        private void OnStartRequest(ushort id, StartRequestPacket packet) {
-            _logger.Info(this, $"Received start request from {id}, numInfected: {packet.NumInfected}");
-            
-            if (!_serverApi.ServerManager.TryGetPlayer(id, out var player)) {
-                _logger.Warn(this, "Could not find player that sent start request");
+        /// <param name="sendMessageAction">The action to send feedback messages.</param>
+        /// <param name="presetName">The name of the preset.</param>
+        public void WarpToPreset(Action<string> sendMessageAction, string presetName) {
+            if (GameState != GameState.PreGame) {
+                const string unableToWarpMsg = "Cannot warp to preset at this moment";
+                sendMessageAction.Invoke(unableToWarpMsg);
+                _logger.Info(this, unableToWarpMsg);
                 return;
             }
 
-            if (!player.IsAuthorized) {
-                _serverApi.ServerManager.SendMessage(id, "You are not authorized to do this");
-                _logger.Info(this, $"Player with ID {id} is not authorized to start the game");
-                return;
-            }
-            
-            StartGame(
-                s => _serverApi.ServerManager.SendMessage(id, s), 
-                packet.NumInfected
-            );
+            sendMessageAction.Invoke($"Using preset '{presetName}', warping players...");
+            _logger.Info(this, $"Using preset '{presetName}' and sending game info");
+
+            _transitionManager.SetPreset(presetName);
+
+            var restriction = _transitionManager.GetTransitionRestrictions();
+            _netManager.SendGameInfo(restriction.Item1, restriction.Item2);
         }
 
         /// <summary>
@@ -107,83 +123,91 @@ namespace HkmpTag.Server {
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
         /// <param name="numInfected">The number of initial infected.</param>
         public void StartGame(Action<string> sendMessageAction, ushort numInfected) {
-            if (_gameStarted) {
-                const string alreadyStartedMsg = "Game is already started";
-                sendMessageAction.Invoke(alreadyStartedMsg);
-                _logger.Info(this, alreadyStartedMsg);
+            if (GameState != GameState.PreGame) {
+                const string unableToStartMsg = "Cannot start game at this moment";
+                sendMessageAction.Invoke(unableToStartMsg);
+                _logger.Info(this, unableToStartMsg);
                 return;
             }
 
+            if (!CheckGameStart(sendMessageAction, numInfected)) {
+                return;
+            }
+
+            var countDownSecondsString = CountdownTime.ToString();
+            _serverApi.ServerManager.BroadcastMessage($"Choosing new infected in {countDownSecondsString} seconds!");
+
+            GameState = GameState.Countdown;
+            _startAction = new DelayedAction(CountdownTime * 1000, () => {
+                if (!CheckGameStart(sendMessageAction, numInfected)) {
+                    GameState = GameState.PreGame;
+                    return;
+                }
+                
+                var serverPlayers = _serverApi.ServerManager.Players;
+
+                // The list of IDs to choose from to be initial infected
+                // We map the players to their IDs and then filter out which players where chosen last
+                var allIds = new List<ushort>(serverPlayers
+                    .Select(p => p.Id)
+                    .Where(id => !_lastChosenIds.Contains(id))
+                );
+                // The list of IDs that are chosen
+                var randomIds = new List<ushort>();
+
+                while (numInfected-- > 0) {
+                    var randomIndex = _random.Next(allIds.Count);
+                    randomIds.Add(allIds[randomIndex]);
+                    allIds.RemoveAt(randomIndex);
+                }
+
+                // Add the chosen IDs to the list of last chosen, so they don't get chosen again
+                _lastChosenIds.Clear();
+                _lastChosenIds.AddRange(randomIds);
+
+                _players = new ConcurrentDictionary<ushort, ServerTagPlayer>();
+
+                foreach (var player in serverPlayers) {
+                    _players[player.Id] = new ServerTagPlayer {
+                        Id = player.Id,
+                        State = randomIds.Contains(player.Id) ? PlayerState.Infected : PlayerState.Uninfected
+                    };
+                }
+
+                _netManager.SendGameStart(_players.GetCopy().Values.ToList());
+
+                GameState = GameState.InGame;
+            });
+            _startAction.Start();
+        }
+
+        /// <summary>
+        /// Checks if the game can be started with the number of online players and given number of infected.
+        /// Will provide feedback by sending a message using the given action.
+        /// </summary>
+        /// <param name="sendMessageAction">The action to send feedback messages.</param>
+        /// <param name="numInfected">The number of initial infected.</param>
+        /// <returns>true if the game can be started; otherwise false.</returns>
+        private bool CheckGameStart(Action<string> sendMessageAction, ushort numInfected) {
+            var serverPlayers = _serverApi.ServerManager.Players;
+
             // We cannot start without at least 3 players
-            if (_serverApi.ServerManager.Players.Count < 3) {
+            if (serverPlayers.Count < 3) {
                 const string notEnoughPlayersMsg = "Could not start game with less than 3 players";
                 sendMessageAction.Invoke(notEnoughPlayersMsg);
                 _logger.Info(this, notEnoughPlayersMsg);
-                return;
+                return false;
             }
-
-            var serverPlayers = _serverApi.ServerManager.Players;
 
             // We cannot start the game with 0 or too many players
             if (numInfected < 1 || numInfected >= serverPlayers.Count - 1) {
                 const string invalidNumPlayersMsg = "Could not start game with invalid number of players";
                 sendMessageAction.Invoke(invalidNumPlayersMsg);
                 _logger.Info(this, invalidNumPlayersMsg);
-                return;
+                return false;
             }
 
-            // The list of IDs to choose from to be initial infected
-            // We map the players to their IDs and then filter out which players where chosen last
-            var allIds = new List<ushort>(serverPlayers
-                .Select(p => p.Id)
-                .Where(id => !_lastChosenIds.Contains(id))
-            );
-            // The list of IDs that are chosen
-            var randomIds = new List<ushort>();
-
-            while (numInfected-- > 0) {
-                var randomIndex = _random.Next(allIds.Count);
-                randomIds.Add(allIds[randomIndex]);
-                allIds.RemoveAt(randomIndex);
-            }
-
-            // Add the chosen IDs to the list of last chosen, so they don't get chosen again
-            _lastChosenIds.Clear();
-            _lastChosenIds.AddRange(randomIds);
-
-            _players = new ConcurrentDictionary<ushort, ServerTagPlayer>();
-
-            foreach (var player in serverPlayers) {
-                _players[player.Id] = new ServerTagPlayer {
-                    Id = player.Id,
-                    State = randomIds.Contains(player.Id) ? PlayerState.Infected : PlayerState.Uninfected
-                };
-            }
-
-            _netManager.SendGameStart(_players.GetCopy().Values.ToList());
-
-            _gameStarted = true;
-        }
-
-        /// <summary>
-        /// Callback method for when an end request is received.
-        /// </summary>
-        /// <param name="id">The ID of the player that sent the request.</param>
-        private void OnEndRequest(ushort id) {
-            _logger.Info(this, $"Received end request from {id}");
-            
-            if (!_serverApi.ServerManager.TryGetPlayer(id, out var player)) {
-                _logger.Warn(this, "Could not find player that sent start request");
-                return;
-            }
-
-            if (!player.IsAuthorized) {
-                _serverApi.ServerManager.SendMessage(id, "You are not authorized to do this");
-                _logger.Info(this, $"Player with ID {id} is not authorized to end the game");
-                return;
-            }
-            
-            EndGame(s => _serverApi.ServerManager.SendMessage(id, s));
+            return true;
         }
         
         /// <summary>
@@ -191,16 +215,24 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
         public void EndGame(Action<string> sendMessageAction) {
-            if (!_gameStarted) {
+            if (GameState != GameState.InGame && GameState != GameState.Countdown) {
                 const string notStartedMsg = "Game is not started";
                 sendMessageAction.Invoke(notStartedMsg);
                 _logger.Info(this, notStartedMsg);
                 return;
             }
 
-            _gameStarted = false;
-
-            _netManager.SendGameEnd(false);
+            if (GameState == GameState.InGame) {
+                // If the game was in progress, we end it
+                _netManager.SendGameEnd(false);
+            } else if (GameState == GameState.Countdown) {
+                // If the countdown was in progress, we cancel it
+                _startAction.Stop();
+                
+                const string stoppedCountdownMsg = "Stopped start countdown";
+                sendMessageAction.Invoke(stoppedCountdownMsg);
+                _logger.Info(this, stoppedCountdownMsg);
+            }
         }
 
         /// <summary>
@@ -211,7 +243,7 @@ namespace HkmpTag.Server {
         private void OnTagged(ushort playerId, bool disconnect = false) {
             _logger.Info(this, $"Received tag from: {playerId}");
 
-            if (!_gameStarted) {
+            if (GameState != GameState.InGame) {
                 _logger.Info(this, "Game is not started");
                 return;
             }
@@ -239,7 +271,7 @@ namespace HkmpTag.Server {
                 _netManager.SendGameEnd(false);
             }
 
-            _gameStarted = false;
+            GameState = GameState.PreGame;
         }
 
         /// <summary>
@@ -249,12 +281,19 @@ namespace HkmpTag.Server {
         private void OnPlayerConnect(IServerPlayer player) {
             _logger.Info(this, $"Player with ID {player.Id} connected");
 
-            if (_gameStarted) {
+            if (GameState == GameState.InGame) {
                 _players[player.Id] = new ServerTagPlayer {
                     Id = player.Id,
                     State = PlayerState.Infected
                 };
-                _netManager.SendGameInProgress(player.Id);
+
+                var transitionRestriction = _transitionManager.GetTransitionRestrictions();
+                
+                _netManager.SendGameInProgress(
+                    player.Id,
+                    transitionRestriction.Item1,
+                    transitionRestriction.Item2
+                );
             }
         }
 
@@ -265,7 +304,7 @@ namespace HkmpTag.Server {
         private void OnPlayerDisconnect(IServerPlayer player) {
             _logger.Info(this, $"Player with ID {player.Id} disconnected");
 
-            if (_gameStarted) {
+            if (GameState == GameState.InGame) {
                 if (!_players.TryGetValue(player.Id, out var tagPlayer)) {
                     _logger.Warn(this, $"Could not find tag player with ID: {player.Id}");
                     return;
@@ -281,7 +320,7 @@ namespace HkmpTag.Server {
                     var numInfected = _players.GetCopy().Values.Count(p => p.State == PlayerState.Infected);
                     if (numInfected <= 1) {
                         // Last infected left, so we end the game
-                        _gameStarted = false;
+                        GameState = GameState.PreGame;
                         _netManager.SendGameEnd(false);
                     }
                 }
@@ -289,5 +328,30 @@ namespace HkmpTag.Server {
                 _players.Remove(player.Id);
             }
         }
+    }
+
+    /// <summary>
+    /// Enumeration for game states.
+    /// </summary>
+    public enum GameState {
+        /// <summary>
+        /// There aren't enough players to start a game yet (only in auto-mode).
+        /// </summary>
+        WaitingForPlayers = 1,
+
+        /// <summary>
+        /// The game has not started yet.
+        /// </summary>
+        PreGame,
+
+        /// <summary>
+        /// The countdown for choosing the infected is in progress.
+        /// </summary>
+        Countdown,
+
+        /// <summary>
+        /// The game is in progress.
+        /// </summary>
+        InGame
     }
 }

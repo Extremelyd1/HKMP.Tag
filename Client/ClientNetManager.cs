@@ -10,6 +10,11 @@ namespace HkmpTag.Client {
     /// </summary>
     public class ClientNetManager {
         /// <summary>
+        /// Event that is called when the game info is received.
+        /// </summary>
+        public event Action<GameInfoPacket> GameInfoEvent;
+
+        /// <summary>
         /// Event that is called when the game is started.
         /// </summary>
         public event Action<GameStartPacket> GameStartedEvent;
@@ -22,7 +27,7 @@ namespace HkmpTag.Client {
         /// <summary>
         /// Event that is called when the game is in progress.
         /// </summary>
-        public event Action GameInProgressEvent;
+        public event Action<GameInfoPacket> GameInProgressEvent;
 
         /// <summary>
         /// Event that is called when another player is tagged.
@@ -44,6 +49,10 @@ namespace HkmpTag.Client {
 
             var netReceiver = netClient.GetNetworkReceiver<ClientPacketId>(addon, InstantiatePacket);
 
+            netReceiver.RegisterPacketHandler<GameInfoPacket>(
+                ClientPacketId.GameInfo,
+                packetData => GameInfoEvent?.Invoke(packetData)
+            );
             netReceiver.RegisterPacketHandler<GameStartPacket>(
                 ClientPacketId.GameStart,
                 packetData => GameStartedEvent?.Invoke(packetData)
@@ -52,31 +61,14 @@ namespace HkmpTag.Client {
                 ClientPacketId.GameEnd,
                 packetData => GameEndedEvent?.Invoke(packetData)
             );
-            netReceiver.RegisterPacketHandler(
+            netReceiver.RegisterPacketHandler<GameInfoPacket>(
                 ClientPacketId.GameInProgress,
-                () => GameInProgressEvent?.Invoke()
+                packetData => GameInProgressEvent?.Invoke(packetData)
             );
             netReceiver.RegisterPacketHandler<ClientTagPacket>(
                 ClientPacketId.PlayerTag,
                 packetData => PlayerTaggedEvent?.Invoke(packetData)
             );
-        }
-
-        /// <summary>
-        /// Send a request to start the game with the given number of initial infected.
-        /// </summary>
-        /// <param name="numInfected">The number of initial infected.</param>
-        public void SendStartRequest(ushort numInfected) {
-            _netSender.SendSingleData(ServerPacketId.StartRequest, new StartRequestPacket {
-                NumInfected = numInfected
-            });
-        }
-
-        /// <summary>
-        /// Send a request to end the game.
-        /// </summary>
-        public void SendEndRequest() {
-            _netSender.SendSingleData(ServerPacketId.EndRequest, new ReliableEmptyData());
         }
 
         /// <summary>
@@ -93,12 +85,13 @@ namespace HkmpTag.Client {
         /// <returns>An instance of IPacketData.</returns>
         private static IPacketData InstantiatePacket(ClientPacketId packetId) {
             switch (packetId) {
+                case ClientPacketId.GameInfo:
+                case ClientPacketId.GameInProgress:
+                    return new GameInfoPacket();
                 case ClientPacketId.GameStart:
                     return new GameStartPacket();
                 case ClientPacketId.GameEnd:
                     return new GameEndPacket();
-                case ClientPacketId.GameInProgress:
-                    return new ReliableEmptyData();
                 case ClientPacketId.PlayerTag:
                     return new ClientTagPacket();
             }

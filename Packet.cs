@@ -1,32 +1,85 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Hkmp.Networking.Packet;
 
 namespace HkmpTag {
     /// <summary>
-    /// Packet data for the start request.
+    /// Packet data for client-bound game information. Where to warp to, which transitions in which scenes
+    /// are restricted.
     /// </summary>
-    public class StartRequestPacket : IPacketData {
+    public class GameInfoPacket : IPacketData {
         /// <summary>
-        /// The number of initial infected.
+        /// The maximum number of scenes to have transition restrictions for.
         /// </summary>
-        public ushort NumInfected { get; set; }
-        
+        public const byte MaxScenes = byte.MaxValue;
+
+        /// <summary>
+        /// The maximum number of transitions in one scene that can be restricted.
+        /// </summary>
+        public const byte MaxTransitions = byte.MaxValue;
+
+        /// <summary>
+        /// The index of the scene to warp to.
+        /// </summary>
+        public ushort WarpIndex { get; set; }
+
+        /// <summary>
+        /// A dictionary mapping scene indices to byte arrays containing transition indices.
+        /// </summary>
+        public Dictionary<ushort, byte[]> RestrictedTransitions { get; set; }
+
+        public GameInfoPacket() {
+            RestrictedTransitions = new Dictionary<ushort, byte[]>();
+        }
+
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
-            packet.Write(NumInfected);
+            packet.Write(WarpIndex);
+
+            var dictCount = (byte)Math.Min(MaxScenes, RestrictedTransitions.Count);
+            packet.Write(dictCount);
+
+            foreach (var sceneTransitionsPair in RestrictedTransitions) {
+                var sceneIndex = sceneTransitionsPair.Key;
+                var transitions = sceneTransitionsPair.Value;
+
+                packet.Write(sceneIndex);
+
+                var transitionLength = (byte)Math.Min(MaxTransitions, transitions.Length);
+                packet.Write(transitionLength);
+
+                for (var i = 0; i < transitionLength; i++) {
+                    packet.Write(transitions[i]);
+                }
+            }
         }
 
         /// <inheritdoc />
         public void ReadData(IPacket packet) {
-            NumInfected = packet.ReadUShort();
+            WarpIndex = packet.ReadUShort();
+
+            var dictCount = packet.ReadByte();
+            for (var i = 0; i < dictCount; i++) {
+                var sceneIndex = packet.ReadUShort();
+
+                var transitionLength = packet.ReadByte();
+                var transitions = new byte[transitionLength];
+
+                for (var j = 0; j < transitionLength; j++) {
+                    transitions[j] = packet.ReadByte();
+                }
+
+                RestrictedTransitions[sceneIndex] = transitions;
+            }
         }
 
         /// <inheritdoc />
         public bool IsReliable => true;
+
         /// <inheritdoc />
         public bool DropReliableDataIfNewerExists => true;
     }
-    
+
     /// <summary>
     /// Packet data for the game start.
     /// </summary>
@@ -35,6 +88,7 @@ namespace HkmpTag {
         /// Whether the receiving player is infected.
         /// </summary>
         public bool IsInfected { get; set; }
+
         /// <summary>
         /// The list of IDs of infected players.
         /// </summary>
@@ -43,12 +97,12 @@ namespace HkmpTag {
         public GameStartPacket() {
             InfectedIds = new List<ushort>();
         }
-        
+
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
             packet.Write(IsInfected);
-            
-            packet.Write((ushort) InfectedIds.Count);
+
+            packet.Write((ushort)InfectedIds.Count);
 
             foreach (var infectedId in InfectedIds) {
                 packet.Write(infectedId);
@@ -67,6 +121,7 @@ namespace HkmpTag {
 
         /// <inheritdoc />
         public bool IsReliable => true;
+
         /// <inheritdoc />
         public bool DropReliableDataIfNewerExists => true;
     }
@@ -79,6 +134,7 @@ namespace HkmpTag {
         /// Whether the game has a winner.
         /// </summary>
         public bool HasWinner { get; set; }
+
         /// <summary>
         /// The ID of the winner if there is a winner.
         /// </summary>
@@ -99,9 +155,10 @@ namespace HkmpTag {
                 WinnerId = packet.ReadUShort();
             }
         }
-        
+
         /// <inheritdoc />
         public bool IsReliable => true;
+
         /// <inheritdoc />
         public bool DropReliableDataIfNewerExists => true;
     }
@@ -114,15 +171,17 @@ namespace HkmpTag {
         /// The ID of the tagged player.
         /// </summary>
         public ushort TaggedId { get; set; }
+
         /// <summary>
         /// The number of uninfected left.
         /// </summary>
         public ushort NumLeft { get; set; }
+
         /// <summary>
         /// Whether the tag was caused by a disconnect.
         /// </summary>
         public bool Disconnect { get; set; }
-        
+
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
             packet.Write(TaggedId);
@@ -139,6 +198,7 @@ namespace HkmpTag {
 
         /// <inheritdoc />
         public bool IsReliable => true;
+
         /// <inheritdoc />
         public bool DropReliableDataIfNewerExists => true;
     }

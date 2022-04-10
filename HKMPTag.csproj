@@ -10,6 +10,7 @@
     <ItemGroup>
         <EmbeddedResource Include="Client\Resource\crown.png" />
         <EmbeddedResource Include="Client\Resource\completed_save.json" />
+        <EmbeddedResource Include="Resource\transitions.json" />
     </ItemGroup>
 
     <ItemGroup>
