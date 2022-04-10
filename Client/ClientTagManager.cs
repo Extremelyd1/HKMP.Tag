@@ -308,12 +308,19 @@ namespace HkmpTag.Client {
                 return;
             }
 
+            if (packet.WasTagged) {
+                _logger.Info(this, $"Local player is infected, number of uninfected left: {packet.NumLeft}");
+
+                SendTitleMessage($"You are infected, {packet.NumLeft} players remain!");
+                return;
+            }
+
             _logger.Info(this, $"Player {packet.TaggedId} is infected, number of uninfected left: {packet.NumLeft}");
 
             if (_clientApi.ClientManager.TryGetPlayer(packet.TaggedId, out var player)) {
                 SendTitleMessage($"Player '{player.Username}' was infected, {packet.NumLeft} players remain!");
             } else {
-                SendTitleMessage($"You are infected, {packet.NumLeft} players remain!");
+                _logger.Warn(this, $"Could not find player with ID: {packet.TaggedId}");
             }
         }
 

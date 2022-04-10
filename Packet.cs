@@ -168,14 +168,19 @@ namespace HkmpTag {
     /// </summary>
     public class ClientTagPacket : IPacketData {
         /// <summary>
-        /// The ID of the tagged player.
+        /// Whether the receiving player was tagged.
         /// </summary>
-        public ushort TaggedId { get; set; }
-
+        public bool WasTagged { get; set; }
+        
         /// <summary>
         /// The number of uninfected left.
         /// </summary>
         public ushort NumLeft { get; set; }
+    
+        /// <summary>
+        /// The ID of the tagged player.
+        /// </summary>
+        public ushort TaggedId { get; set; }
 
         /// <summary>
         /// Whether the tag was caused by a disconnect.
@@ -184,16 +189,24 @@ namespace HkmpTag {
 
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
-            packet.Write(TaggedId);
+            packet.Write(WasTagged);
             packet.Write(NumLeft);
-            packet.Write(Disconnect);
+            
+            if (!WasTagged) {
+                packet.Write(TaggedId);
+                packet.Write(Disconnect);
+            }
         }
 
         /// <inheritdoc />
         public void ReadData(IPacket packet) {
-            TaggedId = packet.ReadUShort();
+            WasTagged = packet.ReadBool();
             NumLeft = packet.ReadUShort();
-            Disconnect = packet.ReadBool();
+
+            if (!WasTagged) {
+                TaggedId = packet.ReadUShort();
+                Disconnect = packet.ReadBool();
+            }
         }
 
         /// <inheritdoc />

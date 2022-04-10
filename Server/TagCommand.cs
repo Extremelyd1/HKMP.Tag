@@ -47,7 +47,7 @@ namespace HkmpTag.Server {
                     }
                 }
 
-                _tagManager.StartGame(commandSender.SendMessage, numInfected);
+                _tagManager.StartGame(numInfected, commandSender.SendMessage);
             } else if (action == "stop") {
                 _tagManager.EndGame(commandSender.SendMessage);
             } else if (action == "preset") {
@@ -64,7 +64,9 @@ namespace HkmpTag.Server {
                     return;
                 }
 
-                _tagManager.WarpToPreset(commandSender.SendMessage, presetName);
+                _tagManager.WarpToPreset(presetName, commandSender.SendMessage);
+            } else if (action == "auto") {
+                _tagManager.ToggleAuto(commandSender.SendMessage);
             } else {
                 SendUsage(commandSender);
             }
@@ -75,7 +77,7 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="commandSender">The command sender.</param>
         private void SendUsage(ICommandSender commandSender) {
-            commandSender.SendMessage($"Invalid usage: {Trigger} <start|stop|preset>");
+            commandSender.SendMessage($"Invalid usage: {Trigger} <start|stop|preset|auto>");
         }
     }
 }

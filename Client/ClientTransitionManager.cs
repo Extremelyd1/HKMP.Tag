@@ -88,6 +88,28 @@ namespace HkmpTag.Client {
                 Logger.Warn(this, $"Could not warp to scene '{sceneName}', it does not have any transitions");
                 return;
             }
+            
+            // Unpause the game if it was paused
+            var uiManager = UIManager.instance;
+            if (uiManager != null) {
+                if (uiManager.uiState.Equals(UIState.PAUSED)) {
+                    var gm = GameManager.instance;
+
+                    GameCameras.instance.ResumeCameraShake();
+                    gm.inputHandler.PreventPause();
+                    gm.actorSnapshotUnpaused.TransitionTo(0f);
+                    gm.isPaused = false;
+                    gm.ui.AudioGoToGameplay(0.2f);
+                    gm.ui.SetState(UIState.PLAYING);
+                    gm.SetState(GameState.PLAYING);
+                    if (HeroController.instance != null) {
+                        HeroController.instance.UnPause();
+                    }
+
+                    MenuButtonList.ClearAllLastSelected();
+                    gm.inputHandler.AllowPause();
+                }
+            }
 
             // Simply get the first transition
             var transitionName = transitionNames[0];

@@ -34,6 +34,27 @@ namespace HkmpTag.Server {
                 id => TaggedEvent?.Invoke(id)
             );
         }
+        
+        /// <summary>
+        /// Broadcast a game info packet to the given client.
+        /// </summary>
+        /// <param name="playerId">The ID of the player to send to.</param>
+        /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
+        public void SendGameInfo(
+            ushort playerId,
+            ushort warpIndex,
+            Dictionary<ushort, byte[]> sceneTransitionRestrictions
+        ) {
+            _netSender.SendSingleData(
+                ClientPacketId.GameInfo,
+                new GameInfoPacket {
+                    WarpIndex = warpIndex,
+                    RestrictedTransitions = sceneTransitionRestrictions
+                },
+                playerId
+            );
+        }
 
         /// <summary>
         /// Broadcast a game info packet to all clients.
@@ -114,15 +135,24 @@ namespace HkmpTag.Server {
         /// Send a tag packet to all players that a player has been tagged, how many players are left and whether
         /// it was a disconnect or a normal tag.
         /// </summary>
+        /// <param name="players">The list of players to send to.</param>
         /// <param name="taggedId">The ID of the tagged player.</param>
         /// <param name="numLeft">The number of uninfected left.</param>
         /// <param name="disconnect">Whether the player was tagged by disconnect.</param>
-        public void SendTag(ushort taggedId, ushort numLeft, bool disconnect) {
-            _netSender.BroadcastSingleData(ClientPacketId.PlayerTag, new ClientTagPacket {
-                TaggedId = taggedId,
-                NumLeft = numLeft,
-                Disconnect = disconnect
-            });
+        public void SendTag(
+            List<ServerTagPlayer> players, 
+            ushort taggedId, 
+            ushort numLeft, 
+            bool disconnect
+        ) {
+            foreach (var player in players) {
+                _netSender.SendSingleData(ClientPacketId.PlayerTag, new ClientTagPacket {
+                    WasTagged = player.Id == taggedId,
+                    TaggedId = taggedId,
+                    NumLeft = numLeft,
+                    Disconnect = disconnect
+                });
+            }
         }
 
         /// <summary>

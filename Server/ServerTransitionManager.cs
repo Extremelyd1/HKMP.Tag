@@ -17,6 +17,11 @@ namespace HkmpTag.Server {
         private const string PresetFileName = "transition_presets.json";
 
         /// <summary>
+        /// The random instance.
+        /// </summary>
+        private readonly Random _random;
+        
+        /// <summary>
         /// Dictionary mapping preset names to their transition restriction instance.
         /// </summary>
         private readonly Dictionary<string, TransitionRestriction> _transitionRestrictions;
@@ -26,7 +31,9 @@ namespace HkmpTag.Server {
         /// </summary>
         private string _currentPreset;
 
-        public ServerTransitionManager(ILogger logger) : base(logger) {
+        public ServerTransitionManager(ILogger logger, Random random) : base(logger) {
+            _random = random;
+            
             _transitionRestrictions = new Dictionary<string, TransitionRestriction>();
         }
 
@@ -88,6 +95,24 @@ namespace HkmpTag.Server {
         /// <returns>A string array containing all preset names.</returns>
         public string[] GetPresetNames() {
             return _transitionRestrictions.Keys.ToArray();
+        }
+
+        /// <summary>
+        /// Set a random preset to be used that is not the one currently used.
+        /// </summary>
+        /// <returns>The name of the randomly selected preset.</returns>
+        public string GetRandomPreset() {
+            var presetNames = new List<string>(GetPresetNames());
+            if (!string.IsNullOrEmpty(_currentPreset)) {
+                presetNames.Remove(_currentPreset);
+            }
+
+            var randomIndex = _random.Next(presetNames.Count);
+            var randomPreset = presetNames[randomIndex];
+            
+            Logger.Info(this, $"Picked random preset '{randomPreset}'");
+
+            return randomPreset;
         }
 
         /// <summary>
