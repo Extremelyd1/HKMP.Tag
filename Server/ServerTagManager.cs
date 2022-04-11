@@ -5,31 +5,11 @@ using Hkmp;
 using Hkmp.Api.Server;
 using Hkmp.Concurrency;
 
-// TODO: add much more logging for automatic games
 namespace HkmpTag.Server {
     /// <summary>
     /// Manager for server-side Tag.
     /// </summary>
     public class ServerTagManager {
-        /// <summary>
-        /// The time the countdown will take before starting the game in seconds.
-        /// </summary>
-        private const int CountdownTime = 30;
-
-        /// <summary>
-        /// The time after warping players before starting the automatic game in seconds.
-        /// </summary>
-        private const int WarpTime = 5;
-        /// <summary>
-        /// The time after the game has ended to wait before starting a new one.
-        /// </summary>
-        private const int PostGameTime = 20;
-
-        /// <summary>
-        /// The maximum number of games to play on one preset.
-        /// </summary>
-        private const int MaxGamesOnPreset = 5;
-
         /// <summary>
         /// The logger instance.
         /// </summary>
@@ -44,6 +24,11 @@ namespace HkmpTag.Server {
         /// The server network manager instance.
         /// </summary>
         private readonly ServerNetManager _netManager;
+
+        /// <summary>
+        /// The server settings instance.
+        /// </summary>
+        private readonly ServerSettings _settings;
 
         /// <summary>
         /// The transition manager instance.
@@ -94,6 +79,8 @@ namespace HkmpTag.Server {
             _logger = addon.Logger;
             _serverApi = serverApi;
 
+            _settings = ServerSettings.LoadFromFile();
+
             _random = new Random();
 
             _netManager = new ServerNetManager(addon, serverApi.NetServer);
@@ -108,7 +95,7 @@ namespace HkmpTag.Server {
         public void Initialize() {
             GameState = GameState.PreGame;
 
-            _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _transitionManager));
+            _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _settings, _transitionManager));
 
             _netManager.TaggedEvent += playerId => OnTagged(playerId);
 
@@ -159,12 +146,14 @@ namespace HkmpTag.Server {
                 return;
             }
 
-            var countDownSecondsString = CountdownTime.ToString();
-            _serverApi.ServerManager.BroadcastMessage($"Choosing new infected in {countDownSecondsString} seconds!");
+            _serverApi.ServerManager.BroadcastMessage($"Choosing new infected in {_settings.CountdownTime} seconds!");
+
+            _logger.Info(this, $"Game can be started, choosing initial infected in {_settings.CountdownTime} seconds");
 
             GameState = GameState.Countdown;
-            _currentDelayAction = new DelayedAction(CountdownTime * 1000, () => {
+            _currentDelayAction = new DelayedAction(_settings.CountdownTime * 1000, () => {
                 if (!CheckGameStart(numInfected, sendMessageAction)) {
+                    _logger.Info(this, "Game could not be started after countdown");
                     GameState = _auto ? GameState.WaitingForPlayers : GameState.PreGame;
                     return;
                 }
@@ -199,9 +188,23 @@ namespace HkmpTag.Server {
                     };
                 }
 
+                var infectedPlayerNames = string.Join(", ", serverPlayers.Where(
+                    p => randomIds.Contains(p.Id)
+                ).Select(p => p.Username));
+                _logger.Info(this, $"Starting game with initial infected: {infectedPlayerNames}");
+
                 _netManager.SendGameStart(_players.GetCopy().Values.ToList());
 
                 GameState = GameState.InGame;
+
+                if (_auto) {
+                    _logger.Info(this, $"Scheduling game timeout after {_settings.MaxGameTime} seconds");
+                    _currentDelayAction = new DelayedAction(_settings.MaxGameTime, () => {
+                        // After the max game time, we simply end the game
+                        _logger.Info(this, "Forcefully ending game after max game time has been reached");
+                        OnGameEnd(false);
+                    });
+                }
             });
             _currentDelayAction.Start();
         }
@@ -230,7 +233,7 @@ namespace HkmpTag.Server {
 
                 if (GameState == GameState.WaitingForPlayers || GameState == GameState.PostGame) {
                     GameState = GameState.PreGame;
-                    
+
                     _currentDelayAction?.Stop();
                 }
             }
@@ -272,31 +275,37 @@ namespace HkmpTag.Server {
             if (!_auto) {
                 return;
             }
-            
+
             var serverPlayers = _serverApi.ServerManager.Players;
             var numPlayers = serverPlayers.Count;
             var numInfected = (ushort)Math.Min(ushort.MaxValue, Math.Max(1, numPlayers / 6));
 
             if (!CheckGameStart(numInfected)) {
+                _logger.Info(this, "Could not start automatic game");
+
                 // Not enough players to start, so we change the game state
                 GameState = GameState.WaitingForPlayers;
                 return;
             }
-            
+
             GameState = GameState.PreGame;
 
             if (UseNewPreset()) {
+                _logger.Info(this, "Using new preset for automatic game");
+
                 // Either we have not chosen a preset yet, or we have played the maximum number of games on
                 // this preset already so we are switching
                 _numGamesOnPreset = 0;
-                
+
                 WarpToPreset(_transitionManager.GetRandomPreset());
-                
-                _currentDelayAction = new DelayedAction(WarpTime * 1000, () => {
+
+                _currentDelayAction = new DelayedAction(_settings.WarpTime * 1000, () => {
+                    _logger.Info(this, "Warp time elapsed, starting game...");
                     StartGame(numInfected);
                 });
                 _currentDelayAction.Start();
             } else {
+                _logger.Info(this, "Using existing preset for automatic game");
                 StartGame(numInfected);
             }
         }
@@ -307,7 +316,7 @@ namespace HkmpTag.Server {
         /// <returns>true if a new preset should be used; otherwise false.</returns>
         private bool UseNewPreset() {
             var numPresets = _transitionManager.GetPresetNames().Length;
-            
+
             if (numPresets == 0) {
                 return false;
             }
@@ -316,7 +325,7 @@ namespace HkmpTag.Server {
                 return true;
             }
 
-            return _numGamesOnPreset >= MaxGamesOnPreset && numPresets > 1;
+            return _numGamesOnPreset >= _settings.MaxGamesOnPreset && numPresets > 1;
         }
 
         /// <summary>
@@ -332,6 +341,8 @@ namespace HkmpTag.Server {
             }
 
             if (GameState == GameState.InGame) {
+                _logger.Info(this, "Sending game end to clients");
+
                 // If the game was in progress, we end it
                 _netManager.SendGameEnd(false);
             } else if (GameState == GameState.Countdown) {
@@ -350,17 +361,32 @@ namespace HkmpTag.Server {
         /// <param name="hasWinner">Whether the game has a winner.</param>
         /// <param name="winnerId">The ID of the player that won or 0 if there is no winner.</param>
         private void OnGameEnd(bool hasWinner, ushort winnerId = 0) {
+            var logMsg = $"Game has ended, has winner: {hasWinner}";
+            if (hasWinner) {
+                logMsg += $", winner ID: {winnerId}";
+            }
+
+            _logger.Info(this, logMsg);
+
             _netManager.SendGameEnd(hasWinner, winnerId);
+
+            _currentDelayAction?.Stop();
 
             if (_auto) {
                 // Since the game has ended, we know that we played another game on this preset
                 _numGamesOnPreset++;
-            
-                GameState = GameState.PostGame;
-                
-                _serverApi.ServerManager.BroadcastMessage($"Starting new game in {PostGameTime + CountdownTime} seconds");
 
-                _currentDelayAction = new DelayedAction(PostGameTime * 1000, ProcessAutoGameStart);
+                _logger.Info(this,
+                    $"Automation is enabled, number of games played on current preset: {_numGamesOnPreset}");
+
+                GameState = GameState.PostGame;
+
+                var newGameStartMsg =
+                    $"Starting new game in {_settings.PostGameTime + _settings.CountdownTime} seconds";
+                _serverApi.ServerManager.BroadcastMessage(newGameStartMsg);
+                _logger.Info(this, newGameStartMsg);
+
+                _currentDelayAction = new DelayedAction(_settings.PostGameTime * 1000, ProcessAutoGameStart);
                 _currentDelayAction.Start();
             } else {
                 GameState = GameState.PreGame;
@@ -389,11 +415,13 @@ namespace HkmpTag.Server {
             // Count the number of uninfected players left
             var numUninfected = players.Values.Count(p => p.State == PlayerState.Uninfected);
             if (numUninfected > 1) {
+                _logger.Info(this, $"Game is not over yet, number of uninfected left: {numUninfected}");
+
                 // If the game is not over yet, send the tag to all players
                 _netManager.SendTag(
                     players.Values.ToList(),
-                    playerId, 
-                    (ushort)numUninfected, 
+                    playerId,
+                    (ushort)numUninfected,
                     disconnect
                 );
                 return;
@@ -414,8 +442,10 @@ namespace HkmpTag.Server {
             _logger.Info(this, $"Player with ID {player.Id} connected");
 
             var transitionRestriction = _transitionManager.GetTransitionRestrictions();
-            
+
             if (GameState == GameState.InGame) {
+                _logger.Info(this, "Game is in-progress, sending game in progress packet");
+
                 _players[player.Id] = new ServerTagPlayer {
                     Id = player.Id,
                     State = PlayerState.Infected
@@ -427,6 +457,8 @@ namespace HkmpTag.Server {
                     transitionRestriction.Item2
                 );
             } else {
+                _logger.Info(this, "Game is not in-progress, sending game info");
+
                 _netManager.SendGameInfo(
                     player.Id,
                     transitionRestriction.Item1,
@@ -435,6 +467,8 @@ namespace HkmpTag.Server {
             }
 
             if (_auto && GameState == GameState.WaitingForPlayers) {
+                _logger.Info(this, "Game is automatic and we were waiting for players, trying to start game...");
+
                 ProcessAutoGameStart();
             }
         }
@@ -453,6 +487,8 @@ namespace HkmpTag.Server {
                 }
 
                 if (tagPlayer.State == PlayerState.Uninfected) {
+                    _logger.Info(this, "Player was uninfected, forcefully tagging them");
+
                     // If the player was uninfected, we call the OnTagged method to check if the game should end
                     OnTagged(player.Id, true);
                 } else {
@@ -460,6 +496,9 @@ namespace HkmpTag.Server {
                     // Since we haven't removed them from the dictionary yet, if there is only one
                     // (or less) infected left, then the game should end
                     var numInfected = _players.GetCopy().Values.Count(p => p.State == PlayerState.Infected);
+
+                    _logger.Info(this, $"Player was infected, number of infected left: {numInfected - 1}");
+
                     if (numInfected <= 1) {
                         // Last infected left, so we end the game
                         OnGameEnd(false);
@@ -494,7 +533,7 @@ namespace HkmpTag.Server {
         /// The game is in progress.
         /// </summary>
         InGame,
-        
+
         /// <summary>
         /// The game has just ended.
         /// </summary>

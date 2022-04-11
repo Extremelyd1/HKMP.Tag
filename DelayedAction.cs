@@ -10,6 +10,7 @@ namespace HkmpTag {
         /// The time to wait before executing.
         /// </summary>
         public double Time { get; set; }
+
         /// <summary>
         /// The action to execute.
         /// </summary>
@@ -19,7 +20,7 @@ namespace HkmpTag {
         /// The timer that is used to schedule the execution.
         /// </summary>
         private Timer _timer;
-        
+
         public DelayedAction(double time, Action action) {
             Time = time;
             Action = action;
@@ -34,9 +35,8 @@ namespace HkmpTag {
             _timer = new Timer(Time);
             _timer.Elapsed += (sender, args) => {
                 Action.Invoke();
-                
-                _timer.Dispose();
-                _timer = null;
+
+                Stop();
             };
             _timer.Start();
         }
@@ -45,7 +45,11 @@ namespace HkmpTag {
         /// Stops the timer if it was started.
         /// </summary>
         public void Stop() {
-            _timer?.Stop();
+            if (_timer != null) {
+                _timer.Stop();
+                _timer.Dispose();
+                _timer = null;
+            }
         }
     }
 }
