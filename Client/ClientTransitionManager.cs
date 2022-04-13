@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
 using ILogger = Hkmp.ILogger;
+using Object = UnityEngine.Object;
 
 namespace HkmpTag.Client {
     /// <summary>
@@ -13,6 +15,11 @@ namespace HkmpTag.Client {
         /// restrictions.
         /// </summary>
         private Dictionary<string, HashSet<string>> _currentRestrictions;
+
+        /// <summary>
+        /// The name of the transition that was last warped to.
+        /// </summary>
+        private string _lastTransitionName;
 
         public ClientTransitionManager(ILogger logger) : base(logger) {
         }
@@ -88,7 +95,7 @@ namespace HkmpTag.Client {
                 Logger.Warn(this, $"Could not warp to scene '{sceneName}', it does not have any transitions");
                 return;
             }
-            
+
             // Unpause the game if it was paused
             var uiManager = UIManager.instance;
             if (uiManager != null) {
@@ -111,8 +118,11 @@ namespace HkmpTag.Client {
                 }
             }
 
+            // TODO: maybe randomize which transition is picked to enter from to spread out players
             // Simply get the first transition
-            var transitionName = transitionNames[0];
+            _lastTransitionName = transitionNames[0];
+
+            Logger.Info(this, $"Warping to scene: {sceneName}, transition: {_lastTransitionName}");
 
             // First kill conveyor movement since otherwise the game will think we are still on a conveyor
             // after we warp to the new scene
@@ -129,7 +139,7 @@ namespace HkmpTag.Client {
             void DoSceneTransition() {
                 gameManager.BeginSceneTransition(new GameManager.SceneLoadInfo {
                     SceneName = sceneName,
-                    EntryGateName = transitionName,
+                    EntryGateName = _lastTransitionName,
                     HeroLeaveDirection = GatePosition.door,
                     EntryDelay = 0,
                     WaitForSceneTransitionCameraFade = true,
@@ -172,17 +182,57 @@ namespace HkmpTag.Client {
                 var name = transitionPoint.name;
 
                 if (restrictedTransitions.Contains(name)) {
-                    Logger.Info(this, $"  Restricting '{name}' transition");
-
                     if (name.Contains("door")) {
                         // If it is a door, we disable it
                         transitionPoint.GetComponent<Collider2D>().enabled = false;
+
+                        Logger.Info(this, $"  Restricting '{name}' door transition");
                     } else {
-                        // If it is not a door, we set it to not be a trigger, which makes it collide with the player
-                        transitionPoint.GetComponent<Collider2D>().isTrigger = false;
+                        // If it is not a door, we set the collider to not be a trigger, which makes it collide with
+                        // the player and thus prevent them from exiting
+                        var collider = transitionPoint.GetComponent<Collider2D>();
+
+                        if (_lastTransitionName == name) {
+                            Logger.Info(this, $"  Restricting '{name}' transition after entering");
+
+                            // If it is the transition we last warped into, we add a component that only makes the
+                            // collider solid after we entered the transition
+                            var transitionPointExit = transitionPoint.gameObject.AddComponent<ColliderExitHandler>();
+                            transitionPointExit.Action = () => {
+                                Logger.Info(this, "Exit called...");
+
+                                collider.isTrigger = false;
+                            };
+                        } else {
+                            collider.isTrigger = false;
+
+                            Logger.Info(this, $"  Restricting '{name}' transition");
+                        }
                     }
                 }
             }
+
+            // We only want this to trigger once per scene load, so we reset the last transition name
+            _lastTransitionName = "";
+        }
+    }
+
+    /// <summary>
+    /// Class that executes a given action if something exits the collider on the game object.
+    /// </summary>
+    public class ColliderExitHandler : MonoBehaviour {
+        /// <summary>
+        /// The action to execute.
+        /// </summary>
+        public Action Action { get; set; }
+
+        /// <summary>
+        /// Sent when another object leaves a trigger collider attached to this object (2D physics only).
+        /// This function can be a coroutine.
+        /// </summary>
+        /// <param name="other">The other collider.</param>
+        private void OnTriggerExit2D(Collider2D other) {
+            Action?.Invoke();
         }
     }
 }

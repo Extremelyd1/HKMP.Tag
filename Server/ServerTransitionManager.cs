@@ -22,19 +22,19 @@ namespace HkmpTag.Server {
         private readonly Random _random;
         
         /// <summary>
-        /// Dictionary mapping preset names to their transition restriction instance.
+        /// Dictionary mapping preset names to their game preset instances.
         /// </summary>
-        private readonly Dictionary<string, TransitionRestriction> _transitionRestrictions;
+        private readonly Dictionary<string, GamePreset> _gamePresets;
 
         /// <summary>
-        /// The name of the current preset or null if no preset is set.
+        /// The current preset or null if no preset is set.
         /// </summary>
-        private string _currentPreset;
+        private GamePreset _currentPreset;
 
         public ServerTransitionManager(ILogger logger, Random random) : base(logger) {
             _random = random;
             
-            _transitionRestrictions = new Dictionary<string, TransitionRestriction>();
+            _gamePresets = new Dictionary<string, GamePreset>();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace HkmpTag.Server {
             }
 
             var fileContents = File.ReadAllText(filePath);
-            var transitionRestrictions = JsonConvert.DeserializeObject<List<TransitionRestriction>>(fileContents);
+            var transitionRestrictions = JsonConvert.DeserializeObject<List<GamePreset>>(fileContents);
             if (transitionRestrictions == null) {
                 Logger.Warn(this, "Could not read transition presets file");
                 return;
@@ -66,9 +66,9 @@ namespace HkmpTag.Server {
             foreach (var restriction in transitionRestrictions) {
                 var name = restriction.Name;
 
-                if (!_transitionRestrictions.ContainsKey(name)) {
+                if (!_gamePresets.ContainsKey(name)) {
                     Logger.Info(this, $"Loaded transition restriction preset '{name}'");
-                    _transitionRestrictions[name] = restriction;
+                    _gamePresets[name] = restriction;
                 } else {
                     Logger.Warn(this, $"Transition restriction preset with name '{name}' was already defined");
                 }
@@ -81,12 +81,12 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="name">The name of the preset.</param>
         public void SetPreset(string name) {
-            if (!_transitionRestrictions.ContainsKey(name)) {
+            if (!_gamePresets.TryGetValue(name, out var preset)) {
                 Logger.Warn(this, $"Tried to set preset '{name}', while it did not exist");
                 return;
             }
 
-            _currentPreset = name;
+            _currentPreset = preset;
         }
 
         /// <summary>
@@ -94,25 +94,49 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <returns>A string array containing all preset names.</returns>
         public string[] GetPresetNames() {
-            return _transitionRestrictions.Keys.ToArray();
+            return _gamePresets.Keys.ToArray();
         }
 
         /// <summary>
-        /// Set a random preset to be used that is not the one currently used.
+        /// Set a random preset to be used that is not the one currently used. Will keep in mind how many
+        /// players are online and pick a preset that is suitable.
         /// </summary>
-        /// <returns>The name of the randomly selected preset.</returns>
-        public string GetRandomPreset() {
-            var presetNames = new List<string>(GetPresetNames());
-            if (!string.IsNullOrEmpty(_currentPreset)) {
-                presetNames.Remove(_currentPreset);
+        /// <param name="numPlayers">The number of players currently online.</param>
+        public bool SetRandomPreset(int numPlayers) {
+            var presets = new List<GamePreset>(_gamePresets.Values);
+            
+            // If the current preset is non-null, we remove it from the selectable set
+            if (_currentPreset != null) {
+                presets.Remove(_currentPreset);
+            }
+            
+            // Filter presets for which the max or min number of players does not match
+            for (var i = 0; i < presets.Count; i++) {
+                var preset = presets[i];
+
+                if (preset.MaxPlayers.HasValue && preset.MaxPlayers <= numPlayers) {
+                    presets.Remove(preset);
+                    i--;
+                }
+                
+                if (preset.MinPlayers.HasValue && preset.MinPlayers >= numPlayers) {
+                    presets.Remove(preset);
+                    i--;
+                }
             }
 
-            var randomIndex = _random.Next(presetNames.Count);
-            var randomPreset = presetNames[randomIndex];
-            
-            Logger.Info(this, $"Picked random preset '{randomPreset}'");
+            // If there aren't any presets left after filtering, we return false
+            if (presets.Count < 1) {
+                return false;
+            }
 
-            return randomPreset;
+            var randomIndex = _random.Next(presets.Count);
+            var randomPreset = presets[randomIndex];
+            
+            Logger.Info(this, $"Picked random preset '{randomPreset.Name}'");
+
+            _currentPreset = randomPreset;
+            return true;
         }
 
         /// <summary>
@@ -121,21 +145,20 @@ namespace HkmpTag.Server {
         /// <returns>A pair of warp scene index and a dictionary containing a scene index to transition index
         /// array mapping.</returns>
         public (ushort, Dictionary<ushort, byte[]>) GetTransitionRestrictions() {
-            if (string.IsNullOrEmpty(_currentPreset) ||
-                !_transitionRestrictions.TryGetValue(_currentPreset, out var transitionRestriction)) {
+            if (_currentPreset == null) {
                 return (0, new Dictionary<ushort, byte[]>());
             }
 
-            var warpSceneIndex = Array.IndexOf(SceneNames, transitionRestriction.WarpSceneName);
+            var warpSceneIndex = Array.IndexOf(SceneNames, _currentPreset.WarpSceneName);
             if (warpSceneIndex == -1) {
                 Logger.Warn(this,
-                    $"Could not get scene index of warp scene '{transitionRestriction.WarpSceneName}', falling back to default value");
+                    $"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}', falling back to default value");
 
                 warpSceneIndex = 0;
             }
 
             var sceneTransitionIndices = new Dictionary<ushort, byte[]>();
-            foreach (var sceneTransitionPair in transitionRestriction.SceneTransitions) {
+            foreach (var sceneTransitionPair in _currentPreset.SceneTransitions) {
                 var sceneName = sceneTransitionPair.Key;
 
                 var sceneIndex = Array.IndexOf(SceneNames, sceneName);
@@ -172,9 +195,9 @@ namespace HkmpTag.Server {
     }
 
     /// <summary>
-    /// Data class for a single transition restriction preset.
+    /// Data class for a preset that has info on transition restrictions.
     /// </summary>
-    public class TransitionRestriction {
+    public class GamePreset {
         /// <summary>
         /// The name of the preset.
         /// </summary>
@@ -186,6 +209,18 @@ namespace HkmpTag.Server {
         /// </summary>
         [JsonProperty("warp_scene")]
         public string WarpSceneName { get; set; }
+        
+        /// <summary>
+        /// Minimum number of players required for this preset.
+        /// </summary>
+        [JsonProperty("min_players")]
+        public int? MinPlayers { get; set; }
+
+        /// <summary>
+        /// Maximum number of players required for this preset.
+        /// </summary>
+        [JsonProperty("max_players")]
+        public int? MaxPlayers { get; set; }
 
         /// <summary>
         /// The dictionary mapping scene names to transition name arrays.

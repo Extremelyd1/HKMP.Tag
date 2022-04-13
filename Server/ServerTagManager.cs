@@ -297,7 +297,9 @@ namespace HkmpTag.Server {
                 // this preset already so we are switching
                 _numGamesOnPreset = 0;
 
-                WarpToPreset(_transitionManager.GetRandomPreset());
+                if (!_transitionManager.SetRandomPreset(numPlayers)) {
+                    _logger.Warn(this, $"Could not find a suitable random preset for number of players ({numPlayers})");
+                }
 
                 _currentDelayAction = new DelayedAction(_settings.WarpTime * 1000, () => {
                     _logger.Info(this, "Warp time elapsed, starting game...");

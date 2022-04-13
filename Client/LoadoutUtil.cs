@@ -11,6 +11,8 @@
             SetKingSoul();
             SetCharms(26);
             SetSkills(true);
+            ResetDreamGate();
+            SetDreamNailUses(0);
         }
 
         /// <summary>
@@ -21,6 +23,8 @@
             SetKingSoul();
             SetCharms(2, 36);
             SetSkills(false);
+            ResetDreamGate();
+            SetDreamNailUses(2);
         }
 
         /// <summary>
@@ -77,6 +81,16 @@
             PlayerData.instance.screamLevel = 0;
             PlayerData.instance.fireballLevel = infected ? 0 : 1;
             PlayerData.instance.quakeLevel = 0;
+        }
+
+        private static void SetDreamNailUses(int uses) {
+            PlayerData.instance.SetInt("dreamOrbs", uses);
+        }
+
+        private static void ResetDreamGate() {
+            PlayerData.instance.SetString("dreamGateScene", "");
+            PlayerData.instance.SetFloat("dreamGateX", 0f);
+            PlayerData.instance.SetFloat("dreamGateY", 0f);
         }
     }
 }
