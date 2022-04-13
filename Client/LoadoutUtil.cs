@@ -24,7 +24,7 @@
             SetCharms(2, 36);
             SetSkills(false);
             ResetDreamGate();
-            SetDreamNailUses(2);
+            SetDreamNailUses(0);
         }
 
         /// <summary>
@@ -84,6 +84,7 @@
         }
 
         private static void SetDreamNailUses(int uses) {
+            PlayerData.instance.SetBool("hasDreamNail", uses >= 1);
             PlayerData.instance.SetInt("dreamOrbs", uses);
         }
 
