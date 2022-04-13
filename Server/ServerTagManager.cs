@@ -109,9 +109,8 @@ namespace HkmpTag.Server {
         /// Instruct all players to warp to the given preset and use the transition restrictions. Will provide
         /// feedback by sending a message using the given action.
         /// </summary>
-        /// <param name="presetName">The name of the preset.</param>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
-        public void WarpToPreset(string presetName, Action<string> sendMessageAction = null) {
+        public void WarpToPreset(Action<string> sendMessageAction = null) {
             if (GameState != GameState.PreGame) {
                 const string unableToWarpMsg = "Cannot warp to preset at this moment";
                 sendMessageAction?.Invoke(unableToWarpMsg);
@@ -119,10 +118,8 @@ namespace HkmpTag.Server {
                 return;
             }
 
-            sendMessageAction?.Invoke($"Using preset '{presetName}', warping players...");
-            _logger.Info(this, $"Using preset '{presetName}' and sending game info");
-
-            _transitionManager.SetPreset(presetName);
+            sendMessageAction?.Invoke("Warping players to preset...");
+            _logger.Info(this, "Using preset, sending game info");
 
             var restriction = _transitionManager.GetTransitionRestrictions();
             _netManager.SendGameInfo(restriction.Item1, restriction.Item2);
@@ -300,6 +297,8 @@ namespace HkmpTag.Server {
                 if (!_transitionManager.SetRandomPreset(numPlayers)) {
                     _logger.Warn(this, $"Could not find a suitable random preset for number of players ({numPlayers})");
                 }
+                
+                WarpToPreset();
 
                 _currentDelayAction = new DelayedAction(_settings.WarpTime * 1000, () => {
                     _logger.Info(this, "Warp time elapsed, starting game...");

@@ -75,7 +75,8 @@ namespace HkmpTag.Server {
                     return;
                 }
 
-                _tagManager.WarpToPreset(presetName, commandSender.SendMessage);
+                _transitionManager.SetPreset(presetName);
+                _tagManager.WarpToPreset(commandSender.SendMessage);
             } else if (action == "auto") {
                 _tagManager.ToggleAuto(commandSender.SendMessage);
             } else if (action == "set") {
