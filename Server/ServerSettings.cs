@@ -16,31 +16,31 @@ namespace HkmpTag.Server {
         /// The time the countdown will take before starting the game in seconds.
         /// </summary>
         [JsonProperty("countdown_time")]
-        public int CountdownTime { get; set; }
+        public int CountdownTime { get; set; } = 30;
 
         /// <summary>
         /// The time after warping players before starting the automatic game in seconds.
         /// </summary>
         [JsonProperty("warp_time")]
-        public int WarpTime { get; set; }
+        public int WarpTime { get; set; } = 5;
 
         /// <summary>
         /// The time after the game has ended to wait before starting a new one.
         /// </summary>
         [JsonProperty("post_game_time")]
-        public int PostGameTime { get; set; }
+        public int PostGameTime { get; set; } = 20;
 
         /// <summary>
         /// The maximum time a game can lasts before ending it.
         /// </summary>
         [JsonProperty("max_game_time")]
-        public int MaxGameTime { get; set; }
+        public int MaxGameTime { get; set; } = 15 * 60;
 
         /// <summary>
         /// The maximum number of games to play on one preset.
         /// </summary>
         [JsonProperty("max_games_on_preset")]
-        public int MaxGamesOnPreset { get; set; }
+        public int MaxGamesOnPreset { get; set; } = 5;
 
         /// <summary>
         /// Save the server settings to file.
@@ -74,7 +74,9 @@ namespace HkmpTag.Server {
 
             var filePath = Path.Combine(dirName, FileName);
             if (!File.Exists(filePath)) {
-                return new ServerSettings();
+                var settings = new ServerSettings();
+                settings.SaveToFile();
+                return settings;
             }
 
             try {

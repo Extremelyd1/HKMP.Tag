@@ -146,6 +146,8 @@ namespace HkmpTag.Server {
             settingProperty.SetValue(_settings, newValueObject);
 
             commandSender.SendMessage($"Changed setting '{settingName}' to: {newValueObject}");
+            
+            _settings.SaveToFile();
         }
 
         /// <summary>
