@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
@@ -72,6 +73,9 @@ namespace HkmpTag.Client {
 
             // After setting current restrictions, we can immediately start checking the transitions
             CheckTransitions(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+
+            // We only want this to trigger once for the first scene load, so we reset the last transition name
+            _lastTransitionName = "";
         }
 
         /// <summary>
@@ -95,6 +99,19 @@ namespace HkmpTag.Client {
                 Logger.Warn(this, $"Could not warp to scene '{sceneName}', it does not have any transitions");
                 return;
             }
+
+            GameManager.instance.StartCoroutine(WarpToSceneRoutine(sceneName, transitionNames));
+        }
+
+        /// <summary>
+        /// Coroutine for warping to the given scene with the given array of transition names.
+        /// </summary>
+        /// <param name="sceneName">The name of the scene.</param>
+        /// <param name="transitionNames">A string array of transition names.</param>
+        /// <returns>Enumerator representing the coroutine.</returns>
+        private IEnumerator WarpToSceneRoutine(string sceneName, string[] transitionNames) {
+            // Wait for hazard respawn to finish
+            yield return new WaitWhile(() => HeroController.instance.cState.hazardRespawning);
 
             // Unpause the game if it was paused
             var uiManager = UIManager.instance;
@@ -198,11 +215,7 @@ namespace HkmpTag.Client {
                             // If it is the transition we last warped into, we add a component that only makes the
                             // collider solid after we entered the transition
                             var transitionPointExit = transitionPoint.gameObject.AddComponent<ColliderExitHandler>();
-                            transitionPointExit.Action = () => {
-                                Logger.Info(this, "Exit called...");
-
-                                collider.isTrigger = false;
-                            };
+                            transitionPointExit.Action = () => collider.isTrigger = false;
                         } else {
                             collider.isTrigger = false;
 
@@ -211,9 +224,6 @@ namespace HkmpTag.Client {
                     }
                 }
             }
-
-            // We only want this to trigger once per scene load, so we reset the last transition name
-            _lastTransitionName = "";
         }
     }
 
