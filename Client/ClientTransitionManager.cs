@@ -73,9 +73,6 @@ namespace HkmpTag.Client {
 
             // After setting current restrictions, we can immediately start checking the transitions
             CheckTransitions(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
-
-            // We only want this to trigger once for the first scene load, so we reset the last transition name
-            _lastTransitionName = "";
         }
 
         /// <summary>
@@ -189,10 +186,12 @@ namespace HkmpTag.Client {
         /// <param name="sceneName">The name of the scene to check.</param>
         private void CheckTransitions(string sceneName) {
             if (_currentRestrictions == null) {
+                _lastTransitionName = "";
                 return;
             }
 
             if (!_currentRestrictions.TryGetValue(sceneName, out var restrictedTransitions)) {
+                _lastTransitionName = "";
                 return;
             }
 
@@ -227,6 +226,8 @@ namespace HkmpTag.Client {
                     }
                 }
             }
+            
+            _lastTransitionName = "";
         }
     }
 
