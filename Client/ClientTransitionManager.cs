@@ -112,6 +112,9 @@ namespace HkmpTag.Client {
         private IEnumerator WarpToSceneRoutine(string sceneName, string[] transitionNames) {
             // Wait for hazard respawn to finish
             yield return new WaitWhile(() => HeroController.instance.cState.hazardRespawning);
+            
+            // Cancel any NPC conversation that was happening before warping
+            PlayMakerFSM.BroadcastEvent("CONVO CANCEL");
 
             // Unpause the game if it was paused
             var uiManager = UIManager.instance;
