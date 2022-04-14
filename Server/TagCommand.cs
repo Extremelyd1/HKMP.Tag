@@ -98,7 +98,7 @@ namespace HkmpTag.Server {
                 return;
             }
 
-            var settingName = args[1];
+            var settingName = args[2];
 
             var propertyInfos = typeof(ServerSettings).GetProperties();
 
