@@ -17,14 +17,24 @@ namespace HkmpTag.Server {
         private const string PresetFileName = "transition_presets.json";
 
         /// <summary>
+        /// The full path of the assembly directory.
+        /// </summary>
+        private string AssemblyDirPath => Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+        /// <summary>
         /// The random instance.
         /// </summary>
         private readonly Random _random;
-        
+
         /// <summary>
         /// Dictionary mapping preset names to their game preset instances.
         /// </summary>
         private readonly Dictionary<string, GamePreset> _gamePresets;
+
+        /// <summary>
+        /// Boolean indicating whether the preset file has changed.
+        /// </summary>
+        private bool _presetFileChanged;
 
         /// <summary>
         /// The current preset or null if no preset is set.
@@ -33,8 +43,20 @@ namespace HkmpTag.Server {
 
         public ServerTransitionManager(ILogger logger, Random random) : base(logger) {
             _random = random;
-            
+
             _gamePresets = new Dictionary<string, GamePreset>();
+        }
+
+        /// <inheritdoc />
+        public override void Initialize() {
+            base.Initialize();
+
+            // Setup file watcher
+            var fileWatcher = new FileSystemWatcher(AssemblyDirPath);
+            fileWatcher.Filter = PresetFileName;
+            fileWatcher.IncludeSubdirectories = false;
+            fileWatcher.Changed += OnFileChanged;
+            fileWatcher.EnableRaisingEvents = true;
         }
 
         /// <summary>
@@ -45,33 +67,68 @@ namespace HkmpTag.Server {
 
             Logger.Info(this, "Loading transition restriction presets");
 
-            var dirName = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (dirName == null) {
+            LoadPresets();
+        }
+
+        /// <summary>
+        /// Callback for when the preset file changes.
+        /// </summary>
+        /// <param name="sender">The sender of the event.</param>
+        /// <param name="e">The event args object.</param>
+        private void OnFileChanged(object sender, FileSystemEventArgs e) {
+            _presetFileChanged = true;
+        }
+
+        /// <summary>
+        /// Load the preset file.
+        /// </summary>
+        private void LoadPresets(bool reset = false) {
+            if (AssemblyDirPath == null) {
                 return;
             }
 
-            var filePath = Path.Combine(dirName, PresetFileName);
+            var filePath = Path.Combine(AssemblyDirPath, PresetFileName);
             if (!File.Exists(filePath)) {
                 Logger.Info(this, "No preset file found");
                 return;
             }
 
-            var fileContents = File.ReadAllText(filePath);
+            string fileContents;
+
+            try {
+                fileContents = File.ReadAllText(filePath);
+            } catch (Exception e) {
+                Logger.Info(this, $"Could not read preset file: {e.GetType()}, {e.Message}");
+                return;
+            }
+
             var transitionRestrictions = JsonConvert.DeserializeObject<List<GamePreset>>(fileContents);
             if (transitionRestrictions == null) {
                 Logger.Warn(this, "Could not read transition presets file");
                 return;
             }
 
+            if (reset) {
+                _gamePresets.Clear();
+            }
+
+            var loadedPresetNames = new List<string>();
+
             foreach (var restriction in transitionRestrictions) {
                 var name = restriction.Name;
 
                 if (!_gamePresets.ContainsKey(name)) {
-                    Logger.Info(this, $"Loaded transition restriction preset '{name}'");
+                    loadedPresetNames.Add(name);
                     _gamePresets[name] = restriction;
                 } else {
                     Logger.Warn(this, $"Transition restriction preset with name '{name}' was already defined");
                 }
+            }
+
+            if (loadedPresetNames.Count == 0) {
+                Logger.Info(this, "Could not load any transition restriction presets!");
+            } else {
+                Logger.Info(this, $"Loaded transition restriction presets: {string.Join(", ", loadedPresetNames)}");
             }
         }
 
@@ -103,6 +160,13 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="numPlayers">The number of players currently online.</param>
         public bool SetRandomPreset(int numPlayers) {
+            // If the preset file changed, try to load the preset file again
+            if (_presetFileChanged) {
+                LoadPresets(true);
+
+                _presetFileChanged = false;
+            }
+
             var presets = _gamePresets.Values
                 // Filter out the current preset
                 .Where(p => p != _currentPreset)
@@ -119,7 +183,7 @@ namespace HkmpTag.Server {
 
             var randomIndex = _random.Next(presets.Count);
             var randomPreset = presets[randomIndex];
-            
+
             Logger.Info(this, $"Picked random preset '{randomPreset.Name}'");
 
             _currentPreset = randomPreset;
@@ -196,7 +260,7 @@ namespace HkmpTag.Server {
         /// </summary>
         [JsonProperty("warp_scene")]
         public string WarpSceneName { get; set; }
-        
+
         /// <summary>
         /// Minimum number of players required for this preset.
         /// </summary>
