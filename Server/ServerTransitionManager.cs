@@ -103,27 +103,14 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="numPlayers">The number of players currently online.</param>
         public bool SetRandomPreset(int numPlayers) {
-            var presets = new List<GamePreset>(_gamePresets.Values);
-            
-            // If the current preset is non-null, we remove it from the selectable set
-            if (_currentPreset != null) {
-                presets.Remove(_currentPreset);
-            }
-            
-            // Filter presets for which the max or min number of players does not match
-            for (var i = 0; i < presets.Count; i++) {
-                var preset = presets[i];
-
-                if (preset.MaxPlayers.HasValue && preset.MaxPlayers <= numPlayers) {
-                    presets.Remove(preset);
-                    i--;
-                }
-                
-                if (preset.MinPlayers.HasValue && preset.MinPlayers >= numPlayers) {
-                    presets.Remove(preset);
-                    i--;
-                }
-            }
+            var presets = _gamePresets.Values
+                // Filter out the current preset
+                .Where(p => p != _currentPreset)
+                // Filter out the presets that have a max number of players
+                .Where(p => !p.MaxPlayers.HasValue || p.MaxPlayers >= numPlayers)
+                // Filter out the presets that have a min number of players
+                .Where(p => !p.MinPlayers.HasValue || p.MinPlayers <= numPlayers)
+                .ToList();
 
             // If there aren't any presets left after filtering, we return false
             if (presets.Count < 1) {
