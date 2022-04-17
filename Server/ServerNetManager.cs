@@ -87,14 +87,18 @@ namespace HkmpTag.Server {
             }
 
             foreach (var player in players) {
-                _netSender.SendSingleData(
-                    ClientPacketId.GameStart,
-                    new GameStartPacket {
-                        IsInfected = player.State == PlayerState.Infected,
-                        InfectedIds = infectedIds
-                    },
-                    player.Id
-                );
+                try {
+                    _netSender.SendSingleData(
+                        ClientPacketId.GameStart,
+                        new GameStartPacket {
+                            IsInfected = player.State == PlayerState.Infected,
+                            InfectedIds = infectedIds
+                        },
+                        player.Id
+                    );
+                } catch {
+                    // Just in case a player is no longer connected that we are trying to send to
+                }
             }
         }
 
@@ -146,12 +150,16 @@ namespace HkmpTag.Server {
             bool disconnect
         ) {
             foreach (var player in players) {
-                _netSender.SendSingleData(ClientPacketId.PlayerTag, new ClientTagPacket {
-                    WasTagged = player.Id == taggedId,
-                    TaggedId = taggedId,
-                    NumLeft = numLeft,
-                    Disconnect = disconnect
-                }, player.Id);
+                try {
+                    _netSender.SendSingleData(ClientPacketId.PlayerTag, new ClientTagPacket {
+                        WasTagged = player.Id == taggedId,
+                        TaggedId = taggedId,
+                        NumLeft = numLeft,
+                        Disconnect = disconnect
+                    }, player.Id);
+                } catch {
+                    // Just in case a player is no longer connected that we are trying to send to
+                }
             }
         }
 
