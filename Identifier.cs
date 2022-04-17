@@ -10,6 +10,6 @@
         /// <summary>
         /// The version of the addon and mod.
         /// </summary>
-        public const string Version = "2.0.0";
+        public const string Version = "2.0.2";
     }
 }
