@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Hkmp.Api.Client;
 using Hkmp.Game;
 using Hkmp.Util;
@@ -146,12 +147,34 @@ namespace HkmpTag.Client {
         /// <param name="oldScene">The old scene.</param>
         /// <param name="newScene">The new scene.</param>
         private void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
+            if (GameManager.instance.IsNonGameplayScene() && _clientApi.NetClient.IsConnected) {
+                _logger.Info(this, "Changed to non-gameplay scene, disconnecting from server");
+
+                // Accessing internals via reflection
+                var clientManagerType = typeof(IClientApi).Assembly.GetType("Hkmp.Game.Client.ClientManager");
+                if (clientManagerType != null) {
+                    try {
+                        clientManagerType.InvokeMember(
+                            "Disconnect",
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod,
+                            null,
+                            _clientApi.ClientManager,
+                            new object[] {true}
+                        );
+                    } catch (Exception e) {
+                        _logger.Info(this, $"Exception while invoking member: {e.GetType()}, {e.Message}");
+                    }
+                }
+            }
+
             foreach (var fsm in Object.FindObjectsOfType<PlayMakerFSM>()) {
                 // Find FSMs with Bench Control and disable starting and sitting on them
                 if (fsm.Fsm.Name.Equals("Bench Control")) {
                     _logger.Info(this, "Found FSM with Bench Control, patching...");
 
-                    fsm.InsertMethod("Pause 2", 1, () => { PlayerData.instance.SetBool("atBench", false); });
+                    fsm.InsertMethod("Pause 2", 1, () => {
+                        PlayerData.instance.SetBool("atBench", false);
+                    });
 
                     var checkStartState2 = fsm.GetState("Check Start State 2");
                     var pause2State = fsm.GetState("Pause 2");
