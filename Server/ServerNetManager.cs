@@ -151,7 +151,7 @@ namespace HkmpTag.Server {
                     TaggedId = taggedId,
                     NumLeft = numLeft,
                     Disconnect = disconnect
-                });
+                }, player.Id);
             }
         }
 
