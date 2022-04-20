@@ -121,8 +121,12 @@ namespace HkmpTag.Server {
             sendMessageAction?.Invoke("Warping players to preset...");
             _logger.Info(this, "Using preset, sending game info");
 
-            var restriction = _transitionManager.GetTransitionRestrictions();
-            _netManager.SendGameInfo(restriction.Item1, restriction.Item2);
+            var gamePreset = _transitionManager.GetTransitionRestrictions();
+            _netManager.SendGameInfo(
+                gamePreset.WarpSceneIndex, 
+                gamePreset.WarpTransitionIndex,
+                gamePreset.SceneTransitions
+            );
         }
 
         /// <summary>
@@ -442,7 +446,7 @@ namespace HkmpTag.Server {
         private void OnPlayerConnect(IServerPlayer player) {
             _logger.Info(this, $"Player with ID {player.Id} connected");
 
-            var transitionRestriction = _transitionManager.GetTransitionRestrictions();
+            var gamePreset = _transitionManager.GetTransitionRestrictions();
 
             if (GameState == GameState.InGame) {
                 _logger.Info(this, "Game is in-progress, sending game in progress packet");
@@ -454,16 +458,18 @@ namespace HkmpTag.Server {
 
                 _netManager.SendGameInProgress(
                     player.Id,
-                    transitionRestriction.Item1,
-                    transitionRestriction.Item2
+                    gamePreset.WarpSceneIndex,
+                    gamePreset.WarpTransitionIndex,
+                    gamePreset.SceneTransitions
                 );
             } else {
                 _logger.Info(this, "Game is not in-progress, sending game info");
 
                 _netManager.SendGameInfo(
                     player.Id,
-                    transitionRestriction.Item1,
-                    transitionRestriction.Item2
+                    gamePreset.WarpSceneIndex,
+                    gamePreset.WarpTransitionIndex,
+                    gamePreset.SceneTransitions
                 );
             }
 

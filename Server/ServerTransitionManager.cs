@@ -191,21 +191,30 @@ namespace HkmpTag.Server {
         }
 
         /// <summary>
-        /// Get the current raw transition restriction information including the warp scene index. 
+        /// Get the current raw transition restriction information including the warp indices. 
         /// </summary>
-        /// <returns>A pair of warp scene index and a dictionary containing a scene index to transition index
-        /// array mapping.</returns>
-        public (ushort, Dictionary<ushort, byte[]>) GetTransitionRestrictions() {
+        /// <returns>Condensed game preset instance.</returns>
+        public CondensedGamePreset GetTransitionRestrictions() {
             if (_currentPreset == null) {
-                return (0, new Dictionary<ushort, byte[]>());
+                return null;
             }
 
             var warpSceneIndex = Array.IndexOf(SceneNames, _currentPreset.WarpSceneName);
             if (warpSceneIndex == -1) {
                 Logger.Warn(this,
-                    $"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}', falling back to default value");
+                    $"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}'");
+                return null;
+            }
 
-                warpSceneIndex = 0;
+            if (!SceneTransitions.TryGetValue(_currentPreset.WarpSceneName, out var transitionNames)) {
+                Logger.Warn(this, $"Could not get transition index for scene: '{_currentPreset.WarpSceneName}'");
+                return null;
+            }
+
+            var warpTransitionIndex = Array.IndexOf(transitionNames, _currentPreset.WarpTransitionName);
+            if (warpTransitionIndex == -1) {
+                Logger.Warn(this, $"Could not get transition index for transition: '{_currentPreset.WarpTransitionName}' in scene: '{_currentPreset.WarpSceneName}");
+                return null;
             }
 
             var sceneTransitionIndices = new Dictionary<ushort, byte[]>();
@@ -219,7 +228,7 @@ namespace HkmpTag.Server {
                     continue;
                 }
 
-                if (!SceneTransitions.TryGetValue(sceneName, out var transitionNames)) {
+                if (!SceneTransitions.TryGetValue(sceneName, out transitionNames)) {
                     Logger.Warn(this, $"Could not get transition names for scene name '{sceneName}'");
 
                     continue;
@@ -241,42 +250,11 @@ namespace HkmpTag.Server {
                 sceneTransitionIndices[(ushort)sceneIndex] = transitionIndices.ToArray();
             }
 
-            return ((ushort)warpSceneIndex, sceneTransitionIndices);
+            return new CondensedGamePreset {
+                WarpSceneIndex = (ushort)warpSceneIndex,
+                WarpTransitionIndex = (byte)warpTransitionIndex,
+                SceneTransitions = sceneTransitionIndices
+            };
         }
-    }
-
-    /// <summary>
-    /// Data class for a preset that has info on transition restrictions.
-    /// </summary>
-    public class GamePreset {
-        /// <summary>
-        /// The name of the preset.
-        /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
-
-        /// <summary>
-        /// The name of the scene to warp to.
-        /// </summary>
-        [JsonProperty("warp_scene")]
-        public string WarpSceneName { get; set; }
-
-        /// <summary>
-        /// Minimum number of players required for this preset.
-        /// </summary>
-        [JsonProperty("min_players")]
-        public int? MinPlayers { get; set; }
-
-        /// <summary>
-        /// Maximum number of players required for this preset.
-        /// </summary>
-        [JsonProperty("max_players")]
-        public int? MaxPlayers { get; set; }
-
-        /// <summary>
-        /// The dictionary mapping scene names to transition name arrays.
-        /// </summary>
-        [JsonProperty("transitions")]
-        public Dictionary<string, string[]> SceneTransitions { get; set; }
     }
 }

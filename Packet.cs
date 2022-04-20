@@ -11,17 +11,22 @@ namespace HkmpTag {
         /// <summary>
         /// The maximum number of scenes to have transition restrictions for.
         /// </summary>
-        public const byte MaxScenes = byte.MaxValue;
+        private const byte MaxScenes = byte.MaxValue;
 
         /// <summary>
         /// The maximum number of transitions in one scene that can be restricted.
         /// </summary>
-        public const byte MaxTransitions = byte.MaxValue;
+        private const byte MaxTransitions = byte.MaxValue;
 
         /// <summary>
         /// The index of the scene to warp to.
         /// </summary>
-        public ushort WarpIndex { get; set; }
+        public ushort WarpSceneIndex { get; set; }
+        
+        /// <summary>
+        /// The index of the transition to warp to.
+        /// </summary>
+        public byte WarpTransitionIndex { get; set; }
 
         /// <summary>
         /// A dictionary mapping scene indices to byte arrays containing transition indices.
@@ -34,7 +39,8 @@ namespace HkmpTag {
 
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
-            packet.Write(WarpIndex);
+            packet.Write(WarpSceneIndex);
+            packet.Write(WarpTransitionIndex);
 
             var dictCount = (byte)Math.Min(MaxScenes, RestrictedTransitions.Count);
             packet.Write(dictCount);
@@ -56,7 +62,8 @@ namespace HkmpTag {
 
         /// <inheritdoc />
         public void ReadData(IPacket packet) {
-            WarpIndex = packet.ReadUShort();
+            WarpSceneIndex = packet.ReadUShort();
+            WarpTransitionIndex = packet.ReadByte();
 
             var dictCount = packet.ReadByte();
             for (var i = 0; i < dictCount; i++) {

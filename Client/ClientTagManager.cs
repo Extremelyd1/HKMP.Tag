@@ -228,7 +228,7 @@ namespace HkmpTag.Client {
         /// <param name="packet">The GameInfoPacket data.</param>
         private void OnGameInfo(GameInfoPacket packet) {
             _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
-            _transitionManager.WarpToScene(packet.WarpIndex);
+            _transitionManager.WarpToScene(packet.WarpSceneIndex, packet.WarpTransitionIndex);
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace HkmpTag.Client {
             BecomeInfected();
 
             _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
-            _transitionManager.WarpToScene(packet.WarpIndex);
+            _transitionManager.WarpToScene(packet.WarpSceneIndex, packet.WarpTransitionIndex);
 
             _logger.Info(this, "Game is in progress");
             SendTitleMessage("The game is in progress!");

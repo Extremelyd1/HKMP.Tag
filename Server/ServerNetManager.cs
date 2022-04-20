@@ -39,17 +39,20 @@ namespace HkmpTag.Server {
         /// Broadcast a game info packet to the given client.
         /// </summary>
         /// <param name="playerId">The ID of the player to send to.</param>
-        /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="warpSceneIndex">The index of the scene to warp to.</param>
+        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
         /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
         public void SendGameInfo(
             ushort playerId,
-            ushort warpIndex,
+            ushort warpSceneIndex,
+            byte warpTransitionIndex,
             Dictionary<ushort, byte[]> sceneTransitionRestrictions
         ) {
             _netSender.SendSingleData(
                 ClientPacketId.GameInfo,
                 new GameInfoPacket {
-                    WarpIndex = warpIndex,
+                    WarpSceneIndex = warpSceneIndex,
+                    WarpTransitionIndex = warpTransitionIndex,
                     RestrictedTransitions = sceneTransitionRestrictions
                 },
                 playerId
@@ -60,15 +63,18 @@ namespace HkmpTag.Server {
         /// Broadcast a game info packet to all clients.
         /// </summary>
         /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
         /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
         public void SendGameInfo(
             ushort warpIndex,
+            byte warpTransitionIndex,
             Dictionary<ushort, byte[]> sceneTransitionRestrictions
         ) {
             _netSender.BroadcastSingleData(
                 ClientPacketId.GameInfo,
                 new GameInfoPacket {
-                    WarpIndex = warpIndex,
+                    WarpSceneIndex = warpIndex,
+                    WarpTransitionIndex = warpTransitionIndex,
                     RestrictedTransitions = sceneTransitionRestrictions
                 }
             );
@@ -118,17 +124,20 @@ namespace HkmpTag.Server {
         /// Send a game in progress packet to the game player.
         /// </summary>
         /// <param name="playerId">The ID of the player.</param>
-        /// <param name="warpIndex">The index of the scene to warp to.</param>
+        /// <param name="warpSceneIndex">The index of the scene to warp to.</param>
+        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
         /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
         public void SendGameInProgress(
             ushort playerId,
-            ushort warpIndex,
+            ushort warpSceneIndex,
+            byte warpTransitionIndex,
             Dictionary<ushort, byte[]> sceneTransitionRestrictions
         ) {
             _netSender.SendSingleData(
                 ClientPacketId.GameInProgress,
                 new GameInfoPacket {
-                    WarpIndex = warpIndex,
+                    WarpSceneIndex = warpSceneIndex,
+                    WarpTransitionIndex = warpTransitionIndex,
                     RestrictedTransitions = sceneTransitionRestrictions
                 },
                 playerId

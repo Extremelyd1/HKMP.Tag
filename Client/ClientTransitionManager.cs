@@ -18,9 +18,9 @@ namespace HkmpTag.Client {
         private Dictionary<string, HashSet<string>> _currentRestrictions;
 
         /// <summary>
-        /// The name of the transition that was last warped to.
+        /// The name of the scene and transition that was last warped to.
         /// </summary>
-        private string _lastTransitionName;
+        private (string, string) _lastWarp;
 
         public ClientTransitionManager(ILogger logger) : base(logger) {
         }
@@ -79,7 +79,8 @@ namespace HkmpTag.Client {
         /// Warp the local player to the scene with the given index.
         /// </summary>
         /// <param name="sceneIndex">The index of the scene to warp to.</param>
-        public void WarpToScene(ushort sceneIndex) {
+        /// <param name="transitionIndex">The index of the transition to warp to.</param>
+        public void WarpToScene(ushort sceneIndex, byte transitionIndex) {
             if (sceneIndex >= SceneNames.Length) {
                 Logger.Warn(this, $"Could not warp to scene index '{sceneIndex}', it is out of bounds");
                 return;
@@ -92,21 +93,21 @@ namespace HkmpTag.Client {
                 return;
             }
 
-            if (transitionNames.Length == 0) {
-                Logger.Warn(this, $"Could not warp to scene '{sceneName}', it does not have any transitions");
+            if (transitionIndex >= transitionNames.Length) {
+                Logger.Warn(this, $"Could not warp to scene '{sceneName}', the transition index: '{transitionIndex}' is out of range");
                 return;
             }
 
-            GameManager.instance.StartCoroutine(WarpToSceneRoutine(sceneName, transitionNames));
+            GameManager.instance.StartCoroutine(WarpToSceneRoutine(sceneName, transitionNames[transitionIndex]));
         }
 
         /// <summary>
         /// Coroutine for warping to the given scene with the given array of transition names.
         /// </summary>
         /// <param name="sceneName">The name of the scene.</param>
-        /// <param name="transitionNames">A string array of transition names.</param>
+        /// <param name="transitionName">The name of the transition.</param>
         /// <returns>Enumerator representing the coroutine.</returns>
-        private IEnumerator WarpToSceneRoutine(string sceneName, string[] transitionNames) {
+        private IEnumerator WarpToSceneRoutine(string sceneName, string transitionName) {
             // Wait for hazard respawn to finish
             yield return new WaitWhile(() => HeroController.instance.cState.hazardRespawning);
             
@@ -135,11 +136,8 @@ namespace HkmpTag.Client {
                 }
             }
 
-            // TODO: maybe randomize which transition is picked to enter from to spread out players
-            // Simply get the first transition
-            _lastTransitionName = transitionNames[0];
-
-            Logger.Info(this, $"Warping to scene: {sceneName}, transition: {_lastTransitionName}");
+            _lastWarp = (sceneName, transitionName);
+            Logger.Info(this, $"Warping to scene: '{sceneName}', transition: '{transitionName}'");
 
             // First kill conveyor movement since otherwise the game will think we are still on a conveyor
             // after we warp to the new scene
@@ -156,7 +154,7 @@ namespace HkmpTag.Client {
             void DoSceneTransition() {
                 gameManager.BeginSceneTransition(new GameManager.SceneLoadInfo {
                     SceneName = sceneName,
-                    EntryGateName = _lastTransitionName,
+                    EntryGateName = transitionName,
                     HeroLeaveDirection = GatePosition.door,
                     EntryDelay = 0,
                     WaitForSceneTransitionCameraFade = true,
@@ -185,13 +183,22 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="sceneName">The name of the scene to check.</param>
         private void CheckTransitions(string sceneName) {
+            // Resets the last warp variable to an empty state
+            void ResetLastWarp() {
+                if (sceneName == _lastWarp.Item1) {
+                    _lastWarp = ("", "");
+                }
+            }
+            
             if (_currentRestrictions == null) {
-                _lastTransitionName = "";
+                ResetLastWarp();
+
                 return;
             }
 
             if (!_currentRestrictions.TryGetValue(sceneName, out var restrictedTransitions)) {
-                _lastTransitionName = "";
+                ResetLastWarp();
+
                 return;
             }
 
@@ -212,7 +219,7 @@ namespace HkmpTag.Client {
                         // the player and thus prevent them from exiting
                         var collider = transitionPoint.GetComponent<Collider2D>();
 
-                        if (_lastTransitionName == name) {
+                        if (sceneName == _lastWarp.Item1 && name == _lastWarp.Item2) {
                             Logger.Info(this, $"  Restricting '{name}' transition after entering");
 
                             // If it is the transition we last warped into, we add a component that only makes the
@@ -228,7 +235,7 @@ namespace HkmpTag.Client {
                 }
             }
             
-            _lastTransitionName = "";
+            ResetLastWarp();
         }
     }
 
