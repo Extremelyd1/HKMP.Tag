@@ -19,7 +19,6 @@
         "door_bretta",
         "left1",
         "top1",
-        "door_dreamReturn",
         "right1"
     ],
     "Cinematic_Stag_travel": [],
@@ -81,7 +80,6 @@
     ],
     "Room_Bretta_Basement": [
         "door1",
-        "door_dreamReturn",
         "top1"
     ],
     "Room_Fungus_Shaman": [
@@ -178,8 +176,7 @@
     ],
     "Crossroads_10": [
         "left1",
-        "right1",
-        "door_dreamReturn"
+        "right1"
     ],
     "Crossroads_10_preload": [],
     "Crossroads_10_boss": [],
@@ -414,7 +411,6 @@
     ],
     "Ruins1_24": [
         "left1",
-        "door_dreamReturn",
         "left2",
         "right1",
         "right2"
@@ -531,7 +527,6 @@
     ],
     "Ruins2_11_boss": [],
     "Ruins2_Watcher_Room": [
-        "door_dreamReturn",
         "bot1"
     ],
     "Fungus1_01": [
@@ -970,7 +965,6 @@
         "left1"
     ],
     "Fungus3_archive_02": [
-        "door_dreamReturn",
         "top1"
     ],
     "Fungus3_archive_02_boss": [],
@@ -1028,12 +1022,10 @@
         "top1"
     ],
     "RestingGrounds_07": [
-        "door_dreamReturn",
         "right1"
     ],
     "RestingGrounds_08": [
-        "left1",
-        "door_dreamReturn"
+        "left1"
     ],
     "RestingGrounds_09": [
         "door_stagExit",
@@ -1315,8 +1307,7 @@
         "left1"
     ],
     "Deepnest_Spider_Town": [
-        "left1",
-        "door_dreamReturn"
+        "left1"
     ],
     "Room_spider_small": [
         "left1"
@@ -1454,9 +1445,7 @@
         "left1"
     ],
     "Abyss_05": [
-        "door_dreamReturn_reality",
         "right1",
-        "door_dreamReturn",
         "left1"
     ],
     "Abyss_06_Core": [
@@ -1465,7 +1454,6 @@
         "right2",
         "bot1",
         "left1",
-        "door_dreamReturn",
         "left3"
     ],
     "Abyss_08": [
@@ -1485,8 +1473,7 @@
         "right1"
     ],
     "Abyss_15": [
-        "top1",
-        "door_dreamReturn"
+        "top1"
     ],
     "Abyss_16": [
         "right1",
@@ -1501,7 +1488,6 @@
     ],
     "Abyss_19": [
         "bot2",
-        "door_dreamReturn",
         "left1",
         "right1",
         "bot1"
@@ -1589,8 +1575,7 @@
         "bot2"
     ],
     "Waterways_15": [
-        "top1",
-        "door_dreamReturn"
+        "top1"
     ],
     "White_Palace_01": [
         "top1",
@@ -1622,7 +1607,6 @@
     "White_Palace_06": [
         "bot1",
         "top1",
-        "door_dreamReturn",
         "left1"
     ],
     "White_Palace_07": [
@@ -1712,18 +1696,11 @@
         "left1"
     ],
     "Grimm_Main_Tent": [
-        "left1",
-        "door_dreamReturn"
+        "left1"
     ],
     "Grimm_Main_Tent_boss": [],
     "Grimm_Nightmare": [
         "door1"
-    ],
-    "Dream_Nailcollection": [
-        "door_dreamReturn4",
-        "door_dreamReturn2",
-        "door_dreamReturn",
-        "door_dreamReturn3"
     ],
     "Dream_01_False_Knight": [
         "door1"
@@ -1789,20 +1766,13 @@
     ],
     "GG_Waterways": [
         "door1",
-        "right1",
-        "door_dreamReturn"
+        "right1"
     ],
     "GG_Atrium": [
-        "door_dreamEnter_ReturnGGMode",
         "Door_Workshop",
         "top1",
         "door_dreamEnter",
         "top2",
-        "door_dreamReturnGG",
-        "door_dreamReturnGG",
-        "door_dreamReturnGG",
-        "door_dreamReturnGG",
-        "door_dreamReturnGG",
         "door1_blueRoom"
     ],
     "GG_Broken_Vessel": [
@@ -1941,42 +1911,7 @@
         "door_dreamEnter"
     ],
     "GG_Workshop": [
-        "left1",
-        "door_dreamReturnGG_GG_Statue_Gorb",
-        "door_dreamReturnGG_GG_Statue_Vessel",
-        "door_dreamReturnGG_GG_Statue_SoulMaster",
-        "door_dreamReturnGG_GG_Statue_FalseKnight",
-        "door_dreamReturnGG_GG_Statue_Paintmaster",
-        "door_dreamReturnGG_GG_Statue_Nailmasters",
-        "door_dreamReturnGG_GG_Statue_Nosk",
-        "door_dreamReturnGG_GG_Statue_Galien",
-        "door_dreamReturnGG_GG_Statue_Defender",
-        "door_dreamReturnGG_GG_Statue_Uumuu",
-        "door_dreamReturnGG_GG_Statue_NoEyes",
-        "door_dreamReturnGG_GG_Statue",
-        "door_dreamReturnGG_GG_Statue_GodTamer",
-        "door_dreamReturnGG_GG_Statue_Vengefly",
-        "door_dreamReturnGG_GG_Statue_Radiance",
-        "door_dreamReturnGG_GG_Statue_WatcherKnights",
-        "door_dreamReturnGG_GG_Statue_TraitorLord",
-        "door_dreamReturnGG_GG_Statue_HiveKnight",
-        "door_dreamReturnGG_GG_Statue_Xero",
-        "door_dreamReturnGG_GG_Statue_Sly",
-        "door_dreamReturnGG_GG_Statue_CrystalGuardian",
-        "door_dreamReturnGG_GG_Statue_MantisLords",
-        "door_dreamReturnGG_GG_Statue_MegaMossCharger",
-        "door_dreamReturnGG_GG_Statue_Hornet",
-        "door_dreamReturnGG_GG_Statue_Gruz",
-        "door_dreamReturnGG_GG_Statue_Oblobbles",
-        "door_dreamReturnGG_GG_Statue_Mawlek",
-        "door_dreamReturnGG_GG_Statue_Marmu",
-        "door_dreamReturnGG_GG_Statue_Collector",
-        "door_dreamReturnGG_GG_Statue_Markoth",
-        "door_dreamReturnGG_GG_Statue_Grimm",
-        "door_dreamReturnGG_GG_Statue_HollowKnight",
-        "door_dreamReturnGG_GG_Statue_Mage_Knight",
-        "door_dreamReturnGG_GG_Statue_Flukemarm",
-        "door_dreamReturnGG_GG_Statue_ElderHu"
+        "left1"
     ],
     "Room_GG_Shortcut": [
         "left1",
@@ -1987,8 +1922,7 @@
         "bot1",
         "door_Land_of_Storms_return",
         "bot2",
-        "door_Land_of_Storms",
-        "door_dreamReturnGG"
+        "door_Land_of_Storms"
     ],
     "GG_Blue_Room": [
         "left1"
