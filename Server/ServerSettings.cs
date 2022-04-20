@@ -43,6 +43,12 @@ namespace HkmpTag.Server {
         public int MaxGamesOnPreset { get; set; } = 5;
 
         /// <summary>
+        /// Whether the game will be fully automatic.
+        /// </summary>
+        [JsonProperty("automatic_games")]
+        public bool Auto { get; set; }
+
+        /// <summary>
         /// Save the server settings to file.
         /// </summary>
         public void SaveToFile() {
@@ -52,7 +58,7 @@ namespace HkmpTag.Server {
             }
 
             var filePath = Path.Combine(dirName, FileName);
-            var settingsJson = JsonConvert.SerializeObject(this);
+            var settingsJson = JsonConvert.SerializeObject(this, Formatting.Indented);
 
             try {
                 File.WriteAllText(filePath, settingsJson);

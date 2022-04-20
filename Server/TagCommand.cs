@@ -138,6 +138,13 @@ namespace HkmpTag.Server {
                 }
 
                 newValueObject = newValueInt;
+            } else if (settingProperty.PropertyType == typeof(bool)) {
+                if (!bool.TryParse(newValueString, out var newValueBool)) {
+                    commandSender.SendMessage("Please provide a boolean value for this setting");
+                    return;
+                }
+
+                newValueObject = newValueBool;
             } else {
                 commandSender.SendMessage(
                     $"Could not change value of setting with name: {settingName} (unhandled type)");

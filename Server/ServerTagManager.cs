@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hkmp;
 using Hkmp.Api.Server;
 using Hkmp.Concurrency;
+using Modding;
+using ILogger = Hkmp.ILogger;
 
 namespace HkmpTag.Server {
     /// <summary>
@@ -66,11 +67,6 @@ namespace HkmpTag.Server {
         private readonly List<ushort> _lastChosenIds;
 
         /// <summary>
-        /// Whether the game is handled automatically and does not require command input.
-        /// </summary>
-        private bool _auto;
-
-        /// <summary>
         /// Construct the tag manager with the server addon and server API.
         /// </summary>
         /// <param name="addon">The server addon instance.</param>
@@ -103,6 +99,10 @@ namespace HkmpTag.Server {
             _serverApi.ServerManager.PlayerDisconnectEvent += OnPlayerDisconnect;
 
             _transitionManager.Initialize();
+
+            if (_settings.Auto) {
+                _logger.Info(this, "Game automation is enabled");
+            }
         }
 
         /// <summary>
@@ -122,6 +122,11 @@ namespace HkmpTag.Server {
             _logger.Info(this, "Using preset, sending game info");
 
             var gamePreset = _transitionManager.GetTransitionRestrictions();
+            if (gamePreset == null) {
+                _logger.Warn(this, "Game preset is null, cannot warp");
+                return;
+            }
+            
             _netManager.SendGameInfo(
                 gamePreset.WarpSceneIndex, 
                 gamePreset.WarpTransitionIndex,
@@ -155,7 +160,7 @@ namespace HkmpTag.Server {
             _currentDelayAction = new DelayedAction(_settings.CountdownTime * 1000, () => {
                 if (!CheckGameStart(numInfected, sendMessageAction)) {
                     _logger.Info(this, "Game could not be started after countdown");
-                    GameState = _auto ? GameState.WaitingForPlayers : GameState.PreGame;
+                    GameState = _settings.Auto ? GameState.WaitingForPlayers : GameState.PreGame;
                     return;
                 }
 
@@ -198,7 +203,7 @@ namespace HkmpTag.Server {
 
                 GameState = GameState.InGame;
 
-                if (_auto) {
+                if (_settings.Auto) {
                     _logger.Info(this, $"Scheduling game timeout after {_settings.MaxGameTime} seconds");
                     _currentDelayAction = new DelayedAction(_settings.MaxGameTime, () => {
                         // After the max game time, we simply end the game
@@ -215,9 +220,10 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
         public void ToggleAuto(Action<string> sendMessageAction) {
-            _auto = !_auto;
+            _settings.Auto = !_settings.Auto;
+            _settings.SaveToFile();
 
-            if (_auto) {
+            if (_settings.Auto) {
                 const string autoEnabledMsg = "Game automation is enabled";
 
                 sendMessageAction.Invoke(autoEnabledMsg);
@@ -273,7 +279,7 @@ namespace HkmpTag.Server {
         /// Checks whether the game can start with the number of online players for an automatic game.
         /// </summary>
         private void ProcessAutoGameStart() {
-            if (!_auto) {
+            if (!_settings.Auto) {
                 return;
             }
 
@@ -377,7 +383,7 @@ namespace HkmpTag.Server {
 
             _currentDelayAction?.Stop();
 
-            if (_auto) {
+            if (_settings.Auto) {
                 // Since the game has ended, we know that we played another game on this preset
                 _numGamesOnPreset++;
 
@@ -447,33 +453,36 @@ namespace HkmpTag.Server {
             _logger.Info(this, $"Player with ID {player.Id} connected");
 
             var gamePreset = _transitionManager.GetTransitionRestrictions();
-
-            if (GameState == GameState.InGame) {
-                _logger.Info(this, "Game is in-progress, sending game in progress packet");
-
-                _players[player.Id] = new ServerTagPlayer {
-                    Id = player.Id,
-                    State = PlayerState.Infected
-                };
-
-                _netManager.SendGameInProgress(
-                    player.Id,
-                    gamePreset.WarpSceneIndex,
-                    gamePreset.WarpTransitionIndex,
-                    gamePreset.SceneTransitions
-                );
+            if (gamePreset == null) {
+                _logger.Info(this, "Game preset is null, cannot send info");
             } else {
-                _logger.Info(this, "Game is not in-progress, sending game info");
+                if (GameState == GameState.InGame) {
+                    _logger.Info(this, "Game is in-progress, sending game in progress packet");
 
-                _netManager.SendGameInfo(
-                    player.Id,
-                    gamePreset.WarpSceneIndex,
-                    gamePreset.WarpTransitionIndex,
-                    gamePreset.SceneTransitions
-                );
+                    _players[player.Id] = new ServerTagPlayer {
+                        Id = player.Id,
+                        State = PlayerState.Infected
+                    };
+
+                    _netManager.SendGameInProgress(
+                        player.Id,
+                        gamePreset.WarpSceneIndex,
+                        gamePreset.WarpTransitionIndex,
+                        gamePreset.SceneTransitions
+                    );
+                } else {
+                    _logger.Info(this, "Game is not in-progress, sending game info");
+
+                    _netManager.SendGameInfo(
+                        player.Id,
+                        gamePreset.WarpSceneIndex,
+                        gamePreset.WarpTransitionIndex,
+                        gamePreset.SceneTransitions
+                    );
+                }
             }
 
-            if (_auto && GameState == GameState.WaitingForPlayers) {
+            if (_settings.Auto && GameState == GameState.WaitingForPlayers) {
                 _logger.Info(this, "Game is automatic and we were waiting for players, trying to start game...");
 
                 ProcessAutoGameStart();
