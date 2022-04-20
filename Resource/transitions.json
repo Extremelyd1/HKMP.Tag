@@ -177,9 +177,9 @@
         "left1"
     ],
     "Crossroads_10": [
-        "door_dreamReturn",
         "left1",
-        "right1"
+        "right1",
+        "door_dreamReturn"
     ],
     "Crossroads_10_preload": [],
     "Crossroads_10_boss": [],

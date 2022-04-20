@@ -203,7 +203,8 @@ namespace HkmpTag.Client {
                 if (restrictedTransitions.Contains(name)) {
                     if (name.Contains("door")) {
                         // If it is a door, we disable it
-                        transitionPoint.GetComponent<Collider2D>().enabled = false;
+                        var collider = transitionPoint.GetComponent<Collider2D>();
+                        transitionPoint.gameObject.AddComponent<DisableCollider>().Target = collider;
 
                         Logger.Info(this, $"  Restricting '{name}' door transition");
                     } else {
@@ -232,13 +233,62 @@ namespace HkmpTag.Client {
     }
 
     /// <summary>
+    /// Class to keep a collider disabled.
+    /// </summary>
+    public class DisableCollider : MonoBehaviour {
+        /// <summary>
+        /// The target to disable.
+        /// </summary>
+        public Collider2D Target { get; set; }
+
+        public void Update() {
+            // Continually disable the target if it was enabled
+            if (Target.enabled) {
+                Target.enabled = false;
+            }
+        }
+    }
+
+    /// <summary>
     /// Class that executes a given action if something exits the collider on the game object.
     /// </summary>
     public class ColliderExitHandler : MonoBehaviour {
         /// <summary>
+        /// The number of updates that must be passed between entering and exiting.
+        /// </summary>
+        private const int UpdateThreshold = 2;
+        
+        /// <summary>
         /// The action to execute.
         /// </summary>
         public Action Action { get; set; }
+
+        /// <summary>
+        /// Whether we have entered the collider.
+        /// </summary>
+        private bool _entered;
+        /// <summary>
+        /// The number of updates since we entered the collider.
+        /// </summary>
+        private int _updatesSinceEnter;
+
+        private void Update() {
+            // If we have entered the collider, increment the update count
+            if (_entered) {
+                _updatesSinceEnter++;
+            }
+        }
+
+        /// <summary>
+        /// Sent when another object enters a trigger collider attached to this object (2D physics only).
+        /// This function can be a coroutine.
+        /// </summary>
+        /// <param name="other">The other collider.</param>
+        private void OnTriggerEnter2D(Collider2D other) {
+            // Reset the update count and mark that we entered
+            _updatesSinceEnter = 0;
+            _entered = true;
+        }
 
         /// <summary>
         /// Sent when another object leaves a trigger collider attached to this object (2D physics only).
@@ -246,7 +296,14 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="other">The other collider.</param>
         private void OnTriggerExit2D(Collider2D other) {
-            Action?.Invoke();
+            // Check whether the number of updates passed is above the threshold
+            // Sometimes the enter and exit trigger in the same update frame, which leads
+            // to buggy behaviour
+            if (_updatesSinceEnter > UpdateThreshold) {
+                Action?.Invoke();
+                
+                _entered = false;
+            }
         }
     }
 }
