@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Hkmp.Api.Server;
 using Hkmp.Concurrency;
-using Modding;
 using ILogger = Hkmp.ILogger;
 
 namespace HkmpTag.Server {
@@ -102,6 +101,8 @@ namespace HkmpTag.Server {
 
             if (_settings.Auto) {
                 _logger.Info(this, "Game automation is enabled");
+                
+                GameState = GameState.WaitingForPlayers;
             }
         }
 
