@@ -45,7 +45,7 @@ namespace HkmpTag.Server {
         /// <summary>
         /// Whether the game will be fully automatic.
         /// </summary>
-        [JsonProperty("automatic_games")]
+        [JsonProperty("auto")]
         public bool Auto { get; set; }
 
         /// <summary>

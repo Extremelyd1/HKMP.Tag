@@ -104,7 +104,7 @@ namespace HkmpTag.Server {
 
             PropertyInfo settingProperty = null;
             foreach (var prop in propertyInfos) {
-                if (prop.Name.ToLower().Equals(settingName.ToLower())) {
+                if (prop.Name.ToLower().Equals(settingName.ToLower().Replace("_", ""))) {
                     settingProperty = prop;
                     break;
                 }
