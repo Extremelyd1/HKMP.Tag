@@ -219,7 +219,7 @@ namespace HkmpTag.Client {
                         // the player and thus prevent them from exiting
                         var collider = transitionPoint.GetComponent<Collider2D>();
 
-                        if (sceneName == _lastWarp.Item1 && name == _lastWarp.Item2) {
+                        if (sceneName == _lastWarp.Item1 && name == _lastWarp.Item2 && !name.Contains("bot")) {
                             Logger.Info(this, $"  Restricting '{name}' transition after entering");
 
                             // If it is the transition we last warped into, we add a component that only makes the
