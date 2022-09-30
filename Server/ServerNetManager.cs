@@ -60,27 +60,6 @@ namespace HkmpTag.Server {
         }
 
         /// <summary>
-        /// Broadcast a game info packet to all clients.
-        /// </summary>
-        /// <param name="warpIndex">The index of the scene to warp to.</param>
-        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
-        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
-        public void SendGameInfo(
-            ushort warpIndex,
-            byte warpTransitionIndex,
-            Dictionary<ushort, byte[]> sceneTransitionRestrictions
-        ) {
-            _netSender.BroadcastSingleData(
-                ClientPacketId.GameInfo,
-                new GameInfoPacket {
-                    WarpSceneIndex = warpIndex,
-                    WarpTransitionIndex = warpTransitionIndex,
-                    RestrictedTransitions = sceneTransitionRestrictions
-                }
-            );
-        }
-
-        /// <summary>
         /// Send a game start packet with the information of the given players.
         /// </summary>
         /// <param name="players">A list of ServerTagPlayer instances that store whether they are infected.</param>

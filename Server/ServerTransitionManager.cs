@@ -41,10 +41,20 @@ namespace HkmpTag.Server {
         /// </summary>
         private GamePreset _currentPreset;
 
+        /// <summary>
+        /// The list of condensed game presets currently used.
+        /// </summary>
+        private List<CondensedGamePreset> _currentCondensedPresets;
+
+        /// <inheritdoc cref="_currentCondensedPresets"/>
+        public List<CondensedGamePreset> CondensedGamePresets =>
+            new List<CondensedGamePreset>(_currentCondensedPresets);
+
         public ServerTransitionManager(ILogger logger, Random random) : base(logger) {
             _random = random;
 
             _gamePresets = new Dictionary<string, GamePreset>();
+            _currentCondensedPresets = new List<CondensedGamePreset>();
         }
 
         /// <inheritdoc />
@@ -144,6 +154,7 @@ namespace HkmpTag.Server {
             }
 
             _currentPreset = preset;
+            CacheCondensedGamePresets();
         }
 
         /// <summary>
@@ -187,35 +198,23 @@ namespace HkmpTag.Server {
             Logger.Info($"Picked random preset '{randomPreset.Name}'");
 
             _currentPreset = randomPreset;
+            CacheCondensedGamePresets();
             return true;
         }
 
         /// <summary>
-        /// Get the current raw transition restriction information including the warp indices. 
+        /// Cache all possible condensed game presets for the current preset. This includes transition restrictions
+        /// and warp indices for all possible warp locations.
         /// </summary>
-        /// <returns>Condensed game preset instance.</returns>
-        public CondensedGamePreset GetTransitionRestrictions() {
+        private void CacheCondensedGamePresets() {
+            var presets = new List<CondensedGamePreset>();
+            
             if (_currentPreset == null) {
-                return null;
+                _currentCondensedPresets = presets;
+                return;
             }
 
-            var warpSceneIndex = Array.IndexOf(SceneNames, _currentPreset.WarpSceneName);
-            if (warpSceneIndex == -1) {
-                Logger.Warn($"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}'");
-                return null;
-            }
-
-            if (!SceneTransitions.TryGetValue(_currentPreset.WarpSceneName, out var transitionNames)) {
-                Logger.Warn($"Could not get transition index for scene: '{_currentPreset.WarpSceneName}'");
-                return null;
-            }
-
-            var warpTransitionIndex = Array.IndexOf(transitionNames, _currentPreset.WarpTransitionName);
-            if (warpTransitionIndex == -1) {
-                Logger.Warn($"Could not get transition index for transition: '{_currentPreset.WarpTransitionName}' in scene: '{_currentPreset.WarpSceneName}");
-                return null;
-            }
-
+            // Create scene transition indices dictionary
             var sceneTransitionIndices = new Dictionary<ushort, byte[]>();
             foreach (var sceneTransitionPair in _currentPreset.SceneTransitions) {
                 var sceneName = sceneTransitionPair.Key;
@@ -227,7 +226,7 @@ namespace HkmpTag.Server {
                     continue;
                 }
 
-                if (!SceneTransitions.TryGetValue(sceneName, out transitionNames)) {
+                if (!SceneTransitions.TryGetValue(sceneName, out var transitionNames)) {
                     Logger.Warn($"Could not get transition names for scene name '{sceneName}'");
 
                     continue;
@@ -237,22 +236,50 @@ namespace HkmpTag.Server {
                 foreach (var transition in sceneTransitionPair.Value) {
                     var transitionIndex = Array.IndexOf(transitionNames, transition);
                     if (transitionIndex == -1) {
-                        Logger.Warn($"Could not get transition index for transition '{transition}' in scene '{sceneName}'");
+                        Logger.Warn(
+                            $"Could not get transition index for transition '{transition}' in scene '{sceneName}'");
 
                         continue;
                     }
 
-                    transitionIndices.Add((byte)transitionIndex);
+                    transitionIndices.Add((byte) transitionIndex);
                 }
 
-                sceneTransitionIndices[(ushort)sceneIndex] = transitionIndices.ToArray();
+                sceneTransitionIndices[(ushort) sceneIndex] = transitionIndices.ToArray();
             }
 
-            return new CondensedGamePreset {
-                WarpSceneIndex = (ushort)warpSceneIndex,
-                WarpTransitionIndex = (byte)warpTransitionIndex,
-                SceneTransitions = sceneTransitionIndices
-            };
+            var warpTransitions = _currentPreset.WarpTransitions;
+            foreach (var warpTransition in warpTransitions) {
+                var sceneName = warpTransition.Key;
+
+                var warpSceneIndex = Array.IndexOf(SceneNames, sceneName);
+                if (warpSceneIndex == -1) {
+                    Logger.Warn($"Could not get scene index of warp scene '{sceneName}'");
+                    continue;
+                }
+
+                if (!SceneTransitions.TryGetValue(sceneName, out var transitionNames)) {
+                    Logger.Warn($"Could not get transition index for scene: '{sceneName}'");
+                    continue;
+                }
+
+                foreach (var transitionName in warpTransition.Value) {
+                    var warpTransitionIndex = Array.IndexOf(transitionNames, transitionName);
+                    if (warpTransitionIndex == -1) {
+                        Logger.Warn(
+                            $"Could not get transition index for transition: '{transitionName}' in scene: '{sceneName}");
+                        continue;
+                    }
+                    
+                    presets.Add(new CondensedGamePreset {
+                        SceneTransitions = sceneTransitionIndices,
+                        WarpSceneIndex = (ushort) warpSceneIndex,
+                        WarpTransitionIndex = (byte) warpTransitionIndex
+                    });
+                }
+            }
+
+            _currentCondensedPresets = presets;
         }
     }
 }

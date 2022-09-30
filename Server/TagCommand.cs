@@ -50,7 +50,7 @@ namespace HkmpTag.Server {
 
             var action = args[1];
             if (action == "start") {
-                ushort numInfected = 1;
+                ushort numInfected = 0;
                 if (args.Length > 2) {
                     if (!ushort.TryParse(args[2], out numInfected)) {
                         commandSender.SendMessage("Please provide an integer as the number of infected");

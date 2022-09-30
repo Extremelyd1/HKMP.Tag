@@ -122,17 +122,62 @@ namespace HkmpTag.Server {
             sendMessageAction?.Invoke("Warping players to preset...");
             _logger.Info("Using preset, sending game info");
 
-            var gamePreset = _transitionManager.GetTransitionRestrictions();
-            if (gamePreset == null) {
-                _logger.Warn("Game preset is null, cannot warp");
+            var gamePresets = _transitionManager.CondensedGamePresets;
+            if (gamePresets.Count == 0) {
+                _logger.Warn("No game presets found, cannot warp");
                 return;
             }
+
+            var serverPlayers = _serverApi.ServerManager.Players;
             
-            _netManager.SendGameInfo(
-                gamePreset.WarpSceneIndex, 
-                gamePreset.WarpTransitionIndex,
-                gamePreset.SceneTransitions
-            );
+            // Create a list of IDs to choose which use which preset
+            var allIds = new List<ushort>(serverPlayers.Select(p => p.Id));
+
+            // Calculate the number of players per preset
+            var playersPerPreset = allIds.Count / gamePresets.Count;
+
+            foreach (var preset in gamePresets) {
+                // Keep track of the number of players picked for this preset
+                var playersPicked = 0;
+                while (playersPicked++ < playersPerPreset) {
+                    // Sanity check to make sure there are player IDs left to pick
+                    if (allIds.Count == 0) {
+                        break;
+                    }
+                    
+                    // Pick a random index from the ID list
+                    var randomIndex = _random.Next(allIds.Count);
+                    // Get the ID that corresponds to the random index
+                    var randomPlayerId = allIds[randomIndex];
+                    // Remove the ID of that index from the list so we don't pick it again
+                    allIds.RemoveAt(randomIndex);
+
+                    _netManager.SendGameInfo(
+                        randomPlayerId,
+                        preset.WarpSceneIndex,
+                        preset.WarpTransitionIndex,
+                        preset.SceneTransitions
+                    );
+                }
+            }
+
+            if (allIds.Count != 0) {
+                // There are players left, because they couldn't be divided perfectly even over the presets
+                // So we pick a random preset for each of them
+                foreach (var id in allIds) {
+                    // Pick a random index from the list of presets
+                    var randomIndex = _random.Next(gamePresets.Count);
+                    // Get the preset that corresponds to the random index
+                    var randomPreset = gamePresets[randomIndex];
+                    
+                    _netManager.SendGameInfo(
+                        id,
+                        randomPreset.WarpSceneIndex,
+                        randomPreset.WarpTransitionIndex,
+                        randomPreset.SceneTransitions
+                    );
+                }
+            }
         }
 
         /// <summary>
@@ -147,6 +192,12 @@ namespace HkmpTag.Server {
                 sendMessageAction?.Invoke(unableToStartMsg);
                 _logger.Info(unableToStartMsg);
                 return;
+            }
+
+            if (numInfected == 0) {
+                var serverPlayers = _serverApi.ServerManager.Players;
+                var numPlayers = serverPlayers.Count;
+                numInfected = (ushort)Math.Min(ushort.MaxValue, Math.Max(1, numPlayers / 10));
             }
 
             if (!CheckGameStart(numInfected, sendMessageAction)) {
@@ -286,7 +337,7 @@ namespace HkmpTag.Server {
 
             var serverPlayers = _serverApi.ServerManager.Players;
             var numPlayers = serverPlayers.Count;
-            var numInfected = (ushort)Math.Min(ushort.MaxValue, Math.Max(1, numPlayers / 6));
+            var numInfected = (ushort)Math.Min(ushort.MaxValue, Math.Max(1, numPlayers / 10));
 
             if (!CheckGameStart(numInfected)) {
                 _logger.Info("Could not start automatic game");
@@ -451,10 +502,12 @@ namespace HkmpTag.Server {
         private void OnPlayerConnect(IServerPlayer player) {
             _logger.Info($"Player with ID {player.Id} connected");
 
-            var gamePreset = _transitionManager.GetTransitionRestrictions();
-            if (gamePreset == null) {
-                _logger.Info("Game preset is null, cannot send info");
+            var gamePresets = _transitionManager.CondensedGamePresets;
+            if (gamePresets.Count == 0) {
+                _logger.Info("No game presets found, cannot send info");
             } else {
+                var gamePreset = gamePresets[0];
+                
                 if (GameState == GameState.InGame) {
                     _logger.Info("Game is in-progress, sending game in progress packet");
 

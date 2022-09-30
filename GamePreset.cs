@@ -13,16 +13,10 @@ namespace HkmpTag {
         public string Name { get; set; }
 
         /// <summary>
-        /// The name of the scene to warp to.
+        /// The names of scenes mapped to the names of the transitions that players can be warped to.
         /// </summary>
-        [JsonProperty("warp_scene")]
-        public string WarpSceneName { get; set; }
-        
-        /// <summary>
-        /// The name of the transition to warp to.
-        /// </summary>
-        [JsonProperty("warp_transition")]
-        public string WarpTransitionName { get; set; }
+        [JsonProperty("warp_transitions")]
+        public Dictionary<string, string[]> WarpTransitions { get; set; }
 
         /// <summary>
         /// Minimum number of players required for this preset.
