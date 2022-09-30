@@ -1,5 +1,5 @@
-﻿using Hkmp;
-using Hkmp.Api.Client;
+﻿using Hkmp.Api.Client;
+using Hkmp.Logging;
 
 namespace HkmpTag.Client {
     /// <summary>

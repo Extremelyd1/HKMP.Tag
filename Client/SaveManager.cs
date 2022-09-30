@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Modding;
 using Newtonsoft.Json;
-using ILogger = Hkmp.ILogger;
+using ILogger = Hkmp.Logging.ILogger;
 
 namespace HkmpTag.Client {
     /// <summary>
@@ -39,7 +39,7 @@ namespace HkmpTag.Client {
         /// Callback method for when a new game is started.
         /// </summary>
         private void OnNewGame() {
-            _logger.Info(this, "Started new game, overwriting save game data");
+            _logger.Info("Started new game, overwriting save game data");
 
             LoadCompletedSave();
         }
@@ -49,7 +49,7 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="saveGameData">The SaveGameData instance.</param>
         private void OnBeforeSavegameSave(SaveGameData saveGameData) {
-            _logger.Info(this, "Restoring loaded save game data");
+            _logger.Info("Restoring loaded save game data");
 
             // Reset the player data and scene data of the stored save game data
             if (_loadedSaveGameData != null) {
@@ -63,7 +63,7 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="saveGameData">The SaveGameData instance.</param>
         private void OnAfterSavegameLoad(SaveGameData saveGameData) {
-            _logger.Info(this, "Storing loaded save game data");
+            _logger.Info("Storing loaded save game data");
 
             // Store the save game data that was loaded from the save file
             _loadedSaveGameData = saveGameData;
@@ -80,7 +80,7 @@ namespace HkmpTag.Client {
             var saveResStream = Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream("HkmpTag.Client.Resource.completed_save.json");
             if (saveResStream == null) {
-                _logger.Error(this, "Resource stream for save file is null");
+                _logger.Error("Resource stream for save file is null");
                 return;
             }
 
@@ -91,7 +91,7 @@ namespace HkmpTag.Client {
             try {
                 completedSaveGameData = JsonConvert.DeserializeObject<SaveGameData>(saveFileString);
             } catch (Exception e) {
-                _logger.Error(this, $"Could not deserialize completed save file, {e.GetType()}, {e.Message}");
+                _logger.Error($"Could not deserialize completed save file, {e.GetType()}, {e.Message}");
                 return;
             }
 

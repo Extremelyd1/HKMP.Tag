@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
-using ILogger = Hkmp.ILogger;
+using ILogger = Hkmp.Logging.ILogger;
 using Object = UnityEngine.Object;
 
 namespace HkmpTag.Client {
@@ -45,14 +45,14 @@ namespace HkmpTag.Client {
             foreach (var sceneTransitionIndexPair in sceneTransitionInfo) {
                 var sceneIndex = sceneTransitionIndexPair.Key;
                 if (sceneIndex >= SceneNames.Length) {
-                    Logger.Warn(this, "Received scene index that was out of bounds");
+                    Logger.Warn("Received scene index that was out of bounds");
                     return;
                 }
 
                 var sceneName = SceneNames[sceneIndex];
 
                 if (!SceneTransitions.TryGetValue(sceneName, out var sceneTransitions)) {
-                    Logger.Warn(this, $"Scene name: '{sceneName}' was not found in all scene transitions");
+                    Logger.Warn($"Scene name: '{sceneName}' was not found in all scene transitions");
                     return;
                 }
 
@@ -61,7 +61,7 @@ namespace HkmpTag.Client {
                 var transitionNames = new HashSet<string>();
                 foreach (var transitionIndex in transitionIndices) {
                     if (transitionIndex >= sceneTransitions.Length) {
-                        Logger.Warn(this, "Received index of transition that was out of bounds");
+                        Logger.Warn("Received index of transition that was out of bounds");
                         return;
                     }
 
@@ -82,19 +82,19 @@ namespace HkmpTag.Client {
         /// <param name="transitionIndex">The index of the transition to warp to.</param>
         public void WarpToScene(ushort sceneIndex, byte transitionIndex) {
             if (sceneIndex >= SceneNames.Length) {
-                Logger.Warn(this, $"Could not warp to scene index '{sceneIndex}', it is out of bounds");
+                Logger.Warn($"Could not warp to scene index '{sceneIndex}', it is out of bounds");
                 return;
             }
 
             var sceneName = SceneNames[sceneIndex];
 
             if (!SceneTransitions.TryGetValue(sceneName, out var transitionNames)) {
-                Logger.Warn(this, $"Could not warp to unknown scene '{sceneName}'");
+                Logger.Warn($"Could not warp to unknown scene '{sceneName}'");
                 return;
             }
 
             if (transitionIndex >= transitionNames.Length) {
-                Logger.Warn(this, $"Could not warp to scene '{sceneName}', the transition index: '{transitionIndex}' is out of range");
+                Logger.Warn($"Could not warp to scene '{sceneName}', the transition index: '{transitionIndex}' is out of range");
                 return;
             }
 
@@ -137,7 +137,7 @@ namespace HkmpTag.Client {
             }
 
             _lastWarp = (sceneName, transitionName);
-            Logger.Info(this, $"Warping to scene: '{sceneName}', transition: '{transitionName}'");
+            Logger.Info($"Warping to scene: '{sceneName}', transition: '{transitionName}'");
 
             // First kill conveyor movement since otherwise the game will think we are still on a conveyor
             // after we warp to the new scene
@@ -202,7 +202,7 @@ namespace HkmpTag.Client {
                 return;
             }
 
-            Logger.Info(this, $"Found transition restrictions for scene: {sceneName}, applying them...");
+            Logger.Info($"Found transition restrictions for scene: {sceneName}, applying them...");
 
             foreach (var transitionPoint in Object.FindObjectsOfType<TransitionPoint>()) {
                 var name = transitionPoint.name;
@@ -213,14 +213,14 @@ namespace HkmpTag.Client {
                         var collider = transitionPoint.GetComponent<Collider2D>();
                         transitionPoint.gameObject.AddComponent<DisableCollider>().Target = collider;
 
-                        Logger.Info(this, $"  Restricting '{name}' door transition");
+                        Logger.Info($"  Restricting '{name}' door transition");
                     } else {
                         // If it is not a door, we set the collider to not be a trigger, which makes it collide with
                         // the player and thus prevent them from exiting
                         var collider = transitionPoint.GetComponent<Collider2D>();
 
                         if (sceneName == _lastWarp.Item1 && name == _lastWarp.Item2 && !name.Contains("bot")) {
-                            Logger.Info(this, $"  Restricting '{name}' transition after entering");
+                            Logger.Info($"  Restricting '{name}' transition after entering");
 
                             // If it is the transition we last warped into, we add a component that only makes the
                             // collider solid after we entered the transition
@@ -229,7 +229,7 @@ namespace HkmpTag.Client {
                         } else {
                             collider.isTrigger = false;
 
-                            Logger.Info(this, $"  Restricting '{name}' transition");
+                            Logger.Info($"  Restricting '{name}' transition");
                         }
                     }
                 }

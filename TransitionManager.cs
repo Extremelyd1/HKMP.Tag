@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
-using ILogger = Hkmp.ILogger;
+using ILogger = Hkmp.Logging.ILogger;
 
 namespace HkmpTag {
     /// <summary>
@@ -45,7 +45,7 @@ namespace HkmpTag {
         protected virtual void LoadSceneTransitions() {
             var resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(TransitionFilePath);
             if (resourceStream == null) {
-                Logger.Warn(this, "Could not get resource stream for transitions");
+                Logger.Warn("Could not get resource stream for transitions");
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace HkmpTag {
 
                 SceneTransitions = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(fileString);
                 if (SceneTransitions == null) {
-                    Logger.Warn(this, "Could not deserialize scene transistions");
+                    Logger.Warn("Could not deserialize scene transitions");
                     return;
                 }
             }

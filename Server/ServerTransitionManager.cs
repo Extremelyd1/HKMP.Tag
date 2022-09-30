@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Hkmp;
+using Hkmp.Logging;
 using Newtonsoft.Json;
 
 namespace HkmpTag.Server {
@@ -65,7 +65,7 @@ namespace HkmpTag.Server {
         protected override void LoadSceneTransitions() {
             base.LoadSceneTransitions();
 
-            Logger.Info(this, "Loading transition restriction presets");
+            Logger.Info("Loading transition restriction presets");
 
             LoadPresets();
         }
@@ -89,7 +89,7 @@ namespace HkmpTag.Server {
 
             var filePath = Path.Combine(AssemblyDirPath, PresetFileName);
             if (!File.Exists(filePath)) {
-                Logger.Info(this, "No preset file found");
+                Logger.Info("No preset file found");
                 return;
             }
 
@@ -98,13 +98,13 @@ namespace HkmpTag.Server {
             try {
                 fileContents = File.ReadAllText(filePath);
             } catch (Exception e) {
-                Logger.Info(this, $"Could not read preset file: {e.GetType()}, {e.Message}");
+                Logger.Info($"Could not read preset file: {e.GetType()}, {e.Message}");
                 return;
             }
 
             var transitionRestrictions = JsonConvert.DeserializeObject<List<GamePreset>>(fileContents);
             if (transitionRestrictions == null) {
-                Logger.Warn(this, "Could not read transition presets file");
+                Logger.Warn("Could not read transition presets file");
                 return;
             }
 
@@ -121,14 +121,14 @@ namespace HkmpTag.Server {
                     loadedPresetNames.Add(name);
                     _gamePresets[name] = restriction;
                 } else {
-                    Logger.Warn(this, $"Transition restriction preset with name '{name}' was already defined");
+                    Logger.Warn($"Transition restriction preset with name '{name}' was already defined");
                 }
             }
 
             if (loadedPresetNames.Count == 0) {
-                Logger.Info(this, "Could not load any transition restriction presets!");
+                Logger.Info("Could not load any transition restriction presets!");
             } else {
-                Logger.Info(this, $"Loaded transition restriction presets: {string.Join(", ", loadedPresetNames)}");
+                Logger.Info($"Loaded transition restriction presets: {string.Join(", ", loadedPresetNames)}");
             }
         }
 
@@ -139,7 +139,7 @@ namespace HkmpTag.Server {
         /// <param name="name">The name of the preset.</param>
         public void SetPreset(string name) {
             if (!_gamePresets.TryGetValue(name, out var preset)) {
-                Logger.Warn(this, $"Tried to set preset '{name}', while it did not exist");
+                Logger.Warn($"Tried to set preset '{name}', while it did not exist");
                 return;
             }
 
@@ -184,7 +184,7 @@ namespace HkmpTag.Server {
             var randomIndex = _random.Next(presets.Count);
             var randomPreset = presets[randomIndex];
 
-            Logger.Info(this, $"Picked random preset '{randomPreset.Name}'");
+            Logger.Info($"Picked random preset '{randomPreset.Name}'");
 
             _currentPreset = randomPreset;
             return true;
@@ -201,19 +201,18 @@ namespace HkmpTag.Server {
 
             var warpSceneIndex = Array.IndexOf(SceneNames, _currentPreset.WarpSceneName);
             if (warpSceneIndex == -1) {
-                Logger.Warn(this,
-                    $"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}'");
+                Logger.Warn($"Could not get scene index of warp scene '{_currentPreset.WarpSceneName}'");
                 return null;
             }
 
             if (!SceneTransitions.TryGetValue(_currentPreset.WarpSceneName, out var transitionNames)) {
-                Logger.Warn(this, $"Could not get transition index for scene: '{_currentPreset.WarpSceneName}'");
+                Logger.Warn($"Could not get transition index for scene: '{_currentPreset.WarpSceneName}'");
                 return null;
             }
 
             var warpTransitionIndex = Array.IndexOf(transitionNames, _currentPreset.WarpTransitionName);
             if (warpTransitionIndex == -1) {
-                Logger.Warn(this, $"Could not get transition index for transition: '{_currentPreset.WarpTransitionName}' in scene: '{_currentPreset.WarpSceneName}");
+                Logger.Warn($"Could not get transition index for transition: '{_currentPreset.WarpTransitionName}' in scene: '{_currentPreset.WarpSceneName}");
                 return null;
             }
 
@@ -223,13 +222,13 @@ namespace HkmpTag.Server {
 
                 var sceneIndex = Array.IndexOf(SceneNames, sceneName);
                 if (sceneIndex == -1) {
-                    Logger.Warn(this, $"Could not get scene index of restriction '{sceneName}'");
+                    Logger.Warn($"Could not get scene index of restriction '{sceneName}'");
 
                     continue;
                 }
 
                 if (!SceneTransitions.TryGetValue(sceneName, out transitionNames)) {
-                    Logger.Warn(this, $"Could not get transition names for scene name '{sceneName}'");
+                    Logger.Warn($"Could not get transition names for scene name '{sceneName}'");
 
                     continue;
                 }
@@ -238,8 +237,7 @@ namespace HkmpTag.Server {
                 foreach (var transition in sceneTransitionPair.Value) {
                     var transitionIndex = Array.IndexOf(transitionNames, transition);
                     if (transitionIndex == -1) {
-                        Logger.Warn(this,
-                            $"Could not get transition index for transition '{transition}' in scene '{sceneName}'");
+                        Logger.Warn($"Could not get transition index for transition '{transition}' in scene '{sceneName}'");
 
                         continue;
                     }

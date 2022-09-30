@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using Hkmp.Api.Client;
 using Hkmp.Game;
@@ -7,7 +8,7 @@ using Hkmp.Util;
 using HutongGames.PlayMaker;
 using Modding;
 using UnityEngine.SceneManagement;
-using ILogger = Hkmp.ILogger;
+using ILogger = Hkmp.Logging.ILogger;
 using Object = UnityEngine.Object;
 
 namespace HkmpTag.Client {
@@ -15,6 +16,11 @@ namespace HkmpTag.Client {
     /// The client-side tag manager.
     /// </summary>
     public class ClientTagManager {
+        /// <summary>
+        /// The time in milliseconds for which non-infected players are invulnerable after round start.
+        /// </summary>
+        private const int RoundStartInvulnerabilityTime = 1000;
+        
         /// <summary>
         /// The logger instance for logging information.
         /// </summary>
@@ -61,6 +67,11 @@ namespace HkmpTag.Client {
         private int _lastWinner;
 
         /// <summary>
+        /// Stopwatch to keep track of time since round started to apply invulnerability for a brief period.
+        /// </summary>
+        private readonly Stopwatch _roundStartStopwatch;
+
+        /// <summary>
         /// Construct the tag manager with the client addon and API.
         /// </summary>
         /// <param name="addon">The client addon instance.</param>
@@ -74,6 +85,8 @@ namespace HkmpTag.Client {
             _iconManager = new IconManager();
             _transitionManager = new ClientTransitionManager(_logger);
             _saveManager = new SaveManager(_logger);
+
+            _roundStartStopwatch = new Stopwatch();
         }
 
         /// <summary>
@@ -116,8 +129,31 @@ namespace HkmpTag.Client {
         /// <param name="damage">The original damage that would be taken.</param>
         /// <returns>The new damage that should be taken.</returns>
         private int OnTakeDamage(ref int type, int damage) {
-            if (type == 1 && (!_clientApi.NetClient.IsConnected || !_gameStarted)) {
+            // If the damage type is any other than combat, we return the normal damage
+            if (type != 1) {
+                return damage;
+            }
+
+            // If we are not connected or the game is not started, we ignore all damage
+            if (!_clientApi.NetClient.IsConnected || !_gameStarted) {
                 return 0;
+            }
+
+            // If the player is tagged already, they take normal damage
+            if (_isTagged) {
+                return damage;
+            }
+
+            // If the round start stopwatch is running, we need to check for invulnerability
+            if (_roundStartStopwatch.IsRunning) {
+                if (_roundStartStopwatch.ElapsedMilliseconds < RoundStartInvulnerabilityTime) {
+                    // Still invulnerable
+                    return 0;
+                }
+                
+                // No longer invulnerable, so we can also stop the stopwatch
+                _roundStartStopwatch.Stop();
+                return damage;
             }
 
             return damage;
@@ -148,7 +184,7 @@ namespace HkmpTag.Client {
         /// <param name="newScene">The new scene.</param>
         private void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
             if (GameManager.instance.IsNonGameplayScene() && _clientApi.NetClient.IsConnected) {
-                _logger.Info(this, "Changed to non-gameplay scene, disconnecting from server");
+                _logger.Info("Changed to non-gameplay scene, disconnecting from server");
 
                 // Accessing internals via reflection
                 var clientManagerType = typeof(IClientApi).Assembly.GetType("Hkmp.Game.Client.ClientManager");
@@ -162,7 +198,7 @@ namespace HkmpTag.Client {
                             new object[] {true}
                         );
                     } catch (Exception e) {
-                        _logger.Info(this, $"Exception while invoking member: {e.GetType()}, {e.Message}");
+                        _logger.Info($"Exception while invoking member: {e.GetType()}, {e.Message}");
                     }
                 }
             }
@@ -170,7 +206,7 @@ namespace HkmpTag.Client {
             foreach (var fsm in Object.FindObjectsOfType<PlayMakerFSM>()) {
                 // Find FSMs with Bench Control and disable starting and sitting on them
                 if (fsm.Fsm.Name.Equals("Bench Control")) {
-                    _logger.Info(this, "Found FSM with Bench Control, patching...");
+                    _logger.Info("Found FSM with Bench Control, patching...");
 
                     fsm.InsertMethod("Pause 2", 1, () => {
                         PlayerData.instance.SetBool("atBench", false);
@@ -190,7 +226,7 @@ namespace HkmpTag.Client {
 
                 // Find FSMs with Stag Control and prevent stag travelling
                 if (fsm.Fsm.Name.Equals("Stag Control")) {
-                    _logger.Info(this, "Found FSM with Stag Control, patching...");
+                    _logger.Info("Found FSM with Stag Control, patching...");
 
                     var idleState = fsm.GetState("Idle");
                     idleState.Transitions = Array.Empty<FsmTransition>();
@@ -240,6 +276,8 @@ namespace HkmpTag.Client {
 
             _iconManager.Hide();
 
+            _roundStartStopwatch.Restart();
+
             if (packet.IsInfected) {
                 BecomeInfected();
             } else {
@@ -255,9 +293,8 @@ namespace HkmpTag.Client {
 
             var usernameString = string.Join(", ", infectedUsernames);
 
-            _logger.Info(this,
-                $"Game has started, the following IDs are infected: {string.Join(", ", packet.InfectedIds)}");
-            _logger.Info(this, $"  Usernames: {usernameString}");
+            _logger.Info($"Game has started, the following IDs are infected: {string.Join(", ", packet.InfectedIds)}");
+            _logger.Info($"  Usernames: {usernameString}");
 
             if (packet.IsInfected) {
                 Title.Show("The game has started, you are the infected!");
@@ -281,7 +318,7 @@ namespace HkmpTag.Client {
             _gameStarted = false;
 
             if (packet.HasWinner) {
-                _logger.Info(this, $"Game has ended, winner: {packet.WinnerId}");
+                _logger.Info($"Game has ended, winner: {packet.WinnerId}");
                 if (_clientApi.ClientManager.TryGetPlayer(packet.WinnerId, out var player)) {
                     _lastWinner = player.Id;
 
@@ -301,7 +338,7 @@ namespace HkmpTag.Client {
                 return;
             }
 
-            _logger.Info(this, "Game has ended without winner");
+            _logger.Info("Game has ended without winner");
 
             SendTitleMessage("The game has ended!");
         }
@@ -318,7 +355,7 @@ namespace HkmpTag.Client {
             _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
             _transitionManager.WarpToScene(packet.WarpSceneIndex, packet.WarpTransitionIndex);
 
-            _logger.Info(this, "Game is in progress");
+            _logger.Info("Game is in progress");
             SendTitleMessage("The game is in progress!");
         }
 
@@ -332,18 +369,18 @@ namespace HkmpTag.Client {
             }
 
             if (packet.WasTagged) {
-                _logger.Info(this, $"Local player is infected, number of uninfected left: {packet.NumLeft}");
+                _logger.Info($"Local player is infected, number of uninfected left: {packet.NumLeft}");
 
                 SendTitleMessage($"You are infected, {packet.NumLeft} players remain!");
                 return;
             }
 
-            _logger.Info(this, $"Player {packet.TaggedId} is infected, number of uninfected left: {packet.NumLeft}");
+            _logger.Info($"Player {packet.TaggedId} is infected, number of uninfected left: {packet.NumLeft}");
 
             if (_clientApi.ClientManager.TryGetPlayer(packet.TaggedId, out var player)) {
                 SendTitleMessage($"Player '{player.Username}' was infected, {packet.NumLeft} players remain!");
             } else {
-                _logger.Warn(this, $"Could not find player with ID: {packet.TaggedId}");
+                _logger.Warn($"Could not find player with ID: {packet.TaggedId}");
             }
         }
 
