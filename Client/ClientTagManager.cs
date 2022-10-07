@@ -4,12 +4,9 @@ using System.Diagnostics;
 using System.Reflection;
 using Hkmp.Api.Client;
 using Hkmp.Game;
-using Hkmp.Util;
-using HutongGames.PlayMaker;
 using Modding;
 using UnityEngine.SceneManagement;
 using ILogger = Hkmp.Logging.ILogger;
-using Object = UnityEngine.Object;
 
 namespace HkmpTag.Client {
     /// <summary>
@@ -52,6 +49,11 @@ namespace HkmpTag.Client {
         private readonly SaveManager _saveManager;
 
         /// <summary>
+        /// The patch manager instance.
+        /// </summary>
+        private readonly PatchManager _patchManager;
+
+        /// <summary>
         /// Whether the game is started.
         /// </summary>
         private bool _gameStarted;
@@ -86,6 +88,8 @@ namespace HkmpTag.Client {
             _transitionManager = new ClientTransitionManager(_logger);
             _saveManager = new SaveManager(_logger);
 
+            _patchManager = new PatchManager(_logger);
+
             _roundStartStopwatch = new Stopwatch();
         }
 
@@ -97,6 +101,7 @@ namespace HkmpTag.Client {
             _iconManager.Initialize();
             _transitionManager.Initialize();
             _saveManager.Initialize();
+            _patchManager.Initialize();
 
             // Disable team and skin selection, which is handled by this addon automatically
             _clientApi.UiManager.DisableTeamSelection();
@@ -200,36 +205,6 @@ namespace HkmpTag.Client {
                     } catch (Exception e) {
                         _logger.Info($"Exception while invoking member: {e.GetType()}, {e.Message}");
                     }
-                }
-            }
-
-            foreach (var fsm in Object.FindObjectsOfType<PlayMakerFSM>()) {
-                // Find FSMs with Bench Control and disable starting and sitting on them
-                if (fsm.Fsm.Name.Equals("Bench Control")) {
-                    _logger.Info("Found FSM with Bench Control, patching...");
-
-                    fsm.InsertMethod("Pause 2", 1, () => {
-                        PlayerData.instance.SetBool("atBench", false);
-                    });
-
-                    var checkStartState2 = fsm.GetState("Check Start State 2");
-                    var pause2State = fsm.GetState("Pause 2");
-                    checkStartState2.GetTransition(1).ToFsmState = pause2State;
-
-                    var checkStartState = fsm.GetState("Check Start State");
-                    var idleStartPauseState = fsm.GetState("Idle Start Pause");
-                    checkStartState.GetTransition(1).ToFsmState = idleStartPauseState;
-
-                    var idleState = fsm.GetState("Idle");
-                    idleState.Actions = new[] { idleState.Actions[0] };
-                }
-
-                // Find FSMs with Stag Control and prevent stag travelling
-                if (fsm.Fsm.Name.Equals("Stag Control")) {
-                    _logger.Info("Found FSM with Stag Control, patching...");
-
-                    var idleState = fsm.GetState("Idle");
-                    idleState.Transitions = Array.Empty<FsmTransition>();
                 }
             }
         }
