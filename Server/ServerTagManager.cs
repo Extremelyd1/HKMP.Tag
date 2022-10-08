@@ -107,11 +107,49 @@ namespace HkmpTag.Server {
         }
 
         /// <summary>
+        /// Change the preset to the one with the given name. Will provide feedback by sending a message
+        /// using the given action.
+        /// </summary>
+        /// <param name="presetName">The name of the preset to change to.</param>
+        /// <param name="sendMessageAction">The action to send feedback message.</param>
+        public void ChangePreset(string presetName, Action<string> sendMessageAction = null) {
+            if (_settings.Auto) {
+                const string gameIsAutoMsg = "Game automation is enabled, cannot change preset while it is active";
+                sendMessageAction?.Invoke(gameIsAutoMsg);
+                _logger.Info(gameIsAutoMsg);
+                return;
+            }
+
+            if (GameState != GameState.PreGame) {
+                var unableToChangeMsg = "Cannot change preset";
+                switch (GameState) {
+                    case GameState.InGame:
+                        unableToChangeMsg += " while game is started";
+                        break;
+                    case GameState.Countdown:
+                        unableToChangeMsg += " while game is starting";
+                        break;
+                    default:
+                        unableToChangeMsg += " at this moment";
+                        break;
+                }
+
+                sendMessageAction?.Invoke(unableToChangeMsg);
+                _logger.Info(unableToChangeMsg);
+
+                return;
+            }
+            
+            _transitionManager.SetPreset(presetName);
+            WarpToPreset(sendMessageAction);
+        }
+
+        /// <summary>
         /// Instruct all players to warp to the given preset and use the transition restrictions. Will provide
         /// feedback by sending a message using the given action.
         /// </summary>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
-        public void WarpToPreset(Action<string> sendMessageAction = null) {
+        private void WarpToPreset(Action<string> sendMessageAction = null) {
             if (GameState != GameState.PreGame) {
                 const string unableToWarpMsg = "Cannot warp to preset at this moment";
                 sendMessageAction?.Invoke(unableToWarpMsg);
@@ -186,7 +224,17 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="numInfected">The number of initial infected.</param>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
-        public void StartGame(ushort numInfected, Action<string> sendMessageAction = null) {
+        /// <param name="auto">Whether the game is started from automation.</param>
+        public void StartGame(ushort numInfected, Action<string> sendMessageAction = null, bool auto = true) {
+            // If the game is not started from automation (so manually) and automation is enabled, it is not
+            // possible to start
+            if (!auto && _settings.Auto) {
+                const string gameIsAutoMsg = "Game automation is enabled, cannot start game while it is active";
+                sendMessageAction?.Invoke(gameIsAutoMsg);
+                _logger.Info(gameIsAutoMsg);
+                return;
+            }
+            
             if (GameState != GameState.PreGame) {
                 const string unableToStartMsg = "Cannot start game at this moment";
                 sendMessageAction?.Invoke(unableToStartMsg);
@@ -276,25 +324,42 @@ namespace HkmpTag.Server {
             _settings.SaveToFile();
 
             if (_settings.Auto) {
-                const string autoEnabledMsg = "Game automation is enabled";
+                var autoEnabledMsg = "Game automation is enabled";
 
-                sendMessageAction.Invoke(autoEnabledMsg);
-                _logger.Info(autoEnabledMsg);
-
+                // Based on the state we adjust the message
                 if (GameState == GameState.PreGame) {
+                    autoEnabledMsg += ", trying to start game...";
+
+                    sendMessageAction.Invoke(autoEnabledMsg);
+                    _logger.Info(autoEnabledMsg);
+                    
+                    // Since we are in PreGame already, we can try to start an automatic game
                     ProcessAutoGameStart();
+                } else {
+                    autoEnabledMsg += ", waiting for current game to end";
+                    
+                    sendMessageAction.Invoke(autoEnabledMsg);
+                    _logger.Info(autoEnabledMsg);
                 }
             } else {
-                const string autoDisabledMsg = "Game automation is disabled";
+                var autoDisabledMsg = "Game automation is disabled";
 
-                sendMessageAction.Invoke(autoDisabledMsg);
-                _logger.Info(autoDisabledMsg);
-
-                if (GameState == GameState.WaitingForPlayers || GameState == GameState.PostGame) {
+                if (
+                    GameState == GameState.WaitingForPlayers || 
+                    GameState == GameState.PostGame || 
+                    GameState == GameState.Countdown
+                ) {
+                    if (GameState == GameState.Countdown) {
+                        autoDisabledMsg += ", countdown has been cancelled";
+                    }
+                    
                     GameState = GameState.PreGame;
 
                     _currentDelayAction?.Stop();
                 }
+                
+                sendMessageAction.Invoke(autoDisabledMsg);
+                _logger.Info(autoDisabledMsg);
             }
         }
 
@@ -396,6 +461,13 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="sendMessageAction">The action to send feedback messages.</param>
         public void EndGame(Action<string> sendMessageAction) {
+            if (_settings.Auto) {
+                const string gameIsAutoMsg = "Game automation is enabled, cannot end game while it is active";
+                sendMessageAction.Invoke(gameIsAutoMsg);
+                _logger.Info(gameIsAutoMsg);
+                return;
+            }
+            
             if (GameState != GameState.InGame && GameState != GameState.Countdown) {
                 const string notStartedMsg = "Game is not started";
                 sendMessageAction.Invoke(notStartedMsg);
@@ -411,6 +483,8 @@ namespace HkmpTag.Server {
             } else if (GameState == GameState.Countdown) {
                 // If the countdown was in progress, we cancel it
                 _currentDelayAction.Stop();
+
+                GameState = GameState.PreGame;
 
                 const string stoppedCountdownMsg = "Stopped start countdown";
                 sendMessageAction.Invoke(stoppedCountdownMsg);

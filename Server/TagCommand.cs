@@ -7,6 +7,11 @@ namespace HkmpTag.Server {
     /// Command to manage the Tag games.
     /// </summary>
     public class TagCommand : IServerCommand {
+        /// <summary>
+        /// The name of the auto property to exclude from settings with the 'set' subcommand.
+        /// </summary>
+        private const string AutoPropertyName = "auto";
+
         /// <inheritdoc />
         public string Trigger => "/tag";
 
@@ -58,7 +63,7 @@ namespace HkmpTag.Server {
                     }
                 }
 
-                _tagManager.StartGame(numInfected, commandSender.SendMessage);
+                _tagManager.StartGame(numInfected, commandSender.SendMessage, false);
             } else if (action == "stop") {
                 _tagManager.EndGame(commandSender.SendMessage);
             } else if (action == "preset") {
@@ -75,8 +80,7 @@ namespace HkmpTag.Server {
                     return;
                 }
 
-                _transitionManager.SetPreset(presetName);
-                _tagManager.WarpToPreset(commandSender.SendMessage);
+                _tagManager.ChangePreset(presetName, commandSender.SendMessage);
             } else if (action == "auto") {
                 _tagManager.ToggleAuto(commandSender.SendMessage);
             } else if (action == "set") {
@@ -104,7 +108,10 @@ namespace HkmpTag.Server {
 
             PropertyInfo settingProperty = null;
             foreach (var prop in propertyInfos) {
-                if (prop.Name.ToLower().Equals(settingName.ToLower().Replace("_", ""))) {
+                // Check if the property equals the setting name given as argument ignoring capitalization
+                // Also ignore the auto property, because it can't change value without extra behaviour
+                if (prop.Name.ToLower().Equals(settingName.ToLower().Replace("_", ""))
+                    && !settingName.ToLower().Equals(AutoPropertyName)) {
                     settingProperty = prop;
                     break;
                 }
@@ -154,7 +161,7 @@ namespace HkmpTag.Server {
             settingProperty.SetValue(_settings, newValueObject);
 
             commandSender.SendMessage($"Changed setting '{settingName}' to: {newValueObject}");
-            
+
             _settings.SaveToFile();
         }
 
