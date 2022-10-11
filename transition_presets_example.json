@@ -1,10 +1,13 @@
 [
     {
         "name": "lurker",
-        "warp_scene": "GG_Lurker",
-        "warp_transition": "left1",
+        "warp_transitions": {
+            "GG_Lurker": [
+                "left1"
+            ]
+        },
         "min_players": 7,
-        "max_players": 30,
+        "max_players": 15,
         "transitions": {
             "GG_Lurker": [
                 "left1"
@@ -13,8 +16,11 @@
     },
     {
         "name": "queens-station",
-        "warp_scene": "Fungus2_01",
-        "warp_transition": "right1",
+        "warp_transitions": {
+            "Fungus2_01": [
+                "right1"
+            ]
+        },
         "max_players": 5,
         "transitions": {
             "Fungus2_01": [
