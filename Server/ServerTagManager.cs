@@ -249,6 +249,11 @@ namespace HkmpTag.Server {
             }
 
             if (!CheckGameStart(numInfected, sendMessageAction)) {
+                if (_settings.Auto) {
+                    // Game cannot start and we are auto, so reset to WaitingForPlayers
+                    GameState = GameState.WaitingForPlayers;
+                }
+
                 return;
             }
 
