@@ -90,6 +90,17 @@ namespace HkmpTag.Server {
         public void Initialize() {
             GameState = GameState.PreGame;
 
+            if (_settings.SetGameSettings) {
+                _serverApi.ServerManager.ApplyServerSettings(new Hkmp.Game.Settings.ServerSettings {
+                    IsPvpEnabled = true,
+                    IsBodyDamageEnabled = false,
+                    AlwaysShowMapIcons = false,
+                    OnlyBroadcastMapIconWithWaywardCompass = true,
+                    TeamsEnabled = true,
+                    AllowSkins = true,
+                });
+            }
+
             _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _settings, _transitionManager));
 
             _netManager.TaggedEvent += playerId => OnTagged(playerId);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GlobalEnums;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using ILogger = Hkmp.Logging.ILogger;
 using Object = UnityEngine.Object;
 
@@ -22,17 +23,49 @@ namespace HkmpTag.Client {
         /// </summary>
         private (string, string) _lastWarp;
 
+        /// <summary>
+        /// Set of transition points that are currently restricted. Used to revert restriction if the addon is
+        /// disabled.
+        /// </summary>
+        private HashSet<TransitionPoint> _currentTransitionPoints;
+
         public ClientTransitionManager(ILogger logger) : base(logger) {
+            _currentTransitionPoints = new HashSet<TransitionPoint>();
         }
 
         /// <summary>
-        /// Initializes the transition manager by loading the transition resource and registering callbacks.
+        /// Enable the transition manager.
         /// </summary>
-        public override void Initialize() {
-            base.Initialize();
+        public void Enable() {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnSceneChanged;
+        }
 
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged +=
-                (oldScene, newScene) => CheckTransitions(newScene.name);
+        /// <summary>
+        /// Disable the transition manager.
+        /// </summary>
+        public void Disable() {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnSceneChanged;
+
+            foreach (var transitionPoint in _currentTransitionPoints) {
+                if (transitionPoint == null) {
+                    continue;
+                }
+                
+                var disableCollider = transitionPoint.GetComponent<DisableCollider>();
+                if (disableCollider != null) {
+                    Object.Destroy(disableCollider);
+                }
+
+                var colliderExitHandler = transitionPoint.GetComponent<ColliderExitHandler>();
+                if (colliderExitHandler != null) {
+                    Object.Destroy(colliderExitHandler);
+                }
+
+                var collider = transitionPoint.GetComponent<Collider2D>();
+                if (collider != null) {
+                    collider.isTrigger = true;
+                }
+            }
         }
 
         /// <summary>
@@ -177,6 +210,15 @@ namespace HkmpTag.Client {
                 DoSceneTransition();
             }
         }
+        
+        /// <summary>
+        /// Callback method for when the scene changes.
+        /// </summary>
+        /// <param name="oldScene">The old scene.</param>
+        /// <param name="newScene">The new scene.</param>
+        private void OnSceneChanged(Scene oldScene, Scene newScene) {
+            CheckTransitions(newScene.name);
+        }
 
         /// <summary>
         /// Check whether transitions in the scene with the given name should be restricted and apply them.
@@ -203,11 +245,15 @@ namespace HkmpTag.Client {
             }
 
             Logger.Info($"Found transition restrictions for scene: {sceneName}, applying them...");
+            
+            _currentTransitionPoints.Clear();
 
             foreach (var transitionPoint in Object.FindObjectsOfType<TransitionPoint>()) {
                 var name = transitionPoint.name;
 
                 if (restrictedTransitions.Contains(name)) {
+                    _currentTransitionPoints.Add(transitionPoint);
+                    
                     if (name.Contains("door")) {
                         // If it is a door, we disable it
                         var collider = transitionPoint.GetComponent<Collider2D>();

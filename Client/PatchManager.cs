@@ -20,10 +20,17 @@ namespace HkmpTag.Client {
         }
 
         /// <summary>
-        /// Initialize the patch manager by hooking the necessary methods.
+        /// Enables the patch manager.
         /// </summary>
-        public void Initialize() {
+        public void Enable() {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
+        }
+
+        /// <summary>
+        /// Disables the patch manager.
+        /// </summary>
+        public void Disable() {
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         }
 
         /// <summary>

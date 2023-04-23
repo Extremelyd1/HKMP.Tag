@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using Hkmp.Api.Client;
 using Hkmp.Game;
 using Modding;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using ILogger = Hkmp.Logging.ILogger;
 
@@ -22,7 +21,7 @@ namespace HkmpTag.Client {
         /// The logger instance for logging information.
         /// </summary>
         private readonly ILogger _logger;
-
+        
         /// <summary>
         /// The client API instance.
         /// </summary>
@@ -100,31 +99,66 @@ namespace HkmpTag.Client {
             Title.Initialize();
             _iconManager.Initialize();
             _transitionManager.Initialize();
-            _saveManager.Initialize();
-            _patchManager.Initialize();
 
-            // Disable team and skin selection, which is handled by this addon automatically
-            _clientApi.UiManager.DisableTeamSelection();
-            _clientApi.UiManager.DisableSkinSelection();
+            Enable();
 
             _gameStarted = false;
             _isTagged = false;
             _lastWinner = -1;
-
-            _clientApi.ClientManager.PlayerEnterSceneEvent += OnPlayerEnterScene;
 
             _netManager.GameInfoEvent += OnGameInfo;
             _netManager.GameStartedEvent += OnGameStart;
             _netManager.GameEndedEvent += OnGameEnd;
             _netManager.GameInProgressEvent += OnGameInProgress;
             _netManager.PlayerTaggedEvent += OnPlayerTagged;
+        }
 
+        /// <summary>
+        /// Enable the functionality of tag.
+        /// </summary>
+        public void Enable() {
+            _transitionManager.Enable();
+            _saveManager.Enable();
+            _patchManager.Enable();
+            
+            _clientApi.UiManager.DisableTeamSelection();
+            _clientApi.UiManager.DisableSkinSelection();
+            
+            _clientApi.ClientManager.PlayerEnterSceneEvent += OnPlayerEnterScene;
+            
             ModHooks.TakeDamageHook += OnTakeDamage;
             ModHooks.AfterTakeDamageHook += OnAfterTakeDamage;
-            ModHooks.TakeHealthHook += damage => 0;
-            ModHooks.OnEnableEnemyHook += (enemy, dead) => true;
-
+            ModHooks.TakeHealthHook += OnTakeHealth;
+            ModHooks.OnEnableEnemyHook += OnEnableEnemy;
+            
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
+            if (GameManager.instance.IsGameplayScene()) {
+                // Since we enabled Tag while in a save, we need to go back to the main menu to load the completed save
+                UIManager.instance.UIReturnToMainMenu();
+            }
+        }
+
+        /// <summary>
+        /// Disable the functionality of tag.
+        /// </summary>
+        public void Disable() {
+            _iconManager.Hide();
+            _transitionManager.Disable();
+            _saveManager.Disable();
+            _patchManager.Disable();
+
+            _clientApi.UiManager.EnableTeamSelection();
+            _clientApi.UiManager.EnableSkinSelection();
+            
+            _clientApi.ClientManager.PlayerEnterSceneEvent -= OnPlayerEnterScene;
+            
+            ModHooks.TakeDamageHook -= OnTakeDamage;
+            ModHooks.AfterTakeDamageHook -= OnAfterTakeDamage;
+            ModHooks.TakeHealthHook -= OnTakeHealth;
+            ModHooks.OnEnableEnemyHook -= OnEnableEnemy;
+            
+            UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         }
 
         /// <summary>
@@ -181,6 +215,25 @@ namespace HkmpTag.Client {
 
             return amount;
         }
+        
+        /// <summary>
+        /// Method to prevent the player losing any health.
+        /// </summary>
+        /// <param name="damage">The damage that was going to be taken.</param>
+        /// <returns>The new damage, in this case 0.</returns>
+        private int OnTakeHealth(int damage) {
+            return 0;
+        }
+        
+        /// <summary>
+        /// Method to prevent enemies from existing.
+        /// </summary>
+        /// <param name="enemy">The enemy that is checked whether it is dead.</param>
+        /// <param name="dead">Whether this enemy was already dead.</param>
+        /// <returns>Whether the enemy should be dead, in this case true.</returns>
+        private bool OnEnableEnemy(GameObject enemy, bool dead) {
+            return true;
+        }
 
         /// <summary>
         /// Callback method for when the active scene changes.
@@ -191,21 +244,7 @@ namespace HkmpTag.Client {
             if (GameManager.instance.IsNonGameplayScene() && _clientApi.NetClient.IsConnected) {
                 _logger.Info("Changed to non-gameplay scene, disconnecting from server");
 
-                // Accessing internals via reflection
-                var clientManagerType = typeof(IClientApi).Assembly.GetType("Hkmp.Game.Client.ClientManager");
-                if (clientManagerType != null) {
-                    try {
-                        clientManagerType.InvokeMember(
-                            "Disconnect",
-                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.InvokeMethod,
-                            null,
-                            _clientApi.ClientManager,
-                            new object[] {true}
-                        );
-                    } catch (Exception e) {
-                        _logger.Info($"Exception while invoking member: {e.GetType()}, {e.Message}");
-                    }
-                }
+                _clientApi.ClientManager.Disconnect();
             }
         }
 

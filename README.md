@@ -42,6 +42,7 @@ These are the server settings that can be changed with the 'set' sub-command des
 - `max_game_time`: The maximum time an automatic game can last before ending it in seconds.
 - `max_games_on_preset`: The number of games that will be played on one preset before switching.
 - `auto`: Whether game automation is enabled.
+- `set_game_settings`: Whether to automatically set HKMP game settings to the best settings for Tag. Set to false if you want to do some custom game settings.
 
 ### Automation
 The Tag games can be played fully automatic by setting the server setting `auto` to True.

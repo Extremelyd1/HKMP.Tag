@@ -17,59 +17,46 @@ namespace HkmpTag.Client {
         /// </summary>
         private readonly ILogger _logger;
 
-        /// <summary>
-        /// The save game data that was loaded from the save file.
-        /// </summary>
-        private SaveGameData _loadedSaveGameData;
-
         public SaveManager(ILogger logger) {
             _logger = logger;
         }
 
         /// <summary>
-        /// Initialize the save manager by registering callback methods for the save game load and save hooks.
+        /// Enable the save manager.
         /// </summary>
-        public void Initialize() {
-            ModHooks.NewGameHook += OnNewGame;
-            ModHooks.AfterSavegameLoadHook += OnAfterSavegameLoad;
-            ModHooks.BeforeSavegameSaveHook += OnBeforeSavegameSave;
+        public void Enable() {
+            On.UIManager.UIMainStartGame += OnUiMainStartGame;
+            On.GameManager.SaveGame += OnSaveGame;
         }
 
         /// <summary>
-        /// Callback method for when a new game is started.
+        /// Disable the save manager.
         /// </summary>
-        private void OnNewGame() {
-            _logger.Info("Started new game, overwriting save game data");
+        public void Disable() {
+            On.UIManager.UIMainStartGame -= OnUiMainStartGame;
+            On.GameManager.SaveGame -= OnSaveGame;
+        }
 
+        /// <summary>
+        /// Called when the user click "Start game" in the main menu. Will load the completed save and continue
+        /// the game, bypassing the save selection. 
+        /// </summary>
+        /// <param name="orig">The original method.</param>
+        /// <param name="self">The UIManager instance.</param>
+        private void OnUiMainStartGame(On.UIManager.orig_UIMainStartGame orig, UIManager self) {
+            _logger.Debug("User clicked start game, loading completed save");
+            
             LoadCompletedSave();
+            
+            GameManager.instance.ContinueGame();
         }
-
+        
         /// <summary>
-        /// Callback method for just before a save game is saved.
+        /// Called when the game is saved. Will remove game saving as long as the Tag addon is enabled.
         /// </summary>
-        /// <param name="saveGameData">The SaveGameData instance.</param>
-        private void OnBeforeSavegameSave(SaveGameData saveGameData) {
-            _logger.Info("Restoring loaded save game data");
-
-            // Reset the player data and scene data of the stored save game data
-            if (_loadedSaveGameData != null) {
-                saveGameData.playerData = _loadedSaveGameData.playerData;
-                saveGameData.sceneData = _loadedSaveGameData.sceneData;
-            }
-        }
-
-        /// <summary>
-        /// Callback method for after the save game is loaded.
-        /// </summary>
-        /// <param name="saveGameData">The SaveGameData instance.</param>
-        private void OnAfterSavegameLoad(SaveGameData saveGameData) {
-            _logger.Info("Storing loaded save game data");
-
-            // Store the save game data that was loaded from the save file
-            _loadedSaveGameData = saveGameData;
-
-            // Now load the completed save file that is embedded as resource
-            LoadCompletedSave();
+        /// <param name="orig">The original method.</param>
+        /// <param name="self">The GameManager instance.</param>
+        private void OnSaveGame(On.GameManager.orig_SaveGame orig, GameManager self) {
         }
 
         /// <summary>

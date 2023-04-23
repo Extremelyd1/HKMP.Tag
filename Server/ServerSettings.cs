@@ -49,6 +49,12 @@ namespace HkmpTag.Server {
         public bool Auto { get; set; }
 
         /// <summary>
+        /// Whether to automatically set HKMP game settings to the best settings for Tag.
+        /// </summary>
+        [JsonProperty("set_game_settings")]
+        public bool SetGameSettings { get; set; } = true;
+
+        /// <summary>
         /// Save the server settings to file.
         /// </summary>
         public void SaveToFile() {
