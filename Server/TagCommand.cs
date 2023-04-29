@@ -34,16 +34,16 @@ namespace HkmpTag.Server {
         /// <summary>
         /// The transition manager instance.
         /// </summary>
-        private readonly ServerTransitionManager _transitionManager;
+        private readonly ServerPresetManager _presetManager;
 
         public TagCommand(
             ServerTagManager tagManager,
             ServerSettings settings,
-            ServerTransitionManager transitionManager
+            ServerPresetManager presetManager
         ) {
             _tagManager = tagManager;
             _settings = settings;
-            _transitionManager = transitionManager;
+            _presetManager = presetManager;
         }
 
         /// <inheritdoc />
@@ -73,7 +73,7 @@ namespace HkmpTag.Server {
                 }
 
                 var presetName = args[2];
-                var presetNames = _transitionManager.GetPresetNames();
+                var presetNames = _presetManager.GetPresetNames();
                 if (Array.IndexOf(presetNames, presetName) == -1) {
                     commandSender.SendMessage(
                         $"Preset with name '{presetName}' does not exists, options: {string.Join(", ", presetNames)}");

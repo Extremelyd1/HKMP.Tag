@@ -19,33 +19,29 @@ namespace HkmpTag {
         private const byte MaxTransitions = byte.MaxValue;
 
         /// <summary>
-        /// The index of the scene to warp to.
+        /// The <see cref="CondensedGamePreset"/> to use in the game.
         /// </summary>
-        public ushort WarpSceneIndex { get; set; }
+        public CondensedGamePreset Preset { get; set; }
         
         /// <summary>
-        /// The index of the transition to warp to.
+        /// The <see cref="Loadouts"/> to use for this game.
         /// </summary>
-        public byte WarpTransitionIndex { get; set; }
-
-        /// <summary>
-        /// A dictionary mapping scene indices to byte arrays containing transition indices.
-        /// </summary>
-        public Dictionary<ushort, byte[]> RestrictedTransitions { get; set; }
+        public Loadouts Loadouts { get; set; }
 
         public GameInfoPacket() {
-            RestrictedTransitions = new Dictionary<ushort, byte[]>();
+            Preset = new CondensedGamePreset();
+            Loadouts = new Loadouts();
         }
 
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
-            packet.Write(WarpSceneIndex);
-            packet.Write(WarpTransitionIndex);
+            packet.Write(Preset.WarpSceneIndex);
+            packet.Write(Preset.WarpTransitionIndex);
 
-            var dictCount = (byte)Math.Min(MaxScenes, RestrictedTransitions.Count);
+            var dictCount = (byte)Math.Min(MaxScenes, Preset.SceneTransitions.Count);
             packet.Write(dictCount);
 
-            foreach (var sceneTransitionsPair in RestrictedTransitions) {
+            foreach (var sceneTransitionsPair in Preset.SceneTransitions) {
                 var sceneIndex = sceneTransitionsPair.Key;
                 var transitions = sceneTransitionsPair.Value;
 
@@ -58,12 +54,15 @@ namespace HkmpTag {
                     packet.Write(transitions[i]);
                 }
             }
+
+            Loadouts.NormalLoadout.WriteData(packet);
+            Loadouts.InfectedLoadout.WriteData(packet);
         }
 
         /// <inheritdoc />
         public void ReadData(IPacket packet) {
-            WarpSceneIndex = packet.ReadUShort();
-            WarpTransitionIndex = packet.ReadByte();
+            Preset.WarpSceneIndex = packet.ReadUShort();
+            Preset.WarpTransitionIndex = packet.ReadByte();
 
             var dictCount = packet.ReadByte();
             for (var i = 0; i < dictCount; i++) {
@@ -76,8 +75,50 @@ namespace HkmpTag {
                     transitions[j] = packet.ReadByte();
                 }
 
-                RestrictedTransitions[sceneIndex] = transitions;
+                Preset.SceneTransitions[sceneIndex] = transitions;
             }
+
+            Loadouts.NormalLoadout.ReadData(packet);
+            Loadouts.InfectedLoadout.ReadData(packet);
+        }
+
+        /// <inheritdoc />
+        public bool IsReliable => true;
+
+        /// <inheritdoc />
+        public bool DropReliableDataIfNewerExists => true;
+    }
+
+    /// <summary>
+    /// Packet data for client-bound loadout information. Which charms to have equipped and which skills are
+    /// enabled.
+    /// </summary>
+    public class LoadoutPacket : IPacketData {
+        /// <summary>
+        /// Loadout for non-infected players.
+        /// </summary>
+        public Loadout NormalLoadout { get; set; }
+        
+        /// <summary>
+        /// Loadout for infected players.
+        /// </summary>
+        public Loadout InfectedLoadout { get; set; }
+
+        public LoadoutPacket() {
+            NormalLoadout = new Loadout();
+            InfectedLoadout = new Loadout();
+        }
+        
+        /// <inheritdoc />
+        public void WriteData(IPacket packet) {
+            NormalLoadout.WriteData(packet);
+            InfectedLoadout.WriteData(packet);
+        }
+
+        /// <inheritdoc />
+        public void ReadData(IPacket packet) {
+            NormalLoadout.ReadData(packet);
+            InfectedLoadout.ReadData(packet);
         }
 
         /// <inheritdoc />

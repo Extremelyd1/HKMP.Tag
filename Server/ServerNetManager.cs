@@ -34,26 +34,23 @@ namespace HkmpTag.Server {
                 id => TaggedEvent?.Invoke(id)
             );
         }
-        
+
         /// <summary>
         /// Broadcast a game info packet to the given client.
         /// </summary>
         /// <param name="playerId">The ID of the player to send to.</param>
-        /// <param name="warpSceneIndex">The index of the scene to warp to.</param>
-        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
-        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
+        /// <param name="preset"><see cref="CondensedGamePreset"/> that contains game preset information.</param>
+        /// <param name="loadouts">The <see cref="Loadouts"/> to use for this game.</param>
         public void SendGameInfo(
             ushort playerId,
-            ushort warpSceneIndex,
-            byte warpTransitionIndex,
-            Dictionary<ushort, byte[]> sceneTransitionRestrictions
+            CondensedGamePreset preset,
+            Loadouts loadouts
         ) {
             _netSender.SendSingleData(
                 ClientPacketId.GameInfo,
                 new GameInfoPacket {
-                    WarpSceneIndex = warpSceneIndex,
-                    WarpTransitionIndex = warpTransitionIndex,
-                    RestrictedTransitions = sceneTransitionRestrictions
+                    Preset = preset,
+                    Loadouts = loadouts
                 },
                 playerId
             );
@@ -103,21 +100,18 @@ namespace HkmpTag.Server {
         /// Send a game in progress packet to the game player.
         /// </summary>
         /// <param name="playerId">The ID of the player.</param>
-        /// <param name="warpSceneIndex">The index of the scene to warp to.</param>
-        /// <param name="warpTransitionIndex">The index of the transition to warp to.</param>
-        /// <param name="sceneTransitionRestrictions">The dictionary containing transition restrictions.</param>
+        /// <param name="preset"><see cref="CondensedGamePreset"/> that contains game preset information.</param>
+        /// <param name="loadouts">The <see cref="Loadouts"/> to use for this game.</param>
         public void SendGameInProgress(
             ushort playerId,
-            ushort warpSceneIndex,
-            byte warpTransitionIndex,
-            Dictionary<ushort, byte[]> sceneTransitionRestrictions
+            CondensedGamePreset preset,
+            Loadouts loadouts
         ) {
             _netSender.SendSingleData(
                 ClientPacketId.GameInProgress,
                 new GameInfoPacket {
-                    WarpSceneIndex = warpSceneIndex,
-                    WarpTransitionIndex = warpTransitionIndex,
-                    RestrictedTransitions = sceneTransitionRestrictions
+                    Preset = preset,
+                    Loadouts = loadouts
                 },
                 playerId
             );

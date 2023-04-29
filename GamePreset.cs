@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace HkmpTag {
@@ -35,6 +36,12 @@ namespace HkmpTag {
         /// </summary>
         [JsonProperty("transitions")]
         public Dictionary<string, string[]> SceneTransitions { get; set; }
+        
+        /// <summary>
+        /// The <see cref="Loadouts"/> for this game preset.
+        /// </summary>
+        [JsonProperty("loadouts"), CanBeNull]
+        public Loadouts Loadouts { get; set; }
     }
 
     /// <summary>
@@ -45,15 +52,20 @@ namespace HkmpTag {
         /// <summary>
         /// The index of the scene to warp to.
         /// </summary>
-        public ushort WarpSceneIndex;
+        public ushort WarpSceneIndex { get; set; }
+
         /// <summary>
         /// The index of the transition within the scene to warp to.
         /// </summary>
-        public byte WarpTransitionIndex;
+        public byte WarpTransitionIndex { get; set; }
         
         /// <summary>
         /// Dictionary mapping scene indices to transition index arrays.
         /// </summary>
         public Dictionary<ushort, byte[]> SceneTransitions { get; set; }
+
+        public CondensedGamePreset() {
+            SceneTransitions = new Dictionary<ushort, byte[]>();
+        }
     }
 }

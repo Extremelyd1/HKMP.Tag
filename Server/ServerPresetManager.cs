@@ -8,13 +8,14 @@ using Newtonsoft.Json;
 
 namespace HkmpTag.Server {
     /// <summary>
-    /// Manager class for server-side transition restrictions.
+    /// Manager class for server-side game presets.
     /// </summary>
-    public class ServerTransitionManager : TransitionManager {
+    /// <inheritdoc />
+    public class ServerPresetManager : TransitionManager {
         /// <summary>
-        /// The file name of the transition preset file.
+        /// The file name of the game presets file.
         /// </summary>
-        private const string PresetFileName = "transition_presets.json";
+        private const string PresetFileName = "tag_game_presets.json";
 
         /// <summary>
         /// The full path of the assembly directory.
@@ -32,6 +33,11 @@ namespace HkmpTag.Server {
         private readonly Dictionary<string, GamePreset> _gamePresets;
 
         /// <summary>
+        /// The default fallback loadouts for when a preset does not have a loadout defined.
+        /// </summary>
+        private Loadouts _defaultLoadouts;
+
+        /// <summary>
         /// Boolean indicating whether the preset file has changed.
         /// </summary>
         private bool _presetFileChanged;
@@ -42,6 +48,12 @@ namespace HkmpTag.Server {
         private GamePreset _currentPreset;
 
         /// <summary>
+        /// The current loadout for the preset. Uses fallback default loadout if either current preset or its
+        /// loadout is null.
+        /// </summary>
+        public Loadouts CurrentLoadouts => _currentPreset?.Loadouts ?? _defaultLoadouts;
+
+        /// <summary>
         /// The list of condensed game presets currently used.
         /// </summary>
         private List<CondensedGamePreset> _currentCondensedPresets;
@@ -50,7 +62,7 @@ namespace HkmpTag.Server {
         public List<CondensedGamePreset> CondensedGamePresets =>
             new List<CondensedGamePreset>(_currentCondensedPresets);
 
-        public ServerTransitionManager(ILogger logger, Random random) : base(logger) {
+        public ServerPresetManager(ILogger logger, Random random) : base(logger) {
             _random = random;
 
             _gamePresets = new Dictionary<string, GamePreset>();
@@ -112,11 +124,23 @@ namespace HkmpTag.Server {
                 return;
             }
 
-            var transitionRestrictions = JsonConvert.DeserializeObject<List<GamePreset>>(fileContents);
-            if (transitionRestrictions == null) {
-                Logger.Warn("Could not read transition presets file");
+            var gamePresets = JsonConvert.DeserializeObject<GamePresets>(fileContents);
+            if (gamePresets == null) {
+                Logger.Warn("Could not read game presets file");
                 return;
             }
+
+            if (gamePresets.DefaultLoadouts == null) {
+                Logger.Warn("Default loadout in game presets file does not exist");
+                return;
+            }
+
+            if (gamePresets.Presets == null) {
+                Logger.Warn("No presets are defined in the game presets file");
+                return;
+            }
+
+            _defaultLoadouts = gamePresets.DefaultLoadouts;
 
             if (reset) {
                 _gamePresets.Clear();
@@ -124,19 +148,19 @@ namespace HkmpTag.Server {
 
             var loadedPresetNames = new List<string>();
 
-            foreach (var restriction in transitionRestrictions) {
-                var name = restriction.Name;
+            foreach (var preset in gamePresets.Presets) {
+                var name = preset.Name;
 
                 if (!_gamePresets.ContainsKey(name)) {
                     loadedPresetNames.Add(name);
-                    _gamePresets[name] = restriction;
+                    _gamePresets[name] = preset;
                 } else {
                     Logger.Warn($"Transition restriction preset with name '{name}' was already defined");
                 }
             }
 
             if (loadedPresetNames.Count == 0) {
-                Logger.Info("Could not load any transition restriction presets!");
+                Logger.Warn("Could not load any transition restriction presets!");
             } else {
                 Logger.Info($"Loaded transition restriction presets: {string.Join(", ", loadedPresetNames)}");
             }

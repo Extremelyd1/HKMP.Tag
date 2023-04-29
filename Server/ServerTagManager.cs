@@ -33,7 +33,7 @@ namespace HkmpTag.Server {
         /// <summary>
         /// The transition manager instance.
         /// </summary>
-        private readonly ServerTransitionManager _transitionManager;
+        private readonly ServerPresetManager _presetManager;
 
         /// <summary>
         /// The instance of random used to decide the initial infected.
@@ -79,7 +79,7 @@ namespace HkmpTag.Server {
             _random = new Random();
 
             _netManager = new ServerNetManager(addon, serverApi.NetServer);
-            _transitionManager = new ServerTransitionManager(_logger, _random);
+            _presetManager = new ServerPresetManager(_logger, _random);
 
             _lastChosenIds = new List<ushort>();
         }
@@ -101,14 +101,14 @@ namespace HkmpTag.Server {
                 });
             }
 
-            _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _settings, _transitionManager));
+            _serverApi.CommandManager.RegisterCommand(new TagCommand(this, _settings, _presetManager));
 
             _netManager.TaggedEvent += playerId => OnTagged(playerId);
 
             _serverApi.ServerManager.PlayerConnectEvent += OnPlayerConnect;
             _serverApi.ServerManager.PlayerDisconnectEvent += OnPlayerDisconnect;
 
-            _transitionManager.Initialize();
+            _presetManager.Initialize();
 
             if (_settings.Auto) {
                 _logger.Info("Game automation is enabled");
@@ -151,7 +151,7 @@ namespace HkmpTag.Server {
                 return;
             }
             
-            _transitionManager.SetPreset(presetName);
+            _presetManager.SetPreset(presetName);
             WarpToPreset(sendMessageAction);
         }
 
@@ -171,9 +171,15 @@ namespace HkmpTag.Server {
             sendMessageAction?.Invoke("Warping players to preset...");
             _logger.Info("Using preset, sending game info");
 
-            var gamePresets = _transitionManager.CondensedGamePresets;
+            var gamePresets = _presetManager.CondensedGamePresets;
             if (gamePresets.Count == 0) {
                 _logger.Warn("No game presets found, cannot warp");
+                return;
+            }
+
+            var loadouts = _presetManager.CurrentLoadouts;
+            if (loadouts == null) {
+                _logger.Warn("No loadouts defined, cannot warp");
                 return;
             }
 
@@ -203,9 +209,8 @@ namespace HkmpTag.Server {
 
                     _netManager.SendGameInfo(
                         randomPlayerId,
-                        preset.WarpSceneIndex,
-                        preset.WarpTransitionIndex,
-                        preset.SceneTransitions
+                        preset,
+                        loadouts
                     );
                 }
             }
@@ -221,9 +226,8 @@ namespace HkmpTag.Server {
                     
                     _netManager.SendGameInfo(
                         id,
-                        randomPreset.WarpSceneIndex,
-                        randomPreset.WarpTransitionIndex,
-                        randomPreset.SceneTransitions
+                        randomPreset,
+                        loadouts
                     );
                 }
             }
@@ -437,7 +441,7 @@ namespace HkmpTag.Server {
                 // this preset already so we are switching
                 _numGamesOnPreset = 0;
 
-                if (!_transitionManager.SetRandomPreset(numPlayers)) {
+                if (!_presetManager.SetRandomPreset(numPlayers)) {
                     _logger.Warn($"Could not find a suitable random preset for number of players ({numPlayers})");
                 }
                 
@@ -459,7 +463,7 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <returns>true if a new preset should be used; otherwise false.</returns>
         private bool UseNewPreset() {
-            var numPresets = _transitionManager.GetPresetNames().Length;
+            var numPresets = _presetManager.GetPresetNames().Length;
 
             if (numPresets == 0) {
                 return false;
@@ -592,9 +596,12 @@ namespace HkmpTag.Server {
         private void OnPlayerConnect(IServerPlayer player) {
             _logger.Info($"Player with ID {player.Id} connected");
 
-            var gamePresets = _transitionManager.CondensedGamePresets;
+            var gamePresets = _presetManager.CondensedGamePresets;
+            var loadouts = _presetManager.CurrentLoadouts;
             if (gamePresets.Count == 0) {
-                _logger.Info("No game presets found, cannot send info");
+                _logger.Warn("No game presets found, cannot send info");
+            } else if (loadouts == null) {
+                _logger.Warn("No loadouts for game, cannot send info");
             } else {
                 var gamePreset = gamePresets[0];
                 
@@ -608,18 +615,16 @@ namespace HkmpTag.Server {
 
                     _netManager.SendGameInProgress(
                         player.Id,
-                        gamePreset.WarpSceneIndex,
-                        gamePreset.WarpTransitionIndex,
-                        gamePreset.SceneTransitions
+                        gamePreset,
+                        loadouts
                     );
                 } else {
                     _logger.Info("Game is not in-progress, sending game info");
 
                     _netManager.SendGameInfo(
                         player.Id,
-                        gamePreset.WarpSceneIndex,
-                        gamePreset.WarpTransitionIndex,
-                        gamePreset.SceneTransitions
+                        gamePreset,
+                        loadouts
                     );
                 }
             }

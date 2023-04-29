@@ -252,7 +252,7 @@ namespace HkmpTag.Client {
         /// Makes the local player an infected.
         /// </summary>
         private void BecomeInfected() {
-            LoadoutUtil.BecomeInfected();
+            LoadoutManager.BecomeInfected();
 
             _clientApi.ClientManager.ChangeTeam(Team.Hive);
             _clientApi.ClientManager.ChangeSkin(1);
@@ -264,7 +264,7 @@ namespace HkmpTag.Client {
         /// Makes the local player a normal (non-infected) player.
         /// </summary>
         private void BecomeNormal() {
-            LoadoutUtil.BecomeNormal();
+            LoadoutManager.BecomeNormal();
 
             _clientApi.ClientManager.ChangeTeam(Team.Moss);
             _clientApi.ClientManager.ChangeSkin(0);
@@ -277,8 +277,10 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="packet">The GameInfoPacket data.</param>
         private void OnGameInfo(GameInfoPacket packet) {
-            _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
-            _transitionManager.WarpToScene(packet.WarpSceneIndex, packet.WarpTransitionIndex);
+            LoadoutManager.Loadouts = packet.Loadouts;
+
+            _transitionManager.OnReceiveGameInfo(packet.Preset.SceneTransitions);
+            _transitionManager.WarpToScene(packet.Preset.WarpSceneIndex, packet.Preset.WarpTransitionIndex);
         }
 
         /// <summary>
@@ -364,10 +366,12 @@ namespace HkmpTag.Client {
         private void OnGameInProgress(GameInfoPacket packet) {
             _gameStarted = true;
 
-            BecomeInfected();
+            LoadoutManager.Loadouts = packet.Loadouts;
 
-            _transitionManager.OnReceiveGameInfo(packet.RestrictedTransitions);
-            _transitionManager.WarpToScene(packet.WarpSceneIndex, packet.WarpTransitionIndex);
+            _transitionManager.OnReceiveGameInfo(packet.Preset.SceneTransitions);
+            _transitionManager.WarpToScene(packet.Preset.WarpSceneIndex, packet.Preset.WarpTransitionIndex);
+            
+            BecomeInfected();
 
             _logger.Info("Game is in progress");
             SendTitleMessage("The game is in progress!");
