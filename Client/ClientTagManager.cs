@@ -71,6 +71,11 @@ namespace HkmpTag.Client {
         /// Stopwatch to keep track of time since round started to apply invulnerability for a brief period.
         /// </summary>
         private readonly Stopwatch _roundStartStopwatch;
+        
+        /// <summary>
+        /// Whether an attack was blocked by Baldur Shell.
+        /// </summary>
+        private bool _attackBlocked;
 
         /// <summary>
         /// Construct the tag manager with the client addon and API.
@@ -130,6 +135,7 @@ namespace HkmpTag.Client {
             ModHooks.AfterTakeDamageHook += OnAfterTakeDamage;
             ModHooks.TakeHealthHook += OnTakeHealth;
             ModHooks.OnEnableEnemyHook += OnEnableEnemy;
+            ModHooks.SetPlayerIntHook += OnSetPlayerInt;
 
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
@@ -157,6 +163,7 @@ namespace HkmpTag.Client {
             ModHooks.AfterTakeDamageHook -= OnAfterTakeDamage;
             ModHooks.TakeHealthHook -= OnTakeHealth;
             ModHooks.OnEnableEnemyHook -= OnEnableEnemy;
+            ModHooks.SetPlayerIntHook -= OnSetPlayerInt;
             
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
         }
@@ -197,6 +204,26 @@ namespace HkmpTag.Client {
 
             return damage;
         }
+        
+        /// <summary>
+        /// Method to check when the 'blockerHits' is decreased to keep track of when an attack is blocked by
+        /// Baldur Shell.
+        /// </summary>
+        /// <param name="name">The name of the int that is set.</param>
+        /// <param name="orig">The original value that was set.</param>
+        /// <returns>The new value to set for this variable.</returns>
+        private int OnSetPlayerInt(string name, int orig) {
+            if (name == "blockerHits") {
+                // The 'blockerHits' variable is changed, so we check if it decreased by 1, and if so we
+                // mark it so that when the player is attacked, we know that the attack was blocked by the charm
+                var prev = PlayerData.instance.blockerHits;
+                if (prev == orig + 1) {
+                    _attackBlocked = true;
+                }
+            }
+
+            return orig;
+        }
 
         /// <summary>
         /// Method on the AfterTakeDamageHook to check when the player is tagged.
@@ -205,7 +232,23 @@ namespace HkmpTag.Client {
         /// <param name="amount">The original damage that would be taken.</param>
         /// <returns>The new damage that should be taken.</returns>
         private int OnAfterTakeDamage(int type, int amount) {
+            var attackBlocked = _attackBlocked;
+            _attackBlocked = false;
+            
             if (!_clientApi.NetClient.IsConnected || !_gameStarted || _isTagged) {
+                return amount;
+            }
+
+            // If Carefree Melody is equipped and the variable 'hitsSinceShielded' is exactly 0, we know that it was
+            // reset because the attack was blocked by the charm, so we do not tag the local player
+            if (
+                HeroController.instance.carefreeShieldEquipped && 
+                ReflectionHelper.GetField<HeroController, int>(HeroController.instance, "hitsSinceShielded") == 0
+            ) {
+                return amount;
+            }
+
+            if (attackBlocked) {
                 return amount;
             }
 

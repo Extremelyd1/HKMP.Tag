@@ -18,7 +18,9 @@ namespace HkmpTag.Client {
             ResetDreamGate();
             SetKingSoul();
 
-            ApplyLoadout(Loadouts.InfectedLoadout);
+            if (Loadouts != null) {
+                ApplyLoadout(Loadouts.InfectedLoadout);
+            }
         }
 
         /// <summary>
@@ -29,7 +31,9 @@ namespace HkmpTag.Client {
             ResetDreamGate();
             SetKingSoul();
 
-            ApplyLoadout(Loadouts.NormalLoadout);
+            if (Loadouts != null) {
+                ApplyLoadout(Loadouts.NormalLoadout);
+            }
         }
 
         /// <summary>
@@ -84,8 +88,10 @@ namespace HkmpTag.Client {
                 var charmNum = (int) charm;
                 if (charm == Loadout.Charm.Grimmchild) {
                     PlayerData.instance.grimmChildLevel = 4;
+                    PlayerData.instance.destroyedNightmareLantern = false;
                 } else if (charm == Loadout.Charm.CarefreeMelody) {
                     PlayerData.instance.grimmChildLevel = 5;
+                    PlayerData.instance.destroyedNightmareLantern = true;
                     charmNum = 40;
                 }
                 
@@ -110,6 +116,7 @@ namespace HkmpTag.Client {
             pd.quakeLevel = 0;
             pd.screamLevel = 0;
             pd.hasDash = false;
+            pd.canDash = false;
             pd.hasWalljump = false;
             pd.hasSuperDash = false;
             pd.hasDoubleJump = false;
@@ -142,6 +149,7 @@ namespace HkmpTag.Client {
                         break;
                     case Loadout.Skill.MothwingCloak:
                         pd.hasDash = true;
+                        pd.canDash = true;
                         break;
                     case Loadout.Skill.MantisClaw:
                         pd.hasWalljump = true;
@@ -156,6 +164,8 @@ namespace HkmpTag.Client {
                         pd.hasAcidArmour = true;
                         break;
                     case Loadout.Skill.ShadeCloak:
+                        pd.hasDash = true;
+                        pd.canDash = true;
                         pd.hasShadowDash = true;
                         break;
                     case Loadout.Skill.DreamNail:
