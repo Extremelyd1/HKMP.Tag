@@ -242,6 +242,7 @@ namespace HkmpTag.Client {
             // If Carefree Melody is equipped and the variable 'hitsSinceShielded' is exactly 0, we know that it was
             // reset because the attack was blocked by the charm, so we do not tag the local player
             if (
+                type == 1 &&
                 HeroController.instance.carefreeShieldEquipped && 
                 ReflectionHelper.GetField<HeroController, int>(HeroController.instance, "hitsSinceShielded") == 0
             ) {
@@ -324,7 +325,10 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="packet">The GameInfoPacket data.</param>
         private void OnGameInfo(GameInfoPacket packet) {
+            // Set loadouts and apply the normal loadout immediately, to prevent players from reaching areas that
+            // would be inaccessible with the loadout when the game starts
             LoadoutManager.Loadouts = packet.Loadouts;
+            LoadoutManager.BecomeNormal();
 
             _transitionManager.OnReceiveGameInfo(packet.Preset.SceneTransitions);
             _transitionManager.WarpToScene(packet.Preset.WarpSceneIndex, packet.Preset.WarpTransitionIndex);

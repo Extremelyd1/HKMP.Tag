@@ -78,11 +78,11 @@ namespace HkmpTag.Client {
         /// <param name="charms">An array containing the charms to set.</param>
         private static void SetCharms(params Loadout.Charm[] charms) {
             // Un-equip all charms
-            for (var i = 1; i < 40; i++) {
+            for (var i = 1; i < 41; i++) {
                 PlayerData.instance.SetBool("equippedCharm_" + i, false);
-                GameManager.instance.UnequipCharm(i);
             }
-            
+            PlayerData.instance.equippedCharms.Clear();
+
             // Equip the charms that are given as parameters
             foreach (var charm in charms) {
                 var charmNum = (int) charm;
@@ -98,7 +98,7 @@ namespace HkmpTag.Client {
                 PlayerData.instance.SetBool("equippedCharm_" + charmNum, true);
                 GameManager.instance.EquipCharm(charmNum);
             }
-            
+
             // Run some update methods to make sure UI doesn't glitch out
             HeroController.instance.CharmUpdate();
             GameManager.instance.RefreshOvercharm();

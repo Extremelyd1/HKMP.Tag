@@ -2,18 +2,14 @@
 The Tag game-mode implemented as an addon for the HKMP API.
 
 ## How it works
-When the game is started a random player will be selected as the initial "infected".
+When the game is started a random player (or multiple, depending on the number of players) will be selected as the initial "infected".
 They will get a different skin and be placed on a different team.
 The task of this player is to infect all other non-infected players.
-
-The infected players will be equipped with Nailmaster's Glory, while the non-infected players
-will be equipped with Wayward Compass and Kingsoul. The non-infected players will also have access
-to the Vengeful Spirit ability to keep the infected players at bay.
 
 Once a non-infected player is hit (either by another player or by a hazard) they will automatically
 join the opposing team, change skin and get the corresponding equipment.
 
-The game ends whenever there is only one player left uninfected, which is deemed the winner.
+The game ends whenever there is only one player left uninfected, who is then deemed the winner.
 
 ## Install
 The addon can be installed by dropping the `HKMPTag.dll` (which can be found on the
@@ -49,9 +45,26 @@ The Tag games can be played fully automatic by setting the server setting `auto`
 Automatic games will be started once at least 3 players are online on the server.
 Playable areas are defined by presets, which are configurations that denote where to warp players to and which transitions are then restricted.
 This will effectively lock players in a certain area in which the game can be played.
-These presets can be defined in a file next to the `HKMPTag.dll` file, named `transition_presets.json`.
-For an example of the format these presets should have, see the example file [`transition_presets_example.json`](https://github.com/Extremelyd1/HKMP-Tag/blob/master/transition_presets_example.json).
-The fields have the following meaning:
+The preset will also give both teams a specific configuration of abilities and charms.
+These presets can be defined in a file next to the `HKMPTag.dll` file, named `tag_game_presets.json`.
+For an example of the format these presets should have, see the example file [`tag_game_presets_example.json`](https://github.com/Extremelyd1/HKMP-Tag/blob/master/tag_game_presets_example.json).
+
+The configuration can contain a pair of default loadouts for both teams.
+These loadouts can denote a list of charms, list of skills and a specific amount of dream essence (optional).
+The names for the charms to choose from are the following:  
+`GatheringSwarm`, `WaywardCompass`, `GrubSong`, `StalwartShell`, `BaldurShell`, `FuryOfTheFallen`, `QuickFocus`, 
+`LifebloodHeart`, `LifebloodCore`, `DefendersCrest`, `Flukenest`, `ThornsOfAgony`, `MarkOfPride`, `SteadyBody`, 
+`HeavyBlow`, `SharpShadow`, `SporeShroom`, `LongNail`, `ShamanStone`, `SoulCatcher`, `SoulEater`, `GlowingWomb`, 
+`UnbreakableHeart`, `UnbreakableGreed`, `UnbreakableStrength`, `NailmastersGlory`, `JonisBlessing`, `ShapeOfUnn`, 
+`Hiveblood`, `Dreamwielder`, `Dashmaster`, `QuickSlash`, `SpellTwister`, `DeepFocus`, `GrubberflysElegy`, `Kingsoul`, 
+`Sprintmaster`, `Dreamshield`, `Weaversong`, `Grimmchild`, `CarefreeMelody`
+
+For the skills, the following names can be used:  
+`VengefulSpirit`, `DesolateDive`, `HowlingWraiths`, `ShadeSoul`, `DescendingDark`, `AbyssShriek`, `MothwingCloak`, 
+`MantisClaw`, `CrystalHeart`, `MonarchWings`, `IsmasTear`, `ShadeCloak`, `DreamNail`, `CycloneSlash`, `DashSlash`, 
+`GreatSlash`
+
+The fields for a preset have the following meaning:
 - `name`: The name of the preset used for logging and for manually warping players to.
 - `warp_scene`: The name of the scene to warp players to (see [the transition JSON](https://github.com/Extremelyd1/HKMP-Tag/blob/master/Resource/transitions.json) for a full list of possible options).
 - `warp_transition`: The name of the transition in the scene to warp players to.

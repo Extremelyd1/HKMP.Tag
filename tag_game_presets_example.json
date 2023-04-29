@@ -1,0 +1,77 @@
+{
+    "default_loadouts": {
+        "normal": {
+            "charms": [
+                "WaywardCompass", "Kingsoul"
+            ],
+            "skills": [
+                "VengefulSpirit", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+            ],
+            "essence": 0
+        },
+        "infected": {
+            "charms": [
+                "NailmastersGlory"
+            ],
+            "skills": [
+                "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+            ],
+            "essence": 0
+        }
+    },
+    "presets": [
+        {
+            "name": "lurker",
+            "warp_transitions": {
+                "GG_Lurker": [
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 15,
+            "transitions": {
+                "GG_Lurker": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "queens-station",
+            "warp_transitions": {
+                "Fungus2_01": [
+                    "right1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus2_01": [
+                    "right1",
+                    "left2",
+                    "left1",
+                    "left3"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "CarefreeMelody"
+                    ],
+                    "skills": [
+                        "VengefulSpirit", "CycloneSlash", "DashSlash", "GreatSlash", "DreamNail"
+                    ],
+                    "essence": 2
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        }
+    ]
+}
