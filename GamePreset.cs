@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace HkmpTag {
@@ -40,7 +39,7 @@ namespace HkmpTag {
         /// <summary>
         /// The <see cref="Loadouts"/> for this game preset.
         /// </summary>
-        [JsonProperty("loadouts"), CanBeNull]
+        [JsonProperty("loadouts")]
         public Loadouts Loadouts { get; set; }
     }
 
