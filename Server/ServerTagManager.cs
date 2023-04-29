@@ -525,7 +525,7 @@ namespace HkmpTag.Server {
 
             _logger.Info(logMsg);
 
-            _netManager.SendGameEnd(hasWinner, winnerId);
+            _netManager.SendGameEnd(_players.Values.ToList(), hasWinner, winnerId);
 
             _currentDelayAction?.Stop();
 

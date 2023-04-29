@@ -27,7 +27,7 @@ namespace HkmpTag.Client {
         /// Set of transition points that are currently restricted. Used to revert restriction if the addon is
         /// disabled.
         /// </summary>
-        private HashSet<TransitionPoint> _currentTransitionPoints;
+        private readonly HashSet<TransitionPoint> _currentTransitionPoints;
 
         public ClientTransitionManager(ILogger logger) : base(logger) {
             _currentTransitionPoints = new HashSet<TransitionPoint>();

@@ -87,13 +87,29 @@ namespace HkmpTag.Server {
         /// <summary>
         /// Send a game end packet with the information about game winner.
         /// </summary>
+        /// <param name="players">A list of ServerTagPlayer instances to send the game end to.</param>
         /// <param name="hasWinner">Whether the game has a winner.</param>
         /// <param name="winnerId">The ID of the winner.</param>
-        public void SendGameEnd(bool hasWinner, ushort winnerId = 0) {
-            _netSender.BroadcastSingleData(ClientPacketId.GameEnd, new GameEndPacket {
-                HasWinner = hasWinner,
-                WinnerId = winnerId
-            });
+        public void SendGameEnd(
+            List<ServerTagPlayer> players, 
+            bool hasWinner, 
+            ushort winnerId = 0
+        ) {
+            foreach (var player in players) {
+                try {
+                    _netSender.SendSingleData(
+                        ClientPacketId.GameEnd,
+                        new GameEndPacket {
+                            HasWinner = hasWinner,
+                            IsWinner = winnerId == player.Id,
+                            WinnerId = winnerId
+                        },
+                        player.Id
+                    );
+                } catch {
+                    // Just in case a player is no longer connected that we are trying to send to
+                }
+            }
         }
 
         /// <summary>

@@ -90,45 +90,6 @@ namespace HkmpTag {
     }
 
     /// <summary>
-    /// Packet data for client-bound loadout information. Which charms to have equipped and which skills are
-    /// enabled.
-    /// </summary>
-    public class LoadoutPacket : IPacketData {
-        /// <summary>
-        /// Loadout for non-infected players.
-        /// </summary>
-        public Loadout NormalLoadout { get; set; }
-        
-        /// <summary>
-        /// Loadout for infected players.
-        /// </summary>
-        public Loadout InfectedLoadout { get; set; }
-
-        public LoadoutPacket() {
-            NormalLoadout = new Loadout();
-            InfectedLoadout = new Loadout();
-        }
-        
-        /// <inheritdoc />
-        public void WriteData(IPacket packet) {
-            NormalLoadout.WriteData(packet);
-            InfectedLoadout.WriteData(packet);
-        }
-
-        /// <inheritdoc />
-        public void ReadData(IPacket packet) {
-            NormalLoadout.ReadData(packet);
-            InfectedLoadout.ReadData(packet);
-        }
-
-        /// <inheritdoc />
-        public bool IsReliable => true;
-
-        /// <inheritdoc />
-        public bool DropReliableDataIfNewerExists => true;
-    }
-
-    /// <summary>
     /// Packet data for the game start.
     /// </summary>
     public class GameStartPacket : IPacketData {
@@ -182,25 +143,40 @@ namespace HkmpTag {
         /// Whether the game has a winner.
         /// </summary>
         public bool HasWinner { get; set; }
+        
+        /// <summary>
+        /// Whether the local player is the winner.
+        /// </summary>
+        public bool IsWinner { get; set; }
 
         /// <summary>
-        /// The ID of the winner if there is a winner.
+        /// The ID of the winner if there is a winner and it is not the local player.
         /// </summary>
         public ushort WinnerId { get; set; }
 
         /// <inheritdoc />
         public void WriteData(IPacket packet) {
             packet.Write(HasWinner);
+
             if (HasWinner) {
-                packet.Write(WinnerId);
+                packet.Write(IsWinner);
+
+                if (!IsWinner) {
+                    packet.Write(WinnerId);
+                }
             }
         }
 
         /// <inheritdoc />
         public void ReadData(IPacket packet) {
             HasWinner = packet.ReadBool();
+
             if (HasWinner) {
-                WinnerId = packet.ReadUShort();
+                IsWinner = packet.ReadBool();
+
+                if (!IsWinner) {
+                    WinnerId = packet.ReadUShort();
+                }
             }
         }
 

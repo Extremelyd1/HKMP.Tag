@@ -24,7 +24,7 @@ namespace HkmpTag.Client {
         /// Initialize the manager by creating the crown object.
         /// </summary>
         public void Initialize() {
-            CreateCrownObject();
+            CreateCrownPrefab();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace HkmpTag.Client {
                 _currentCrownObject = Object.Instantiate(_crownPrefab);
             }
 
-            _currentCrownObject.GetComponent<IconBehaviour>().Host = playerContainer;
+            _currentCrownObject.GetComponent<IconBehaviour>().SetHost(playerContainer);
             _currentCrownObject.SetActive(true);
         }
 
@@ -52,10 +52,10 @@ namespace HkmpTag.Client {
         /// <summary>
         /// Creates the crown prefab.
         /// </summary>
-        private void CreateCrownObject() {
+        private void CreateCrownPrefab() {
             var sprite = LoadIconSprite();
 
-            _crownPrefab = new GameObject();
+            _crownPrefab = new GameObject("Tag Crown Icon Prefab");
             var spriteRenderer = _crownPrefab.AddComponent<SpriteRenderer>();
             spriteRenderer.sprite = sprite;
 
@@ -119,28 +119,15 @@ namespace HkmpTag.Client {
         private float _lastCycle;
 
         /// <summary>
-        /// The GameObject on which the crown object is placed.
+        /// Set the host of the icon. This will set the parent of this icon to be the given game object. 
         /// </summary>
-        public GameObject Host { set; private get; }
+        /// <param name="host">The GameObject to be the host.</param>
+        public void SetHost(GameObject host) { 
+            transform.SetParent(host.transform);
+        }
 
         public void Start() {
-            SetLocation();
-        }
-
-        public void OnEnable() {
-            SetLocation();
-        }
-
-        /// <summary>
-        /// Set the location of the crown object on the host.
-        /// </summary>
-        private void SetLocation() {
-            if (Host == null) {
-                return;
-            }
-
             transform.localScale = new Vector2(0.2f, 0.2f);
-            transform.SetParent(Host.transform);
         }
 
         public void Update() {

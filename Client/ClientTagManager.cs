@@ -63,9 +63,9 @@ namespace HkmpTag.Client {
         private bool _isTagged;
 
         /// <summary>
-        /// Integer representing the ID of the last winner.
+        /// Packet of last game end information.
         /// </summary>
-        private int _lastWinner;
+        private GameEndPacket _lastGameEnd;
 
         /// <summary>
         /// Stopwatch to keep track of time since round started to apply invulnerability for a brief period.
@@ -104,7 +104,7 @@ namespace HkmpTag.Client {
 
             _gameStarted = false;
             _isTagged = false;
-            _lastWinner = -1;
+            _lastGameEnd = new GameEndPacket();
 
             _netManager.GameInfoEvent += OnGameInfo;
             _netManager.GameStartedEvent += OnGameStart;
@@ -130,7 +130,7 @@ namespace HkmpTag.Client {
             ModHooks.AfterTakeDamageHook += OnAfterTakeDamage;
             ModHooks.TakeHealthHook += OnTakeHealth;
             ModHooks.OnEnableEnemyHook += OnEnableEnemy;
-            
+
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
             if (GameManager.instance.IsGameplayScene()) {
@@ -234,7 +234,7 @@ namespace HkmpTag.Client {
         private bool OnEnableEnemy(GameObject enemy, bool dead) {
             return true;
         }
-
+        
         /// <summary>
         /// Callback method for when the active scene changes.
         /// </summary>
@@ -245,6 +245,10 @@ namespace HkmpTag.Client {
                 _logger.Info("Changed to non-gameplay scene, disconnecting from server");
 
                 _clientApi.ClientManager.Disconnect();
+            }
+            
+            if (!_gameStarted && _lastGameEnd.IsWinner) {
+                _iconManager.ShowOnPlayer(HeroController.instance.gameObject);
             }
         }
 
@@ -313,11 +317,21 @@ namespace HkmpTag.Client {
             _logger.Info($"  Usernames: {usernameString}");
 
             if (packet.IsInfected) {
-                Title.Show("The game has started, you are the infected!");
-                SendMessage($"The game has started, the infected are: {usernameString}");
+                Title.Show("The game has started, you are infected!");
+
+                var msg = "The game has started, you are infected";
+                if (packet.InfectedIds.Count <= 1) {
+                    msg += "!";
+                } else {
+                    msg += $" with: {usernameString}.";
+                }
+
+                SendMessage(msg);
             } else {
-                if (packet.InfectedIds.Count == 1
-                    && _clientApi.ClientManager.TryGetPlayer(packet.InfectedIds[0], out var player)) {
+                if (
+                    packet.InfectedIds.Count == 1 && 
+                    _clientApi.ClientManager.TryGetPlayer(packet.InfectedIds[0], out var player)
+                ) {
                     SendTitleMessage($"The game has started, '{player.Username}' is infected!");
                 } else {
                     Title.Show("The game has started!");
@@ -332,26 +346,25 @@ namespace HkmpTag.Client {
         /// <param name="packet">The GameEndPacket data.</param>
         private void OnGameEnd(GameEndPacket packet) {
             _gameStarted = false;
+            _lastGameEnd = packet;
 
             if (packet.HasWinner) {
                 _logger.Info($"Game has ended, winner: {packet.WinnerId}");
-                if (_clientApi.ClientManager.TryGetPlayer(packet.WinnerId, out var player)) {
-                    _lastWinner = player.Id;
+                if (packet.IsWinner) {
+                    _iconManager.ShowOnPlayer(HeroController.instance.gameObject);
 
+                    SendTitleMessage("You won the game!");
+                    return;
+                }
+                
+                if (_clientApi.ClientManager.TryGetPlayer(packet.WinnerId, out var player)) {
                     if (player.IsInLocalScene) {
                         _iconManager.ShowOnPlayer(player.PlayerContainer);
                     }
 
                     SendTitleMessage($"{player.Username} has won the game!");
-                } else {
-                    _lastWinner = -1;
-
-                    _iconManager.ShowOnPlayer(HeroController.instance.gameObject);
-
-                    SendTitleMessage("You won the game!");
+                    return;
                 }
-
-                return;
             }
 
             _logger.Info("Game has ended without winner");
@@ -407,7 +420,12 @@ namespace HkmpTag.Client {
         /// </summary>
         /// <param name="player">The player that entered the scene.</param>
         private void OnPlayerEnterScene(IClientPlayer player) {
-            if (_gameStarted || _lastWinner != player.Id) {
+            if (
+                _gameStarted || 
+                !_lastGameEnd.HasWinner || 
+                _lastGameEnd.IsWinner || 
+                _lastGameEnd.WinnerId != player.Id
+            ) {
                 return;
             }
 
