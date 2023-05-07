@@ -172,6 +172,13 @@ namespace HkmpTag.Server {
         /// </summary>
         /// <param name="name">The name of the preset.</param>
         public void SetPreset(string name) {
+            // If the preset file changed, try to load the preset file again
+            if (_presetFileChanged) {
+                LoadPresets(true);
+
+                _presetFileChanged = false;
+            }
+            
             if (!_gamePresets.TryGetValue(name, out var preset)) {
                 Logger.Warn($"Tried to set preset '{name}', while it did not exist");
                 return;
