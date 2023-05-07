@@ -76,7 +76,11 @@
         </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+        <SourceFiles Include="$(TargetDir)$(AssemblyName).dll;$(TargetDir)$(AssemblyName).pdb"/>
+        <Dest Include="$(OutputDirectory)"/>
+    </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(OutputDirectory)" />
+        <Copy SourceFiles="@(SourceFiles)" DestinationFolder="%(Dest.FullPath)"/>
     </Target>
 </Project>
