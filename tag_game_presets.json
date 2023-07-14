@@ -1,0 +1,2569 @@
+{
+    "default_loadouts": {
+        "normal": {
+            "charms": [
+                "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+            ],
+            "skills": [
+                "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+            ]
+        },
+        "infected": {
+            "charms": [
+                "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+            ],
+            "skills": [
+                "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+            ]
+        }
+    },
+    "presets": [
+        {
+            "name": "soul-sanctum-small",
+            "warp_transitions": {
+                "Ruins1_30": [
+                    "left1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Ruins1_30": [
+                    "left2",
+                    "bot1",
+                    "left1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "city-storerooms",
+            "warp_transitions": {
+                "Ruins1_17": [
+                    "top1"
+                ]
+            },
+            "max_players": 10,
+            "transitions": {
+                "Ruins1_17": [
+                    "bot1",
+                    "top1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "unn",
+            "warp_transitions": {
+                "Fungus1_Slug": [
+                    "right1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus1_Slug": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "false-knight",
+            "warp_transitions": {
+                "Crossroads_10": [
+                    "left1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_10": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "glowing-womb",
+            "warp_transitions": {
+                "Crossroads_22": [
+                    "bot1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_22": [
+                    "bot1"
+                ]
+
+            }
+        },
+        {
+            "name": "basin-room",
+            "warp_transitions": {
+                "Abyss_04": [
+                    "top1"
+                ]
+            },
+            "max_players": 10,
+            "transitions": {
+                "Abyss_04": [
+                    "right1",
+                    "left1",
+                    "top1",
+                    "bot1"
+                ]
+            }
+        },
+        {
+            "name": "resting-grounds-vertical1",
+            "warp_transitions": {
+                "RestingGrounds_05": [
+                    "right2"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "RestingGrounds_05": [
+                    "right1",
+                    "right2",
+                    "left1",
+                    "left2",
+                    "left3",
+                    "bot1"
+                ]
+            }
+        },
+        {
+            "name": "resting-grounds-vertical2",
+            "warp_transitions": {
+                "RestingGrounds_05": [
+                    "right2"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 8,
+            "transitions": {
+                "RestingGrounds_05": [
+                    "bot1",
+                    "left1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "resting-grounds-small",
+            "warp_transitions": {
+                "RestingGrounds_06": [
+                    "left1"
+                ]
+            },
+            "min_players": 4,
+            "max_players": 7,
+            "transitions": {
+                "RestingGrounds_06": [
+                    "left1",
+                    "right1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "edge-hive-entrance",
+            "warp_transitions": {
+                "Deepnest_East_01": [
+                    "top1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Deepnest_East_01": [
+                    "top1",
+                    "bot1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "kingdoms-edge-markoth",
+            "warp_transitions": {
+                "Deepnest_East_10": [
+                    "left1"
+                ]
+            },
+            "max_players": 4,
+            "transitions": {
+                "Deepnest_East_10": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "kingdoms-edge-small1",
+            "warp_transitions": {
+                "Deepnest_East_08": [
+                    "top1",
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Deepnest_East_08": [
+                    "right1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "VengefulSpirit", "DashSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "CrystalHeart"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "SharpShadow",
+                        "SpellTwister", "GrubSong", "QuickSlash", "ShamanStone"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "ShadeCloak", "CycloneSlash",
+                        "DashSlash", "DesolateDive", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "greenpath-hornet",
+            "warp_transitions": {
+                "Fungus1_04": [
+                    "right1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus1_04": [
+                    "right1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "traitor-lord",
+            "warp_transitions": {
+                "Fungus3_23": [
+                    "right1"
+                ]
+            },
+            "max_players": 3,
+            "transitions": {
+                "Fungus3_23": [
+                    "left1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "kings-station",
+            "warp_transitions": {
+                "Ruins2_06": [
+                    "left1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Ruins2_06": [
+                    "left1",
+                    "left2",
+                    "right2",
+                    "top1"
+                ]
+            }
+        },
+        {
+            "name": "above-kings-station",
+            "warp_transitions": {
+                "Ruins2_05": [
+                    "left1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 8,
+            "transitions": {
+                "Ruins2_05": [
+                    "left1",
+                    "top1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "Sprintmaster", "QuickSlash"
+                    ],
+                    "skills": [
+                        "DesolateDive", "GreatSlash", "DashSlash", "MothwingCloak", "MantisClaw",
+                        "MonarchWings", "IsmasTear"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "SharpShadow",
+                        "SpellTwister", "GrubSong"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "HowlingWraiths", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "basin-elevator",
+            "warp_transitions": {
+                "Abyss_01": [
+                    "right1"
+                ]
+            },
+            "min_players": 4,
+            "max_players": 8,
+            "transitions": {
+                "Abyss_01": [
+                    "left1", "left2", "left3", "right1", "right2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "GreatSlash", "DashSlash", "MothwingCloak", "MantisClaw",
+                        "CrystalHeart", "IsmasTear", "ShadeCloak", "VengefulSpirit", "MonarchWings"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow", "GlowingWomb", "Kingsoul"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash", "VengefulSpirit"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-cornifer",
+            "warp_transitions": {
+                "Fungus1_24": [
+                    "left1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus1_24": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "ShapeOfUnn", "Sprintmaster", "DeepFocus", "QuickFocus", 
+                        "SporeShroom"
+                    ],
+                    "skills": [
+                        "DashSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "GrubberflysElegy", "Kingsoul"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "DesolateDive"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-medium",
+            "warp_transitions": {
+                "Fungus1_24": [
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 12,
+            "transitions": {
+                "Fungus3_05": [
+                    "left1",
+                    "right2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Flukenest", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
+                        "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-shaman",
+            "warp_transitions": {
+                "Fungus3_44": [
+                    "door1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Fungus3_44": [
+                    "bot1",
+                    "door1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "mask-maker",
+            "warp_transitions": {
+                "Deepnest_42": [
+                    "left1",
+                    "bot1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Deepnest_42": [
+                    "left1",
+                    "top1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "DesolateDive", "MothwingCloak", "MantisClaw", "MonarchWings", "DashSlash", 
+                        "GreatSlash", "CrystalHeart"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster",
+                        "MarkOfPride", "SharpShadow", "SpellTwister", "GrubSong", "QuickSlash"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash",
+                        "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "quick-slash-room",
+            "warp_transitions": {
+                "Deepnest_East_14b": [
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Deepnest_East_14b": [
+                    "right1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "DashSlash", "CrystalHeart", 
+                        "ShadeCloak", "IsmasTear", "VengefulSpirit", "GreatSlash", "CycloneSlash", 
+                        "DashSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "city-spire-small",
+            "warp_transitions": {
+                "Ruins2_01": [
+                    "bot1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Ruins2_01": [
+                    "top1",
+                    "left2",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "city-gate",
+            "warp_transitions": {
+                "Fungus2_21": [
+                    "left1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus2_21": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "DashSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "DashSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-station2",
+            "warp_transitions": {
+                "Fungus2_01": [
+                    "right1"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 8,
+            "transitions": {
+                "Fungus2_01": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "StalwartShell"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "fog-canyon-small",
+            "warp_transitions": {
+                "Fungus3_02": [
+                    "left1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Fungus3_02": [
+                    "left1",
+                    "left2",
+                    "right1",
+                    "right2"
+                ]
+            }
+        },
+        {
+            "name": "queens-gardens-small",
+            "warp_transitions": {
+                "Fungus3_04": [
+                    "left2"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Fungus3_04": [
+                    "left2",
+                    "right2",
+                    "right1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "aspid-arena",
+            "warp_transitions": {
+                "Crossroads_08": [
+                    "left1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Crossroads_08": [
+                    "left1",
+                    "left2",
+                    "right1",
+                    "right2"
+                ]
+            }
+        },
+        {
+            "name": "crossroads-elevator",
+            "warp_transitions": {
+                "Crossroads_07": [
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Crossroads_07": [
+                    "left1",
+                    "left2",
+                    "left3",
+                    "right1",
+                    "right2",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "IsmasTear"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Sprintmaster", "StalwartShell", "Kingsoul", "GrubSong", "SpellTwister"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "IsmasTear", "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "crystal-peaks-small1",
+            "warp_transitions": {
+                "Mines_02": [
+                    "top2"
+                ]
+            },
+            "max_players": 8,
+            "transitions": {
+                "Mines_02": [
+                    "top1",
+                    "top2",
+                    "left1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "crystal-peaks-small2",
+            "warp_transitions": {
+                "Mines_03": [
+                    "top1"
+                ]
+            },
+            "max_players": 5,
+            "transitions": {
+                "Mines_03": [
+                    "bot1",
+                    "top1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name":"crystal-peaks-darkroom",
+            "warp_transitions": {
+                "Mines_29": [
+                    "left1"
+                ]
+            },
+            "min_players": 4,
+            "max_players": 9,
+            "transitions": {
+                "Mines_04": [
+                    "left1",
+                    "right1",
+                    "top1"
+                ],
+                "Mines_29": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "HowlingWraiths", "CycloneSlash", "DashSlash", "MothwingCloak", "MantisClaw", 
+                        "MonarchWings", "IsmasTear"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "LongNail",
+                        "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", 
+                        "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "baldur-shell-room",
+            "warp_transitions": {
+                "Fungus1_28": [
+                    "left1",
+                    "left2"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 8,
+            "transitions": {
+                "Fungus1_28": [
+                    "left1",
+                    "left2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                    ],
+                    "skills": [
+                        "DashSlash", "ShadeCloak", "MantisClaw", "MonarchWings", "CycloneSlash", "DashSlash", 
+                        "GreatSlash", "CrystalHeart", "HowlingWraiths", "DesolateDive"
+                    ],
+                    "essence": 0
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow", "Kingsoul", "StalwartShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "VengefulSpirit"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "greenpath-cornifer",
+            "warp_transitions": {
+                "Fungus1_06": [
+                    "left1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Fungus1_06": [
+                    "left1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "greenpath-small1",
+            "warp_transitions": {
+                "Fungus1_22": [
+                    "top1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Fungus1_22": [
+                    "left1",
+                    "top1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "HowlingWraiths",
+                        "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "StalwartShell", "MarkOfPride"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "greenpath-small2",
+            "warp_transitions": {
+                "Fungus1_21": [
+                    "top1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Fungus1_21": [
+                    "top1",
+                    "right1",
+                    "bot1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "greenpath-crossroads",
+            "warp_transitions": {
+                "Fungus1_20_v02": [
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Fungus1_20_v02": [
+                    "right1",
+                    "bot2",
+                    "bot1"
+                ]
+            }
+        },
+        {
+            "name": "deepnest-small",
+            "warp_transitions": {
+                "Deepnest_33": [
+                    "top1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Deepnest_33": [
+                    "bot1",
+                    "top1",
+                    "top2"
+                ]
+            }
+        },
+        {
+            "name": "nailsmith-shortcut",
+            "warp_transitions": {
+                "Room_GG_Shortcut": [
+                    "top1"
+                ]
+            },
+            "max_players": 4,
+            "transitions": {
+                "Room_GG_Shortcut": [
+                    "left1",
+                    "top1"
+                ]
+
+            }
+        },
+        {
+            "name": "waterways-small1",
+            "warp_transitions": {
+                "Waterways_09": [
+                    "right1"
+                ]
+            },
+            "max_players": 4,
+            "transitions": {
+                "Waterways_09": [
+                    "right1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "waterways-small2",
+            "warp_transitions": {
+                "Waterways_01": [
+                    "top1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 10,
+            "transitions": {
+                "Waterways_01": [
+                    "left1",
+                    "bot1",
+                    "right1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom", "ShapeOfUnn"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "StalwartShell"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "waterways-small3",
+            "warp_transitions": {
+                "Waterways_08": [
+                    "top1"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 15,
+            "transitions": {
+                "Waterways_08": [
+                    "left1",
+                    "top1",
+                    "left2"
+                ]
+
+            }
+        },
+        {
+            "name": "crystallized-mound",
+            "warp_transitions": {
+                "Mines_35": [
+                    "left1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Mines_35": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "DescendingDark",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "Kingsoul", "GrubSong"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "DescendingDark",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "jonis-darkroom",
+            "warp_transitions": {
+                "Cliffs_04": [
+                    "left1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Cliffs_04": [
+                    "left1", "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "DesolateDive", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
+                        "CycloneSlash", "DashSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "LongNail",
+                        "SharpShadow", "Flukenest", "SpellTwister", "ShamanStone", "GrubSong"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", 
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "VengefulSpirit"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "ancestral-mound",
+            "warp_transitions": {
+                "Crossroads_ShamanTemple": [
+                    "left1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_ShamanTemple": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Dashmaster", "Sprintmaster", "LongNail", "MarkOfPride"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "basin-ore",
+            "warp_transitions": {
+                "Abyss_17": [
+                    "top1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 10,
+            "transitions": {
+                "Abyss_17": [
+                    "top1"
+                ]
+            }
+        },
+        {
+            "name": "kings-pass",
+            "warp_transitions": {
+                "Tutorial_01": [
+                    "top1"
+                ]
+            },
+            "max_players": 10,
+            "transitions": {
+                "Tutorial_01": [
+                    "right1",
+                    "top1",
+                    "top2"
+                ]
+            }
+        },
+        {
+            "name": "fungal-small",
+            "warp_transitions": {
+                "Fungus2_33": [ 
+                    "left1"
+                ]
+            },
+            "max_players": 4,
+            "transitions": {
+                "Fungus2_33": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "VengefulSpirit", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "fungal-medium",
+            "warp_transitions": {
+                "Fungus2_10": [
+                    "right1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 7,
+            "transitions": {
+                "Fungus2_10": [
+                    "right1",
+                    "right2",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart", 
+                        "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "fungal-core",
+            "warp_transitions": {
+                "Fungus2_29": [
+                    "right1"
+                ]
+            },
+            "max_players": 8,
+            "transitions": {
+                "Fungus2_29": [
+                    "bot1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "DefendersCrest"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "LongNail", "ShamanStone", "Kingsoul", 
+                        "GrubSong"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "DesolateDive", "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "mantis-extra-small",
+            "warp_transitions": {
+                "Fungus2_31": [
+                    "left1"
+                ]
+            },
+            "max_players": 3,
+            "transitions": {
+                "Fungus2_31": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "mantis-small",
+            "warp_transitions": {
+                "Fungus2_15": [
+                    "right1"
+                ]
+            },
+            "min_players": 4,
+            "max_players": 7,
+            "transitions": {
+                "Fungus2_15": [
+                    "top1",
+                    "top2",
+                    "top3",
+                    "right1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "gruz-mother",
+            "warp_transitions": {
+                "Crossroads_04": [
+                    "left1",
+                    "top1",
+                    "right1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_04": [
+                    "top1",
+                    "right1",
+                    "left1",
+                    "door1",
+                    "door_charmshop",
+                    "door_MenderHouse"
+                ]
+            }
+        },
+        {
+            "name": "crossroads-small",
+            "warp_transitions": {
+                "Crossroads_19": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_19": [
+                    "left1",
+                    "left2",
+                    "top1",
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "white-palace-hub",
+            "warp_transitions": {
+                "White_Palace_03_hub": [
+                    "top1"
+                ]
+            },
+            "min_players": 4,
+            "max_players": 8,
+            "transitions": {
+                "White_Palace_03_hub": [
+                    "left1",
+                    "right1",
+                    "bot1",
+                    "top1",
+                    "door1",
+                    "doorWarp",
+                    "left2"
+                ]
+            }
+        },
+        {
+            "name": "greenpath-loop1",
+            "warp_transitions": {
+                "Fungus1_21": [
+                    "right1"
+                ],
+                "Fungus1_32": [
+                    "left1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 15,
+            "transitions": {
+                "Fungus1_21": [
+                    "left1",
+                    "bot1"
+                ],
+                "Fungus1_20_v02": [
+                    "right1"
+                ],
+                "Fungus1_32": [
+                    "bot1"
+                ]
+            }
+        },
+        {
+            "name": "greenpath-loop2",
+            "warp_transitions": {
+                "Fungus1_22": [
+                    "left1"
+                ],
+                "Fungus1_31": [
+                    "right1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 15,
+            "transitions": {
+                "Fungus1_22": [
+                    "left1"
+                ],
+                "Fungus1_21": [
+                    "left1",
+                    "top1"
+                ],
+                "Fungus1_32": [
+                    "top1"
+                ],
+                "Fungus1_31": [
+                    "right1"
+                ],
+                "Fungus1_30": [
+                    "right1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "beasts-den",
+            "warp_transitions": {
+                "Deepnest_Spider_Town": [
+                    "left1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 12,
+            "transitions": {
+                "Deepnest_Spider_Town": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "MarkOfPride"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "abyss",
+            "warp_transitions": {
+                "Abyss_06_Core": [
+                    "top1",
+                    "right2",
+                    "left3"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 15,
+            "transitions": {
+                "Abyss_06_Core": [
+                    "right2",
+                    "top1",
+                    "bot1",
+                    "door_dreamReturn",
+                    "left1",
+                    "left3"
+                ]
+            }
+        },
+        {
+            "name": "broken-vessel",
+            "warp_transitions": {
+                "Abyss_19": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 15,
+            "transitions": {
+                "Abyss_19": [
+                    "left1",
+                    "right1",
+                    "bot1",
+                    "bot2"
+                ]
+            }
+        },
+        {
+            "name": "cliffs",
+            "warp_transitions": {
+                "Cliffs_01": [
+                    "right1",
+                    "right2",
+                    "right3",
+                    "right4"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Cliffs_01": [
+                    "right1",
+                    "right2",
+                    "right3",
+                    "right4"
+                ],
+                "Cliffs_04": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "lurker",
+            "warp_transitions": {
+                "GG_Lurker": [
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 15,
+            "transitions": {
+                "GG_Lurker": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "city-apps",
+            "warp_transitions": {
+                "Ruins2_04": [
+                    "left2",
+                    "door_Ruin_House_01",
+                    "right1"
+                ],
+                "Ruins2_06": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Ruins2_04": [
+                    "left1",
+                    "left2",
+                    "door_Ruin_Elevator"
+                ],
+                "Ruins2_06": [
+                    "right2",
+                    "top1"
+                ],
+                "Ruins_House_03": [
+                    "left2"
+                ]
+            }
+        },
+        {
+            "name": "nailsmith",
+            "warp_transitions": {
+                "Ruins1_04": [
+                    "door1"
+                ],
+                "Ruins1_03": [
+                    "top1",
+                    "right1"
+                ]
+            },
+            "min_players": 8,
+            "max_players": 15,
+            "transitions": {
+                "Ruins1_04": [
+                    "bot1",
+                    "door1"
+                ],
+                "Ruins1_03": [
+                    "right1",
+                    "right2",
+                    "top1"
+                ]
+            }
+        },
+        {
+            "name": "spirits-glade",
+            "warp_transitions": {
+                "RestingGrounds_08": [
+                    "left1"
+                ]
+            },
+            "max_players": 15,
+            "transitions": {
+                "RestingGrounds_08": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "DefendersCrest"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "StalwartShell"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "GreatSlash", "DashSlash", "CycloneSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "spirits-glade2",
+            "warp_transitions": {
+                "RestingGrounds_08": [
+                    "left1"
+                ]
+            },
+            "max_players": 0,
+            "transitions": {
+                "RestingGrounds_08": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Dashmaster", "Sprintmaster", "StalwartShell", "SporeShroom", "DeepFocus", "QuickFocus", 
+                        "Kingsoul", "GrubSong", "MarkOfPride", "LongNail", "SharpShadow"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "edge-vertical",
+            "warp_transitions": {
+                "Deepnest_East_03": [
+                    "left1",
+                    "left2",
+                    "right1",
+                    "right2"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 15,
+            "transitions": {
+                "Deepnest_East_03": [
+                    "left1",
+                    "left2",
+                    "top2",
+                    "right1",
+                    "right2"
+                ]
+            }
+        },
+        {
+            "name": "ismas-grove",
+            "warp_transitions": {
+                "Waterways_13": [
+                    "left1"
+                ],
+                "Waterways_07": [
+                    "top1",
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Waterways_07": [
+                    "top1",
+                    "door1",
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "deepnest-spring",
+            "warp_transitions": {
+                "Deepnest_03": [
+                    "right1",
+                    "top1"
+                ],
+                "Deepnest_33": [
+                    "top2"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Deepnest_03": [
+                    "right1",
+                    "left1",
+                    "left2"
+                ],
+                "Deepnest_33": [
+                    "top1",
+                    "top2"
+                ]
+            }
+        },
+        {
+            "name": "teachers-archives",
+            "warp_transitions": {
+                "Fungus3_archive": [
+                    "bot1"
+                ],
+                "Fungus3_archive_02": [
+                    "top1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Fungus3_archive": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "distant-village",
+            "warp_transitions": {
+                "Deepnest_10": [
+                    "right1",
+                    "right3"
+                ],
+                "Deepnest_41": [
+                    "left1",
+                    "left2"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 20,
+            "transitions": {
+                "Deepnest_10": [
+                    "door1"
+                ],
+                "Deepnest_41": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "greenpath-loop3",
+            "warp_transitions": {
+                "Fungus1_32": [
+                    "top1"
+                ],
+                "Fungus1_10": [
+                    "top1"
+                ],
+                "Fungus1_06": [
+                    "left1"
+                ],
+                "Fungus1_17": [
+                    "right1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 30,
+            "transitions": {
+                "Fungus1_21": [
+                    "left1",
+                    "top1"
+                ],
+                "Fungus1_32": [
+                    "top1"
+                ],
+                "Fungus1_22": [
+                    "left1"
+                ],
+                "Fungus1_30": [
+                    "left1"
+                ],
+                "Fungus1_19": [
+                    "bot1"
+                ],
+                "Fungus1_02": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "hive",
+            "warp_transitions": {
+                "Hive_03_c": [
+                    "top1"
+                ],
+                "Hive_04": [
+                    "right1"
+                ],
+                "Hive_02": [
+                    "left2"
+                ]
+            },
+            "min_players": 10,
+            "max_players": 30,
+            "transitions": {
+                "Hive_03_c": [
+                    "left1"
+                ],
+                "Hive_01": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "mantis-large",
+            "warp_transitions": {
+                "Fungus2_14": [
+                    "bot1"
+                ],
+                "Fungus2_11": [
+                    "top1"
+                ]
+            },
+            "min_players": 8,
+            "max_players": 30,
+            "transitions": {
+                "Fungus2_15": [
+                    "left1"
+                ],
+                "Fungus2_17": [
+                    "left1"
+                ],
+                "Fungus2_11": [
+                    "top1",
+                    "left1"
+                ],
+                "Fungus2_13": [
+                    "left3"
+                ]
+            }
+        },
+        {
+            "name": "crossroads",
+            "warp_transitions": {
+                "Crossroads_30": [
+                    "left1"
+                ],
+                "Crossroads_07": [
+                    "left1"
+                ],
+                "Crossroads_47": [
+                    "right1"
+                ]
+            },
+            "min_players": 20,
+            "max_players": 40,
+            "transitions": {
+                "Crossroads_01": [
+                    "top1",
+                    "top2",
+                    "door1"
+                ],
+                "Crossroads_45": [
+                    "right1"
+                ],
+                "Mines_33": [
+                    "right1"
+                ],
+                "Crossroads_46": [
+                    "door_tram"
+                ],
+                "Crossroads_04": [
+                    "right1"
+                ],
+                "Crossroads_19": [
+                    "left2"
+                ],
+                "Crossroads_18": [
+                    "bot1",
+                    "right2"
+                ],
+                "Crossroads_35": [
+                    "bot1"
+                ],
+                "Crossroads_11_alt": [
+                    "left1"
+                ],
+                "Crossroads_02": [
+                    "door1"
+                ]
+            }
+        },
+        {
+            "name": "waterways-medium1",
+            "warp_transitions": {
+                "Waterways_04": [
+                    "left1"
+                ],
+                "Waterways_04b": [
+                    "left1"
+                ]
+            },
+            "min_players": 7,
+            "max_players": 30,
+            "transitions": {
+                "Waterways_04": [
+                    "right1",
+                    "bot1"
+                ],
+                "Waterways_09": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "waterways-medium2",
+            "warp_transitions": {
+                "Waterways_02": [
+                    "bot1",
+                    "bot2"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 10,
+            "transitions": {
+                "Waterways_02": [
+                    "top1",
+                    "top2",
+                    "top3",
+                    "bot1",
+                    "bot2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "ShapeOfUnn", "Dashmaster", "SporeShroom", "SpellTwister"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "ShadeCloak", "MantisClaw",
+                        "VengefulSpirit", "MonarchWings"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "GrubSong", "SporeShroom",
+                        "QuickFocus", "ShapeOfUnn", "DeepFocus", "Kingsoul"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "crystal-peaks-medium",
+            "warp_transitions": {
+                "Mines_18": [
+                    "top1"
+                ],
+                "Mines_20": [
+                    "right1"
+                ],
+                "Mines_04": [
+                    "left3"
+                ],
+                "Mines_02": [
+                    "top1"
+                ]
+            },
+            "min_players": 12,
+            "max_players": 30,
+            "transitions": {
+                "Mines_02": [
+                    "left1",
+                    "top1"
+                ],
+                "Mines_05": [
+                    "left1",
+                    "left2"
+                ],
+                "Mines_04": [
+                    "right1"
+                ],
+                "Mines_20": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "fungal-wastes",
+            "warp_transitions": {
+                "Fungus2_05": [
+                    "right1"
+                ],
+                "Fungus2_10": [
+                    "right2"
+                ],
+                "Fungus2_14": [
+                    "bot1"
+                ],
+                "Fungus2_19": [
+                    "top1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Fungus2_21": [
+                    "right1"
+                ],
+                "Fungus2_06": [
+                    "top1"
+                ],
+                "Fungus2_33": [
+                    "left1"
+                ],
+                "Fungus2_23": [
+                    "right2"
+                ],
+                "Fungus2_25": [
+                    "top1"
+                ],
+                "Fungus2_20": [
+                    "left1"
+                ],
+                "Fungus2_03": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "city-of-tears",
+            "warp_transitions": {
+                "Ruins1_06": [
+                    "left1"
+                ],
+                "Ruins1_18": [
+                    "right1"
+                ],
+                "Ruins1_25": [
+                    "left2"
+                ],
+                "Ruins2_04": [
+                    "door_Ruin_Elevator"
+                ],
+                "Ruins2_03": [
+                    "top1"
+                ],
+                "Ruins2_05": [
+                    "top1"
+                ],
+                "Ruins2_11_b": [
+                    "left1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Ruins1_01": [
+                    "left1"
+                ],
+                "Ruins1_28": [
+                    "left1"
+                ],
+                "Ruins1_04": [
+                    "bot1"
+                ],
+                "Ruins1_05b": [
+                    "bot1"
+                ],
+                "Ruins2_04": [
+                    "left2"
+                ],
+                "Ruins2_07": [
+                    "right1"
+                ],
+                "Ruins2_11_b": [
+                    "right1"
+                ],
+                "Ruins2_10b": [
+                    "right1"
+                ],
+                "Ruins2_10": [
+                    "left1",
+                    "right1"
+                ],
+                "Ruins_House_03": [
+                    "left2"
+                ]
+            }
+        },
+        {
+            "name": "waterways",
+            "warp_transitions": {
+                "Waterways_07": [
+                    "door1"
+                ],
+                "Waterways_02": [
+                    "top3"
+                ],
+                "Waterways_04b": [
+                    "left1"
+                ],
+                "Waterways_01": [
+                    "right1"
+                ],
+                "Waterways_06": [
+                    "top1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Waterways_09": [
+                    "left1"
+                ],
+                "Waterways_01": [
+                    "top1"
+                ],
+                "Room_GG_Shortcut": [
+                    "top1"
+                ],
+                "Abyss_01": [
+                    "right1",
+                    "left3"
+                ],
+                "Waterways_14": [
+                    "bot2"
+                ],
+                "Waterways_07": [
+                    "door1"
+                ]
+            }
+        },
+        {
+            "name": "kingdoms-edge",
+            "warp_transitions": {
+                "Deepnest_East_04": [
+                    "right1"
+                ],
+                "Deepnest_East_13": [
+                    "bot1"
+                ],
+                "Deepnest_East_08": [
+                    "top1"
+                ],
+                "Deepnest_East_02": [
+                    "right1"
+                ],
+                "Deepnest_East_06": [
+                    "door1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Deepnest_East_09": [
+                    "left1"
+                ],
+                "Deepnest_East_07": [
+                    "left2"
+                ],
+                "Deepnest_East_03": [
+                    "left1"
+                ],
+                "Deepnest_East_02": [
+                    "top1"
+                ],
+                "Deepnest_East_01": [
+                    "right1"
+                ],
+                "Abyss_03_c": [
+                    "door_tram",
+                    "door_tram_arrive",
+                    "right1"
+                ],
+                "Deepnest_East_Hornet": [
+                    "left2"
+                ],
+                "Deepnest_East_14": [
+                    "door1"
+                ]
+            }
+        },
+        {
+            "name": "ancient-basin",
+            "warp_transitions": {
+                "Abyss_03": [
+                    "top1"
+                ],
+                "Abyss_19": [
+                    "right1"
+                ],
+                "Abyss_06_Core": [
+                    "top1"
+                ],
+                "Abyss_16": [
+                    "left1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Abyss_03": [
+                    "door_tram",
+                    "door_tram_arrive"
+                ],
+                "Abyss_02": [
+                    "right1"
+                ],
+                "Abyss_06_Core": [
+                    "bot1"
+                ]
+            }
+        },
+        {
+            "name": "deepnest",
+            "warp_transitions": {
+                "Deepnest_30": [
+                    "left1"
+                ],
+                "Deepnest_39": [
+                    "left1"
+                ],
+                "Deepnest_14": [
+                    "bot1"
+                ],
+                "Deepnest_35": [
+                    "left1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Deepnest_42": [
+                    "top1"
+                ],
+                "Deepnest_01": [
+                    "left1",
+                    "right1"
+                ],
+                "Fungus2_25": [
+                    "right1",
+                    "right1 (1)",
+                    "top2"
+                ],
+                "Abyss_03_b": [
+                    "door_tram",
+                    "door_tram_arrive"
+                ]
+            }
+        },
+        {
+            "name": "queens-gardens",
+            "warp_transitions": {
+                "Fungus3_13": [
+                    "left3"
+                ],
+                "Fungus3_05": [
+                    "right2"
+                ],
+                "Fungus3_23": [
+                    "left1"
+                ],
+                "Fungus3_08": [
+                    "top1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Deepnest_43": [
+                    "bot1"
+                ],
+                "Fungus3_39": [
+                    "right1"
+                ],
+                "Fungus3_34": [
+                    "top1",
+                    "right1"
+                ],
+                "Fungus3_22": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "greenpath",
+            "warp_transitions": {
+                "Fungus1_22": [
+                    "left1"
+                ],
+                "Fungus1_19": [
+                    "right1"
+                ],
+                "Fungus1_02": [
+                    "right2"
+                ],
+                "Fungus1_26": [
+                    "door_SlugShrine"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Fungus1_13": [
+                    "left1"
+                ],
+                "Fungus1_11": [
+                    "bot1"
+                ],
+                "Fungus1_01": [
+                    "right1"
+                ],
+                "Fungus1_20_v02": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "fog-canyon",
+            "warp_transitions": {
+                "Fungus3_47": [
+                    "door1"
+                ],
+                "Fungus2_01": [
+                    "left1"
+                ],
+                "Fungus3_44": [
+                    "door1"
+                ],
+                "Fungus3_26": [
+                    "left1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Fungus3_26": [
+                    "right1",
+                    "top1"
+                ],
+                "Fungus3_01": [
+                    "top1"
+                ],
+                "Fungus3_34": [
+                    "left1"
+                ],
+                "Fungus2_01": [
+                    "right1"
+                ]
+            }
+        },
+        {
+            "name": "crystal-peaks",
+            "warp_transitions": {
+                "Mines_18": [
+                    "top1"
+                ],
+                "Mines_29": [
+                    "right2"
+                ],
+                "Mines_20": [
+                    "right2"
+                ],
+                "Mines_23": [
+                    "right2"
+                ],
+                "Mines_30": [
+                    "left1"
+                ],
+                "Mines_06": [
+                    "right1"
+                ]
+            },
+            "min_players": 30,
+            "max_players": 150,
+            "transitions": {
+                "Mines_01": [
+                    "left1"
+                ],
+                "Mines_02": [
+                    "left1"
+                ],
+                "Mines_10": [
+                    "left1"
+                ],
+                "Mines_07": [
+                    "right1"
+                ],
+                "Mines_34": [
+                    "left1"
+                ]
+            }
+        },
+        {
+            "name": "hallownest",
+            "warp_transitions": {
+                "Town": [
+                    "door_station"
+                ],
+                "Crossroads_06": [
+                    "door1"
+                ],
+                "Mines_20": [
+                    "left3"
+                ],
+                "RestingGrounds_05": [
+                    "right2"
+                ],
+                "Deepnest_East_11": [
+                    "left1"
+                ],
+                "Hive_03_c": [
+                    "left1"
+                ],
+                "Ruins1_05b": [
+                    "top1"
+                ],
+                "Waterways_02": [
+                    "top3"
+                ],
+                "Abyss_03": [
+                    "bot1"
+                ],
+                "Deepnest_34": [
+                    "top1"
+                ],
+                "Fungus2_14": [
+                    "top1"
+                ],
+                "Fungus3_01": [
+                    "top1"
+                ],
+                "Fungus3_05": [
+                    "right1"
+                ],
+                "Fungus1_03": [
+                    "right1"
+                ],
+                "Cliffs_02": [
+                    "left2"
+                ]
+            },
+            "min_players": 150,
+            "transitions": {
+                "Crossroads_02": [
+                    "door1"
+                ],
+                "Crossroads_46": [
+                    "door_tram"
+                ],
+                "Crossroads_46b": [
+                    "door_tram"
+                ],
+                "Abyss_03_c": [
+                    "door_tram",
+                    "door_tram_arrive"
+                ],
+                "Abyss_03": [
+                    "door_tram",
+                    "door_tram_arrive"
+                ],
+                "Abyss_03_b": [
+                    "door_tram",
+                    "door_tram_arrive"
+                ]
+            }
+        }
+    ]
+}
