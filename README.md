@@ -72,3 +72,22 @@ The fields for a preset have the following meaning:
 - `max_players`: The maximum (inclusive) number of players for this preset to be used. This field is optional.
 - `transitions`: A list of scene names that have transition restrictions associated with them.
 Each entry in this list (denoting a scene name) contains a list of strings that denote a transition name that should be inaccessible for players.
+
+## Copyright and license
+HKMP.Tag is a game modification for Hollow Knight that adds the tag game-mode to HKMP.  
+Copyright (C) 2023  Extremelyd1
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+    USA
