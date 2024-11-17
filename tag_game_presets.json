@@ -433,16 +433,16 @@
                         "SporeShroom"
                     ],
                     "skills": [
-                        "DashSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear"
+                        "GreatSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear"
                     ]
                 },
                 "infected": {
                     "charms": [
-                        "NailmastersGlory", "Dashmaster", "GrubberflysElegy", "Kingsoul"
+                        "NailmastersGlory", "Dashmaster", "GrubberflysElegy", "Grubsong"
                     ],
                     "skills": [
                         "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
-                        "IsmasTear", "ShadeCloak", "DesolateDive"
+                        "IsmasTear", "ShadeCloak", "HowlingWraiths"
                     ]
                 }
             }
@@ -647,20 +647,20 @@
             "loadouts": {
                 "normal": {
                     "charms": [
-                        "WaywardCompass", "Kingsoul", "Dashmaster"
+                        "WaywardCompass", "Kingsoul", "ShroomSpore"
                     ],
                     "skills": [
-                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
-                        "DashSlash"
+                        "MothwingCloak", "ShadeCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "HowlingWraiths"
                     ]
                 },
                 "infected": {
                     "charms": [
-                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                        "NailmastersGlory", "Sprintmaster"
                     ],
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
-                        "IsmasTear", "ShadeCloak", "DashSlash"
+                        "IsmasTear", "ShadeCloak", "DashSlash", "GreatSlash", "CycloneSlash"
                     ]
                 }
             }
@@ -773,18 +773,18 @@
             "loadouts": {
                 "normal": {
                     "charms": [
-                        "WaywardCompass"
+                        "WaywardCompass", "SharpShadow", "Sprintmaster", "Dashmaster"
                     ],
                     "skills": [
-                        "MothwingCloak", "MantisClaw", "IsmasTear"
+                        "MothwingCloak", "ShadeCloak", "MantisClaw", "IsmasTear", "MonarchWings"
                     ]
                 },
                 "infected": {
                     "charms": [
-                        "Sprintmaster", "StalwartShell", "Kingsoul", "GrubSong", "SpellTwister"
+                        "StalwartShell", "Kingsoul", "GrubSong", "SpellTwister"
                     ],
                     "skills": [
-                        "MothwingCloak", "MantisClaw", "IsmasTear", "HowlingWraiths"
+                        "MothwingCloak", "MantisClaw", "IsmasTear", "HowlingWraiths", "DesolateDive"
                     ]
                 }
             }
@@ -1149,7 +1149,7 @@
                     "left1"
                 ]
             },
-            "max_players": 7,
+            "max_players": 5,
             "transitions": {
                 "Cliffs_04": [
                     "left1", "right1"
@@ -1158,21 +1158,21 @@
             "loadouts": {
                 "normal": {
                     "charms": [
-                        "WaywardCompass", "Kingsoul", "BaldurShell", "Sprintmaster"
+                        "WaywardCompass", "Kingsoul", "Sprintmaster", "Flukenest", "SporeShroom"
                     ],
                     "skills": [
                         "DesolateDive", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
-                        "CycloneSlash", "DashSlash"
+                        "CycloneSlash", "DashSlash", "VengefulSpirit"
                     ]
                 },
                 "infected": {
                     "charms": [
-                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "LongNail",
-                        "SharpShadow", "Flukenest", "SpellTwister", "ShamanStone", "GrubSong"
+                        "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "SharpShadow",
+                        "Flukenest", "SpellTwister", "ShamanStone", "GrubSong"
                     ],
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", 
-                        "ShadeCloak", "CycloneSlash", "DashSlash", "VengefulSpirit"
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "DesolateDive"
                     ]
                 }
             }
@@ -1229,7 +1229,7 @@
             "name": "kings-pass",
             "warp_transitions": {
                 "Tutorial_01": [
-                    "top1"
+                    "top2"
                 ]
             },
             "max_players": 10,
