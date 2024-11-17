@@ -1168,7 +1168,7 @@
                 "infected": {
                     "charms": [
                         "NailmastersGlory", "StalwartShell", "Dashmaster", "Sprintmaster", "SharpShadow",
-                        "Flukenest", "SpellTwister", "ShamanStone", "GrubSong"
+                        "SpellTwister", "ShamanStone", "GrubSong"
                     ],
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", 
