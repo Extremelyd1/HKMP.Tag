@@ -6477,37 +6477,7 @@
         "semiPersistent": true
       },
       {
-        "id": "Vine Platform (6)",
-        "sceneName": "Fungus1_06",
-        "activated": false,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (5)",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (1)",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (4)",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Secret Mask",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (2)",
         "sceneName": "Fungus1_06",
         "activated": true,
         "semiPersistent": false
@@ -6531,12 +6501,6 @@
         "semiPersistent": false
       },
       {
-        "id": "Vine Platform (3)",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Mossman_Shaker",
         "sceneName": "Fungus1_06",
         "activated": false,
@@ -6549,31 +6513,13 @@
         "semiPersistent": true
       },
       {
-        "id": "Vine Platform",
-        "sceneName": "Fungus1_06",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Gate Switch",
         "sceneName": "Room_Town_Stag_Station",
         "activated": true,
         "semiPersistent": false
       },
       {
-        "id": "Vine Platform (2)",
-        "sceneName": "Fungus1_07",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Grub Bottle",
-        "sceneName": "Fungus1_07",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform",
         "sceneName": "Fungus1_07",
         "activated": true,
         "semiPersistent": false
@@ -6585,22 +6531,10 @@
         "semiPersistent": false
       },
       {
-        "id": "Vine Platform (3)",
-        "sceneName": "Fungus1_07",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Mossman_Runner",
         "sceneName": "Fungus1_07",
         "activated": false,
         "semiPersistent": true
-      },
-      {
-        "id": "Vine Platform (1)",
-        "sceneName": "Fungus1_07",
-        "activated": true,
-        "semiPersistent": false
       },
       {
         "id": "Mossman_Runner (1)",
@@ -6795,12 +6729,6 @@
         "semiPersistent": true
       },
       {
-        "id": "Vine Platform",
-        "sceneName": "Fungus1_14",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Shiny Item",
         "sceneName": "Fungus1_14",
         "activated": true,
@@ -6927,18 +6855,6 @@
         "semiPersistent": true
       },
       {
-        "id": "Vine Platform (1)",
-        "sceneName": "Fungus1_22",
-        "activated": false,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform",
-        "sceneName": "Fungus1_22",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Mossman_Shaker (1)",
         "sceneName": "Fungus1_22",
         "activated": false,
@@ -6973,12 +6889,6 @@
         "sceneName": "Fungus1_22",
         "activated": false,
         "semiPersistent": true
-      },
-      {
-        "id": "Vine Platform",
-        "sceneName": "Fungus1_09",
-        "activated": true,
-        "semiPersistent": false
       },
       {
         "id": "Moss Knight B",
@@ -7078,12 +6988,6 @@
       },
       {
         "id": "Grub Bottle",
-        "sceneName": "Fungus1_21",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (2)",
         "sceneName": "Fungus1_21",
         "activated": true,
         "semiPersistent": false
@@ -8055,25 +7959,7 @@
         "semiPersistent": false
       },
       {
-        "id": "Vine Platform",
-        "sceneName": "Fungus1_13",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
         "id": "Vessel Fragment",
-        "sceneName": "Fungus1_13",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (2)",
-        "sceneName": "Fungus1_13",
-        "activated": true,
-        "semiPersistent": false
-      },
-      {
-        "id": "Vine Platform (1)",
         "sceneName": "Fungus1_13",
         "activated": true,
         "semiPersistent": false
@@ -13941,6 +13827,12 @@
         "semiPersistent": true
       },
       {
+        "id": "Quake Floor",
+        "sceneName": "Cliffs_04",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
         "id": "Zombie Leaper (2)",
         "sceneName": "Cliffs_04",
         "activated": false,
@@ -18714,6 +18606,120 @@
         "id": "Mines Lever New",
         "sceneName": "Mines_37",
         "activated": false,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (1)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (2)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (3)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (4)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (5)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (6)",
+        "sceneName": "Fungus1_06",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_07",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (1)",
+        "sceneName": "Fungus1_07",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (2)",
+        "sceneName": "Fungus1_07",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (3)",
+        "sceneName": "Fungus1_07",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_09",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_13",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (1)",
+        "sceneName": "Fungus1_13",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (2)",
+        "sceneName": "Fungus1_13",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_14",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (2)",
+        "sceneName": "Fungus1_21",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform",
+        "sceneName": "Fungus1_22",
+        "activated": true,
+        "semiPersistent": false
+      },
+      {
+        "id": "Vine Platform (1)",
+        "sceneName": "Fungus1_22",
+        "activated": true,
         "semiPersistent": false
       }
     ],
