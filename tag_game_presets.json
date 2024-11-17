@@ -647,7 +647,7 @@
             "loadouts": {
                 "normal": {
                     "charms": [
-                        "WaywardCompass", "Kingsoul", "ShroomSpore"
+                        "WaywardCompass", "Kingsoul", "SporeShroom"
                     ],
                     "skills": [
                         "MothwingCloak", "ShadeCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
