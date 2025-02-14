@@ -38,6 +38,43 @@
             }
         },
         {
+            "name": "city-storerooms-stag",
+            "warp_transitions": {
+                "Ruins1_28": [
+                    "bot1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 7,
+            "transitions": {
+                "Ruins1_28": [
+                    "bot1",
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "ShadeCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart",
+                        "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
             "name": "city-storerooms",
             "warp_transitions": {
                 "Ruins1_17": [
@@ -823,6 +860,43 @@
             }
         },
         {
+            "name": "crystal-crusher-small",
+            "warp_transitions": {
+                "Mines_19": [
+                    "right1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 6,
+            "transitions": {
+                "Mines_19": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "IsmasTear", "MantisClaw",
+                        "MonarchWings", "CrystalHeart", "ShadeCloak", "VengefulSpirit", "ShadeSoul"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "KingSoul", "ShamanStone", "StalwartShell", "Dashmaster", "Sprintmaster", "SharpShadow",
+                        "NailmastersGlory"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "IsmasTear", "MantisClaw",
+                        "CrystalHeart", "MonarchWings", "ShadeCloak", "DesolateDive", "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
             "name":"crystal-peaks-darkroom",
             "warp_transitions": {
                 "Mines_29": [
@@ -1344,6 +1418,79 @@
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
                         "DesolateDive", "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "fungal-lever-offshoot",
+            "warp_transitions": {
+                "Fungus2_04": [
+                    "left1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 9,
+            "transitions": {
+                "Fungus2_04": [
+                    "left1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom", "QuickFocus", "ShapeOfUnn",
+                        "DeepFocus"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "IsmasTear", "CrystalHeart", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "GrubSong", "Dashmaster", "NailmastersGlory", "SharpShadow"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "IsmasTear", "MantisClaw",
+                        "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak", "DesolateDive", "HowlingWraiths"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "fungal-below-leg",
+            "warp_transitions": {
+                "Fungus2_07": [
+                    "left1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 6,
+            "transitions": {
+                "Fungus2_07": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Sprintmaster", "Dashmaster", "BaldurShell", "Flukenest"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "ShadeCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "StalwartShell", "GrubSong", "Dashmaster", "NailmastersGlory"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "IsmasTear", "MantisClaw",
+                        "CrystalHeart", "MonarchWings", "ShadeCloak", "DesolateDive", "HowlingWraiths"
                     ]
                 }
             }
