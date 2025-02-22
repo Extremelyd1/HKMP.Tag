@@ -125,6 +125,45 @@
             }
         },
         {
+            "name": "crossroads-cornifer",
+            "warp_transitions": {
+                "Crossroads_33": [
+                    "top1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 4,
+            "transitions": {
+                "Crossroads_33": [
+                    "right2",
+                    "left2",
+                    "right1",
+                    "top1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "DeepFocus", "ShapeOfUnn"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "SharpShadow", "Dashmaster"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "IsmasTear", "MothwingCloak", "MantisClaw",
+                        "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
             "name": "false-knight",
             "warp_transitions": {
                 "Crossroads_10": [
@@ -295,6 +334,44 @@
             }
         },
         {
+            "name": "kingdoms-edge-outside-markoth",
+            "warp_transitions": {
+                "Deepnest_East_18": [
+                    "top1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 6,
+            "transitions": {
+                "Deepnest_East_18": [
+                    "right2",
+                    "top1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "DeepFocus", "ShapeOfUnn"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "DesolateDive", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Dashmaster", "GrubSong", "GrubberflysElegy", "SporeShroom", "SharpShadow", "QuickFocus",
+                        "DeepFocus"
+                    ],
+                    "skills": [
+                        "IsmasTear", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
             "name": "kingdoms-edge-small1",
             "warp_transitions": {
                 "Deepnest_East_08": [
@@ -326,6 +403,44 @@
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "ShadeCloak", "CycloneSlash",
                         "DashSlash", "DesolateDive", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "kingdoms-edge-outside-hornet",
+            "warp_transitions": {
+                "Deepnest_East_11": [
+                    "top1"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 10,
+            "transitions": {
+                "Deepnest_East_11": [
+                    "left1",
+                    "top1",
+                    "bot1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "DefendersCrest", "SharpShadow", "Dashmaster"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Kingsoul", "GrubSong", "SteadyBody", "MarkOfPride", "LongNail", "Sprintmaster", "QuickSlash"
+                    ],
+                    "skills": [
+                        "IsmasTear", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
+                        "HowlingWraiths", "VengefulSpirit", "DesolateDive"
                     ]
                 }
             }
@@ -1093,6 +1208,44 @@
                     "top1",
                     "top2"
                 ]
+            }
+        },
+        {
+            "name": "deepnest-mantis",
+            "warp_transitions": {
+                "Fungus2_25": [
+                    "top2"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 5,
+            "transitions": {
+                "Fungus2_25": [
+                    "top1",
+                    "right1 (1)",
+                    "right1",
+                    "top2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "DeepFocus", "ShapeOfUnn", "BaldurShell"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "HowlingWraiths", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Dashmaster", "GrubSong", "SteadyBody", "MarkOfPride", "LongNail"
+                    ],
+                    "skills": [
+                        "DashSlash", "IsmasTear", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "DesolateDive", "IsmasTear", "ShadeCloak"
+                    ]
+                }
             }
         },
         {
@@ -2192,6 +2345,43 @@
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
                         "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "kingdoms-edge-bardoon",
+            "warp_transitions": {
+                "Deepnest_East_04": [
+                    "left2"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 10,
+            "transitions": {
+                "Deepnest_East_04": [
+                    "right1",
+                    "left2",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Sprintmaster", "SharpShadow", "BaldurShell"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "HowlingWraiths", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "NailmastersGlory"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "IsmasTear", "MothwingCloak", "MantisClaw",
+                        "CrystalHeart", "MonarchWings", "IsmasTear", "DesolateDive", "ShadeCloak"
                     ]
                 }
             }
