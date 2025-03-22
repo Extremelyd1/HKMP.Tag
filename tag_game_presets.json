@@ -344,7 +344,6 @@
             "max_players": 6,
             "transitions": {
                 "Deepnest_East_18": [
-                    "right2",
                     "top1",
                     "bot1"
                 ]
@@ -352,7 +351,7 @@
             "loadouts": {
                 "normal": {
                     "charms": [
-                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "DeepFocus", "ShapeOfUnn"
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "DeepFocus", "SporeShroom", "ShapeOfUnn"
                     ],
                     "skills": [
                         "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
@@ -361,12 +360,11 @@
                 },
                 "infected": {
                     "charms": [
-                        "Dashmaster", "GrubSong", "GrubberflysElegy", "SporeShroom", "SharpShadow", "QuickFocus",
-                        "DeepFocus"
+                        "Sprintmaster", "Dashmaster", "GrubSong", "GrubberflysElegy", "SharpShadow"
                     ],
                     "skills": [
                         "IsmasTear", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear",
-                        "ShadeCloak"
+                        "ShadeCloak", "DesolateDive"
                     ]
                 }
             }
@@ -868,6 +866,152 @@
                     "right1",
                     "right2"
                 ]
+            }
+        },
+        {
+            "name": "fog-canyon-charm-notch",
+            "warp_transitions": {
+                "Fungus3_28": [
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Fungus3_28": [
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "SporeShroom", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Sprintmaster", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "moss-charger-large",
+            "warp_transitions": {
+                "Fungus1_13": [
+                    "left1"
+                ]
+            },
+            "min_players": 8,
+            "max_players": 15,
+            "transitions": {
+                "Fungus1_29": [
+                    "right1"
+                ],
+                "Fungus1_13": [
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "SporeShroom", "QuickFocus", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Sprintmaster", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "moss-charger-small",
+            "warp_transitions": {
+                "Fungus1_29": [
+                    "right1"
+                ]
+            },
+            "max_players": 6,
+            "transitions": {
+                "Fungus1_29": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "SporeShroom", "QuickFocus", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Sprintmaster", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "ShadeCloak",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "deepnest-prophet",
+            "warp_transitions": {
+                "Deepnest_01": [
+                    "right1"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 13,
+            "transitions": {
+                "Deepnest_01b": [
+                    "bot1"
+                ],
+                "Deepnest_01": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "SporeShroom", "DeepFocus", "BaldurShell", "Dashmaster"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "Sprintmaster", "Dashmaster", "SharpShadow", "GrubSong", "SporeShroom", "QuickFocus"
+                    ],
+                    "skills": [
+                        "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", "VengefulSpirit",
+                        "ShadeCloak", "CycloneSlash", "DashSlash", "GreatSlash"
+                    ]
+                }
             }
         },
         {
@@ -2377,7 +2521,7 @@
                 },
                 "infected": {
                     "charms": [
-                        "WaywardCompass", "Kingsoul", "Dashmaster", "NailmastersGlory"
+                        "Kingsoul", "Dashmaster", "NailmastersGlory"
                     ],
                     "skills": [
                         "GreatSlash", "DashSlash", "CycloneSlash", "IsmasTear", "MothwingCloak", "MantisClaw",
