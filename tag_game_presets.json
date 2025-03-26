@@ -1086,6 +1086,42 @@
             }
         },
         {
+            "name": "crossroads-before-mawlek",
+            "warp_transitions": {
+                "Crossroads_36": [
+                    "right2"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 7,
+            "transitions": {
+                "Crossroads_36": [
+                    "right1",
+                    "right2"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "ShadeCloak", "VengefulSpirit", "CrystalHeart"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "CrystalHeart",
+                        "MonarchWings", "IsmasTear", "ShadeCloak"
+                    ]
+                }
+            }
+        },
+        {
             "name": "crystal-peaks-small1",
             "warp_transitions": {
                 "Mines_02": [
@@ -1320,6 +1356,45 @@
                     "bot1",
                     "left1"
                 ]
+            }
+        },
+        {
+            "name": "greenpath-small3",
+            "warp_transitions": {
+                "Fungus1_11": [
+                    "right1"
+                ]
+            },
+            "min_players": 5,
+            "max_players": 9,
+            "transitions": {
+                "Fungus1_11": [
+                    "right1",
+                    "right2",
+                    "bot1",
+                    "left1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "BaldurShell", "SteadyBody", "SporeShroom"
+                    ],
+                    "skills": [
+                        "GreatSlash", "DashSlash", "CycloneSlash", "MothwingCloak", "MantisClaw", "MonarchWings",
+                        "CrystalHeart", "IsmasTear", "HowlingWraiths", "ShadeCloak"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "SharpShadow", "Dashmaster", "Sprintmaster", "StalwartShell"
+                    ],
+                    "skills": [
+                        "DashSlash", "IsmasTear", "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak"
+                    ]
+                }
             }
         },
         {
