@@ -1359,7 +1359,7 @@
             }
         },
         {
-            "name": "greenpath-small3",
+            "name": "greenpath-mosscharger",
             "warp_transitions": {
                 "Fungus1_11": [
                     "right1"
@@ -1371,9 +1371,14 @@
                 "Fungus1_11": [
                     "right1",
                     "right2",
-                    "bot1",
+                    "bot1"
+                ],
+                "Fungus1_29": [
+                    "left1"
+                ],
+                "Fungus1_19": [
                     "left1",
-                    "top1"
+                    "right1"
                 ]
             },
             "loadouts": {
