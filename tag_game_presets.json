@@ -574,7 +574,7 @@
                     ],
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "ShadeCloak", "IsmasTear", "CycloneSlash",
-                        "DashSlash", "VengefulSpirit", "GreatSlash", "DesolateDive", "VengefulSpirit",
+                        "DashSlash", "VengefulSpirit", "GreatSlash", "DesolateDive", "VengefulSpirit"
                     ]
                 },
                 "infected": {
@@ -944,7 +944,7 @@
                     ],
                     "skills": [
                         "VengefulSpirit", "DesolateDive", "MothwingCloak", "MantisClaw", "MonarchWings", "DashSlash", 
-                        "GreatSlash", "CrystalHeart", "CycloneSlash",
+                        "GreatSlash", "CrystalHeart", "CycloneSlash"
                     ]
                 },
                 "infected": {
