@@ -669,7 +669,7 @@
                     "right2"
                 ]
             },
-            "min_players": 8,
+            "min_players": 10,
             "max_players": 20,
             "transitions": {
                 "White_Palace_15": [
@@ -941,7 +941,6 @@
                 "Fungus3_39": [
                     "left1"
                 ]
-            },
             },
             "min_players": 6,
             "max_players": 20,
@@ -2155,7 +2154,7 @@
                     "left1"
                 ]
             },
-            "min_players": 8,
+            "min_players": 10,
             "max_players": 25,
             "transitions": {
                 "Cliffs_02": [
