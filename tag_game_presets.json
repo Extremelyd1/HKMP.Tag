@@ -851,6 +851,264 @@
             }
         },
         {
+            "name": "queens-gardens-stag",
+            "warp_transitions": {
+                "Fungus3_13": [
+                    "bot1"
+                ],
+                "Fungus3_49": [
+                    "bot1"
+                ],
+                "Fungus1_23": [
+                    "left1"
+                ]
+            },
+            "min_players": 8,
+            "max_players": 15,
+            "transitions": {
+                "Fungus3_13": [
+                    "right1",
+                    "bot1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "SporeShroom"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-petra-small",
+            "warp_transitions": {
+                "Fungus3_08": [
+                    "right1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 6,
+            "transitions": {
+                "Fungus3_08": [
+                    "right1",
+                    "left1",
+                    "top1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-petra-medium",
+            "warp_transitions": {
+                "Fungus3_08": [
+                    "left1"
+                ],
+                "Fungus3_10": [
+                    "top1"
+                ],
+                "Fungus3_39": [
+                    "left1"
+                ]
+            },
+            "min_players": 6,
+            "max_players": 20,
+            "transitions": {
+                "Fungus3_10": [
+                    "top1"
+                ],
+                "Fungus3_08": [
+                    "left1"
+                ],
+                "Fungus3_39": [
+                    "right1"
+                ],
+                "Fungus3_11": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-petra-large",
+            "warp_transitions": {
+                "Fungus3_08": [
+                    "left1"
+                ],
+                "Fungus3_05": [
+                    "left1"
+                ],
+                "Fungus3_24": [
+                    "left1"
+                ],
+                "Fungus3_39": [
+                    "left1"
+                ]
+            },
+            "min_players": 10,
+            "max_players": 30,
+            "transitions": {
+                "Fungus3_08": [
+                    "left1"
+                ],
+                "Fungus3_39": [
+                    "right1"
+                ],
+                "Fungus3_04": [
+                    "right1",
+                    "left1"
+                ],
+                "Fungus3_13": [
+                    "left2",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-love",
+            "warp_transitions": {
+                "Fungus3_39": [
+                    "left1",
+                    "right1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 7,
+            "transitions": {
+                "Fungus3_39": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "queens-gardens-marmu",
+            "warp_transitions": {
+                "Fungus3_40": [
+                    "top1"
+                ]
+            },
+            "min_players": 3,
+            "max_players": 5,
+            "transitions": {
+                "Fungus3_40": [
+                    "top1",
+                    "right1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "Dashmaster", "Flukenest", "BaldurShell"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak", "VengefulSpirit"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "Sprintmaster", "SharpShadow"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak", "MothwingCloak"
+                    ]
+                }
+            }
+        },
+        {
             "name": "queens-gardens-medium",
             "warp_transitions": {
                 "Fungus1_24": [
@@ -871,7 +1129,7 @@
                         "WaywardCompass", "Kingsoul", "Flukenest", "Sprintmaster"
                     ],
                     "skills": [
-                        "CycloneSlash", "DashSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
                         "VengefulSpirit"
                     ]
                 },
@@ -1876,6 +2134,61 @@
                     "skills": [
                         "MothwingCloak", "MantisClaw", "CrystalHeart", "MonarchWings", "IsmasTear", 
                         "ShadeCloak", "CycloneSlash", "DashSlash", "DesolateDive"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "enter-hallownest",
+            "warp_transitions": {
+                "Cliffs_02": [
+                    "door1"
+                ],
+                "Town": [
+                    "door_jiji"
+                ],
+                "Tutorial_01": [
+                    "right1"
+                ],
+                "Crossroads_01": [
+                    "left1"
+                ]
+            },
+            "min_players": 10,
+            "max_players": 25,
+            "transitions": {
+                "Cliffs_02": [
+                    "left1",
+                    "left2"
+                ],
+                "Town": [
+                    "right1",
+                    "door_mapper",
+                    "door_sly",
+                    "door_bretta"
+                ],
+                "Crossroads_01": [
+                    "right1",
+                    "left1"
+                ]
+            },
+            "loadouts": {
+                "normal": {
+                    "charms": [
+                        "WaywardCompass", "Kingsoul", "BaldurShell", "StalwartShell", "Sprintmaster"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MothwingCloak", "MantisClaw", "MonarchWings", "IsmasTear", 
+                        "VengefulSpirit", "HowlingWraiths", "DesolateDive"
+                    ]
+                },
+                "infected": {
+                    "charms": [
+                        "NailmastersGlory", "Dashmaster", "SharpShadow", "Grubsong"
+                    ],
+                    "skills": [
+                        "CycloneSlash", "DashSlash", "GreatSlash", "MantisClaw", "CrystalHeart", "MonarchWings",
+                        "IsmasTear", "ShadeCloak"
                     ]
                 }
             }
